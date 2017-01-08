@@ -1,0 +1,5 @@
+Droplet Name: vitech.vileo.co.id
+IP Address: 128.199.119.13
+Username: root
+Password: 998f8b831d829631
+New Password : kub1k123
