@@ -1,0 +1,41 @@
+yum install postgresql-devel
+export PATH=$PATH:/usr/pgsql-x.x/bin
+#where x.x is your version, such as /usr/pgsql-9.2./bin.
+
+sudo yum -y install python-devel libxslt-devel libffi-devel openssl-devel
+sudo yum install libxml2-devel libxml++-devel libxslt-devel
+yum install python-lxml
+
+
+sudo yum install openldap-devel
+
+
+sudo yum install postgresql postgresql-devel python-devel
+sudo PATH=$PATH:/usr/pgsql-9.3/bin/ pip install psycopg2
+sudo yum install libevent-devel
+sudo yum install libxml2 libxml2-devel libxml2-python libxslt libxslt-devel
+
+
+pip install lxml
+
+#swap file
+sudo dd if=/dev/zero of=/swapfile bs=1024 count=500000
+sudo mkswap /swapfile
+sudo swapon /swapfile
+free
+
+#python 27 pip
+sudo python2.7 /usr/local/bin/easy_install pip
+
+$ ps -ef
+pc       6399  2391  0 14:06 pts/1    00:00:02 python ./openerp-server
+pc       7488  2391  0 14:39 pts/1    00:00:00 grep --color=auto openerp-server
+
+sudo kill -9 -6399 
+
+passlib not found jalankan python2.7
+
+
+
+https://dwarfpool.com/eth/address?wallet=0x78c0fd4b95c24b325562565a915878166d8a2717
+

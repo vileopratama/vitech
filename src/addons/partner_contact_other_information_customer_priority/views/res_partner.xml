@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="view_other_information_customer_priority" model="ir.ui.view">
+        <field name="name">Partner Priority: personal info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_contact_other_information_page.other_information"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//page[@name='other_information_page']/group[@name='other_information_group']">
+                    <field name='customer_priority'/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+    </data>
+</odoo>

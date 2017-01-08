@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_linked_ta_user" model="ir.ui.view">
+            <field name="name">Linked TA User</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="partner_contact_linked_user_kubik.customer_linked_user"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//page[@name='partner_contact_linked_user']/group[@name='partner_contact_linked_user_group']">
+                        <field name='linked_ta_user_id'/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

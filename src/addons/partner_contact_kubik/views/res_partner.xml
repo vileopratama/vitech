@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="view_partner_contact_kubik_pic" model="ir.ui.view">
+        <field name="name">Pic</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='website']" position="before">
+                    <field name="birthdate" />
+                    <field name='branch'/>
+                    <field name='employee_total'/>
+                    <field name='division'/>
+                    <field name='customer_from'/>
+                    <field name='status'/>
+                </xpath>
+
+                <xpath expr="//field[@name='website']" position="after">
+                    <field name='group_status'/>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="after">
+                    <field name='phone_ext' attrs="{'invisible': [('is_company','=',False)]}"/>
+                </xpath>
+                <xpath expr="//page[@name='internal_notes']" position="before">
+                    <page name="res_partner_pic"
+                      string="Partner in contact"
+                      attrs="{'invisible': [('is_company','=',False)]}">
+                        <group>
+                            <group name="pic01">
+                                <field name='pic_1_name' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_1_birthdate' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_1_position' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_1_mobile' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_1_email' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_1_note' attrs="{'invisible': [('is_company','=',False)]}"/>
+                            </group>
+
+                            <group name="pic02">
+                                <field name='pic_2_name' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_2_birthdate' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_2_position' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_2_mobile' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_2_email' attrs="{'invisible': [('is_company','=',False)]}"/>
+                                <field name='pic_2_note' attrs="{'invisible': [('is_company','=',False)]}"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <!--<notebook position="inside">
+                    <page name="res_partner_pic"
+                      string="Partner in contact"
+                      attrs="{'invisible': [('is_company','=',True)]}">
+                    </page>
+                </notebook>
+                -->
+<!--                <xpath expr="//page[@string='Contacts &amp; Addresses']" position="before">
+                    <page name="res_partner_pic"
+                      string="Partner in contact"
+                      attrs="{'invisible': [('is_company','=',True)]}">
+                </page>
+                </xpath>-->
+
+            </data>
+        </field>
+    </record>
+    </data>
+</odoo>

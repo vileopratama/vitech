@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="custom bar assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+                <link rel="stylesheet" href="/theme_backend_kubik/assets/less/style.less"/>
+                <link rel="stylesheet" href="/theme_backend_kubik/assets/less/mobile-style.less"/>
+                <link rel="stylesheet" href="/theme_backend_kubik/assets/less/bootswatch.less"/>
+                <script type="text/javascript" src="/theme_backend_kubik/assets/js/toggle_leftbar.js"></script>
+            </xpath>
+        </template>
+
+        <template id="menu_apps_kubik" inherit_id="web.webclient_bootstrap">
+            <xpath expr="//div[@class='navbar-header']" position="inside">
+                <button id="appsbar_toggle" class="fa fa-th" title="Hide/Show Kubik Apps"></button>
+            </xpath>
+        </template>
+    </data>
+</odoo>

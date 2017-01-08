@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="customer_linked_user" model="ir.ui.view">
+            <field name="name">Linked User</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//page[@name='internal_notes']" position="before">
+                        <page name="partner_contact_linked_user"
+                              string="Linked User">
+                            <group name="partner_contact_linked_user_group" />
+
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,59 @@
+<openerp>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="partner_contact_birthday.list">
+      <field name="name">partner_contact_birthday list</field>
+      <field name="model">partner_contact_birthday.partner_contact_birthday</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="partner_contact_birthday.action_window">
+      <field name="name">partner_contact_birthday window</field>
+      <field name="res_model">partner_contact_birthday.partner_contact_birthday</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="partner_contact_birthday.action_server">
+      <field name="name">partner_contact_birthday server</field>
+      <field name="model_id" ref="model_partner_contact_birthday_partner_contact_birthday"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="partner_contact_birthday" id="partner_contact_birthday.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="partner_contact_birthday.menu_1" parent="partner_contact_birthday.menu_root"/>
+    <menuitem name="Menu 2" id="partner_contact_birthday.menu_2" parent="partner_contact_birthday.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="partner_contact_birthday.menu_1_list" parent="partner_contact_birthday.menu_1"
+              action="partner_contact_birthday.action_window"/>
+    <menuitem name="Server to list" id="partner_contact_birthday" parent="partner_contact_birthday.menu_2"
+              action="partner_contact_birthday.action_server"/>
+    -->
+  </data>
+</openerp>

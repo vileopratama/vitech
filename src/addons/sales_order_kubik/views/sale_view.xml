@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_sales_order_form" model="ir.ui.view">
+            <field name="name">Sales Order Form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='partner_id']" position="before">
+                        <field name="batch" style="width:30%%" />
+                    </xpath>
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="npwp" />
+                        <field name="type" widget="radio" />
+                        <field name="order" widget="radio" />
+                        <field name="incoming" widget="radio" />
+                    </xpath>
+                    <xpath expr="//field[@name='payment_term_id']" position="after">
+                        <field name="date_from" />
+                        <field name="date_to" />
+                        <field name="work_time_from" widget="float_time"/>
+                        <field name="work_time_to" widget="float_time"/>
+                        <field name="total_participant" />
+                    </xpath>
+
+                    <notebook position="inside">
+                        <page name="partner_in_contact" string="Sales Information">
+                            <group>
+                                <group>
+                                    <field name="sale_trainer" />
+                                    <field name="sale_location" />
+                                    <field name="sale_information" />
+                                    <field name="sale_trr" />
+
+                                </group>
+                                <group>
+                                    <field name = "sale_hr_contact_name" />
+                                    <field name = "sale_hr_position" />
+                                    <field name = "sale_hr_phone" />
+                                    <field name = "sale_hr_fax" />
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name = "sale_technical_contact_name" />
+                                    <field name = "sale_technical_position" />
+                                    <field name = "sale_technical_phone" />
+                                    <field name = "sale_technical_fax" />
+                                </group>
+                                <group>
+                                    <field name = "sale_accounting_contact_name" />
+                                    <field name = "sale_accounting_position" />
+                                    <field name = "sale_accounting_phone" />
+                                    <field name = "sale_accounting_fax" />
+                                </group>
+
+                            </group>
+                        </page>
+                    </notebook>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

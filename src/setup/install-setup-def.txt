@@ -1,0 +1,58 @@
+Upgrade python
+
+ di linux centos ngga semudah dengan menggunakan yum update python atau yum upgrade python walaupun repo nya sudah kita tambahkan dengan berbagai macam daftar repo.  Upgrade python juga tidak semudah dengan menghapus terlebih dahulu python yang sudah di install lalu install versi python terbaru. No. No. No… (ngga percaya coba aja sendiri. LOL).
+
+Yuk kita langsung aja. Didalam eksperimen ini, python yang sudah terinstall 2.6, kali ini saya akan upgrade ke python versi 2.7
+
+yum groupinstall “Development tools”. (Tunggu sampai selesai).
+yum install zlib-devel bzip2-devel openssl-devel ncurses-devel. (tunggu sampai selesai).
+cd /opt
+wget http://python.org/ftp/python/2.7.6/Python-2.7.6.tar.xz (Download Pythonnya).
+tar xf Python-2.7.6.tar.xz (Ekstrak Pythonnya)
+cd Python-2.7.6 (Masuk ke direktori python yg sudah di ekstrak tadi)
+./configure –prefix=/usr/local –enable-unicode=ucs4 –enable-shared LDFLAGS=”-Wl,-rpath /usr/local/lib” (Configure dulu pythonnya sebelum di install)
+make && make altinstall (Mulai install. Tunggu sampai selesai)
+ln -s /usr/local/bin/python2.7 /usr/bin/python2.7 (Aliaskan instalasi python tersebut ke direktori /usr/bin)
+ln -s /usr/local/lib/python2.7/config/libpython2.7.a /usr/local/lib (Aliaskan instalasi python tersebut ke direktori /usr/local/lib)
+echo “/usr/local/lib/python2.7/” > /etc/ld.so.conf.d/py27-6.conf (Tambahkan text /usr/local/lib/python2.7/ ke dalam file py27-6.conf)
+ldconfig (reload file yang barusan ditambahkan)
+Install python selesai, Anda bisa lihat direktori python yang Anda install barusan di direktori /usr/local/bin/python2.7. Sedangkan direktori python versi sebelumnya ada di direktori /usr/bin/python2.6
+
+Opppssst..!! setelah dicheck kok versi pythonnya masih yg lama (python –version)? Whaatt Whaattt????
+
+Oiya, sebenernya belum selesai tuh. Yuukk kita lanjutkan proses selanjutnya…
+
+cd /opt (Masuk direktori opt)
+wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py (Download file ex_setup.py dan tunggu sampai selesai).
+python2.7 ez_setup.py
+easy_install-2.7 pip (Install PIP).
+pip2.7 install virtualenv
+virtualenv-2.7 pythonElman2.7
+source pythonElman2.7/bin/activate
+python –version (Lihat versi pythonnya)
+Selesai.
+
+Postgree SQL
+First step is to install PostgreSQL repository in your system
+
+rpm -Uvh http://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+yum install postgresql96-server postgresql96
+service postgresql-9.5 initdb
+service  postgresql-9.6 start
+chkconfig postgresql-9.6 on
+sudo su - postgres -c "createuser -s $USER"
+
+psconfig not found
+
+pgconfig path =PATH=$PATH:/opt/local/lib/postgresql91/bin/
+easy_install -U setuptools
+
+NodeJS
+
+
+WKHTML
+
+yum install -y xorg-x11-fonts-75dpi
+yum install -y xorg-x11-fonts-Type1
+wget http://download.gna.org/wkhtmltopdf/0.12/0.12.1/wkhtmltox-0.12.1_linux-centos6-amd64.rpm
+rpm -Uvh wkhtmltox-0.12.1_linux-centos6-amd64.rpm

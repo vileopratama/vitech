@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<openerp>
+    <data>
+        <report
+            id="pos_report_test_product"
+            name="pos_report_test.report_test"
+            file="pos_report_test.report_test"
+            model="pos.order"
+            report_type="qweb-html"
+            string="Details of Sales Order"
+            menu="False"
+        />
+    </data>
+</openerp>

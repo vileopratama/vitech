@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_contact_birthday_partner_contact_birthday,partner_contact_birthday.partner_contact_birthday,model_partner_contact_birthday_partner_contact_birthday,,1,0,0,0

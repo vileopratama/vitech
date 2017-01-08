@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="other_information" model="ir.ui.view">
+            <field name="name">Other information page for contacts form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+             <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//page[@name='sales_purchases']" position="after">
+                        <page name="other_information_page"
+                              string="Other Information"
+                              attrs="{'invisible': [('is_company','=',True)]}">
+                            <group name="other_information_group"/>
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

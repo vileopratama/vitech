@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="custom bar assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+                <link rel="stylesheet" href="/saphire_backend_theme/static/src/less/style.less"/>
+                <link rel="stylesheet" href="/saphire_backend_theme/static/src/less/mobile-style.less"/>
+                <link rel="stylesheet" href="/saphire_backend_theme/static/src/less/bootswatch.less"/>
+                <script type="text/javascript" src="/saphire_backend_theme/static/src/js/toggle_leftbar.js"></script>
+            </xpath>
+        </template>
+
+        <template id="menu_webclient_bootstrap_united_backend_theme" inherit_id="web.webclient_bootstrap">
+            <xpath expr="//div[@class='navbar-header']" position="inside">
+                <button id="appsbar_toggle" class="fa fa-th" title="Hide/Show Apps"></button>
+            </xpath>
+
+        </template>
+
+    </data>
+</openerp>
+
