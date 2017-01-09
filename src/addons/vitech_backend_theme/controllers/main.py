@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+
 import openerp
 import openerp.modules.registry
 import ast
@@ -14,7 +15,6 @@ import pytz
 # ----------------------------------------------------------
 # OpenERP Web web Controllers
 # ----------------------------------------------------------
-
 class Home(Home):
     @http.route('/web/login', type='http', auth="none")
     def web_login(self, redirect=None, **kw):
