@@ -21,8 +21,8 @@ class Home(Home):
         cr = request.cr
         uid = openerp.SUPERUSER_ID
         param_obj = request.registry.get('ir.config_parameter')
-        request.params['disable_footer'] = ast.literal_eval(
-            param_obj.get_param(cr, uid, 'login_form_disable_footer')) or False
+        #request.params['disable_footer'] = ast.literal_eval(
+            #param_obj.get_param(cr, uid, 'login_form_disable_footer')) or False
         request.params['disable_database_manager'] = ast.literal_eval(
             param_obj.get_param(cr, uid, 'login_form_disable_database_manager')) or False
 
