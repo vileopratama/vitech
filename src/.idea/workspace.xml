@@ -20,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="web_login.css" pinned="false" current-in-tab="false">
+      <file leaf-file-name="web_login.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="601">
-              <caret line="93" column="28" selection-start-line="93" selection-start-column="21" selection-end-line="93" selection-end-column="28" />
+            <state relative-caret-position="272">
+              <caret line="67" column="18" selection-start-line="67" selection-start-column="18" selection-end-line="67" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -60,7 +60,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="variables.less" pinned="false" current-in-tab="true">
+      <file leaf-file-name="variables.less" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/variables.less">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="289">
@@ -734,14 +734,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="601">
-          <caret line="93" column="28" selection-start-line="93" selection-start-column="21" selection-end-line="93" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/js/toggle_leftbar.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -762,6 +754,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
           <caret line="17" column="31" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="67" column="18" selection-start-line="67" selection-start-column="18" selection-end-line="67" selection-end-column="18" />
           <folding />
         </state>
       </provider>
