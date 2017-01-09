@@ -20,63 +20,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/controllers/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="8" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
-              <folding>
-                <element signature="e#27#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/controllers/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="11" selection-start-line="0" selection-start-column="11" selection-end-line="0" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="webclient_template.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/views/webclient_template.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="121" selection-start-line="18" selection-start-column="121" selection-end-line="18" selection-end-column="121" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="web_login.css" pinned="false" current-in-tab="false">
+      <file leaf-file-name="web_login.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-663">
-              <caret line="3" column="96" selection-start-line="3" selection-start-column="96" selection-end-line="3" selection-end-column="96" />
+            <state relative-caret-position="448">
+              <caret line="96" column="29" selection-start-line="96" selection-start-column="29" selection-end-line="96" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ir_config_parameter.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/data/ir_config_parameter.xml">
+      <file leaf-file-name="style.less" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/style.less">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="45" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="45" />
+            <state relative-caret-position="816">
+              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__openerp__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/__openerp__.py">
+      <file leaf-file-name="variables.less" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/variables.less">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="25" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
+            <state relative-caret-position="289">
+              <caret line="17" column="31" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -101,13 +69,13 @@
         <option value="$PROJECT_DIR$/openerp-server.conf" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/data/ir_config_parameter.xml" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/views/website_template.xml" />
-        <option value="$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/__openerp__.py" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/controllers/login.py" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/__init__.py" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/controllers/main.py" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/controllers/__init__.py" />
         <option value="$PROJECT_DIR$/addons/vitech_backend_theme/views/webclient_template.xml" />
+        <option value="$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css" />
       </list>
     </option>
   </component>
@@ -243,6 +211,36 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="addons" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vitech_backend_theme" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="less" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -622,22 +620,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/variables.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="369" column="18" selection-start-line="369" selection-start-column="0" selection-end-line="369" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/style.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/bootswatch.less">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="710">
@@ -704,14 +686,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-663">
-          <caret line="3" column="96" selection-start-line="3" selection-start-column="96" selection-end-line="3" selection-end-column="96" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/views/website_template.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -732,6 +706,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="18" column="121" selection-start-line="18" selection-start-column="121" selection-end-line="18" selection-end-column="121" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/style.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/less/variables.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="31" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/static/src/css/web_login.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="448">
+          <caret line="96" column="29" selection-start-line="96" selection-start-column="29" selection-end-line="96" selection-end-column="29" />
           <folding />
         </state>
       </provider>

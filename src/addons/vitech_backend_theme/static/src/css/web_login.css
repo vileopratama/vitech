@@ -91,8 +91,8 @@ a.btn-select {
 
 .o_database_list .btn-primary {
 	color: #FFF;
-  	background-color: #BBB;
-  	border: 1px solid #CCC;
+  	background-color: #2aade3;
+  	border: 1px solid #2aade3;
   	text-transform: uppercase;
   	transition: background-color 0.5s ease;
 }
