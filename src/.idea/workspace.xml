@@ -45,8 +45,8 @@
       <file leaf-file-name="webclient_template.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/views/webclient_template.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="18" column="118" selection-start-line="18" selection-start-column="118" selection-end-line="18" selection-end-column="118" />
+            <state relative-caret-position="306">
+              <caret line="18" column="121" selection-start-line="18" selection-start-column="121" selection-end-line="18" selection-end-column="121" />
               <folding />
             </state>
           </provider>
@@ -730,8 +730,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/addons/vitech_backend_theme/views/webclient_template.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="18" column="118" selection-start-line="18" selection-start-column="118" selection-end-line="18" selection-end-column="118" />
+        <state relative-caret-position="306">
+          <caret line="18" column="121" selection-start-line="18" selection-start-column="121" selection-end-line="18" selection-end-column="121" />
           <folding />
         </state>
       </provider>

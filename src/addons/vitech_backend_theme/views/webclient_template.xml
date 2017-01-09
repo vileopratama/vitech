@@ -16,7 +16,7 @@
 
     		<xpath expr="//div[@class='col-md-6 col-md-offset-3 o_database_list']" position="before">
     			<div id="background-wrapper"
-    				t-attf-style="background-image: url('vitech_backend_theme/static/src/img/background_login_1.png');"></div>
+    				t-attf-style="background-image: url('/vitech_backend_theme/static/src/img/background_login_1.png');"></div>
     		</xpath>
 
     		<xpath expr="//div[@class='col-md-6 col-md-offset-3 o_database_list']" position="attributes">
