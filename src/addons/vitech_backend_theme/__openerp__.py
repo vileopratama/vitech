@@ -13,7 +13,10 @@ Clean Theme Odoo 9c for Vitech ERP, based on Bootstrap United template. The them
     ],
     'depends' : ['base'],
     'data':[
-        'views.xml',
-        ],
+        'data/ir_config_parameter.xml',
+        'views/views.xml',
+        'views/website_template.xml',
+        'views/webclient_template.xml',
+    ],
     'installable': True
 }
