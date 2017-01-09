@@ -162,7 +162,7 @@
                 <head>
                     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
                     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-                    <title>Sapphire</title>
+                    <title>Vitech ERP</title>
                     <link rel="shortcut icon" href="/web/static/src/img/favicon.ico" type="image/x-icon"/>
                     <link rel="stylesheet" href="/web/static/src/css/full.css" />
                     <t t-raw="head or ''"/>
@@ -189,9 +189,9 @@
                     <t t-raw="0"/>
                     <div class="text-center" t-if="not disable_footer">
                         <t t-if="not disable_database_manager">
-                            <a class="" href="/web/database/manager">Manage Databases</a> |
+                            <a class="" href="/web/database/manager">Manage Databases</a>
                         </t>
-                        <!--<a href="https://www.odoo.com" target="_blank">Powered by <span>Odoo</span></a>-->
+                        <a href="https://www.vileo.co.id" target="_blank">ERP Solution By <span>PT. Vileo Pratama Teknologi</span></a>
                     </div>
 
                   </div>
