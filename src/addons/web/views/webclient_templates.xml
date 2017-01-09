@@ -274,7 +274,7 @@
                 </t>
             </div>
             <div class="oe_footer">
-                Powered by <a href="http://www.odoo.com" target="_blank"><span>Odoo</span></a>
+                <a href="http://www.vileo.co.id" target="_blank"><span>Vitech ERP</span></a>
             </div>
         </template>
         <template id="web.menu_secondary_submenu">
