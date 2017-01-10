@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <openerp>
     <data>
-        <menuitem id="point_root_lounge" name="Point Lounge" />
+        <menuitem id="point_root_lounge" name="Point Lounge" sequence="22"/>
+        <menuitem
+            parent="point_root_lounge" name="Dashboard"
+            id="menu_pos_dashboard" sequence="1"/>
     </data>
 </openerp>
