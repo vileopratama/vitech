@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <menuitem id="lounge" name="Point Lounge" sequence="22"/>
+        <menuitem id="lounge" name="Point Lounge" sequence="22" groups="base.group_user"/>
         <menuitem
             parent="lounge" name="Dashboard"
             id="lounge_dashboard" sequence="1"/>
