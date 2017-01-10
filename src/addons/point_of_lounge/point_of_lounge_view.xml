@@ -2,5 +2,7 @@
 <openerp>
     <data>
         <menuitem id="point_root_lounge" name="Lounge" />
+        <menuitem id="lounge_configuration_menu" name="Configuration"
+            sequence="20" parent="point_root_lounge" />
     </data>
 </openerp>
