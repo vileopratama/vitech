@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <menuitem id="point_root_lounge" name="Lounge" />
-        <menuitem id="lounge_configuration_menu" name="Configuration"
-            sequence="20" parent="point_root_lounge" />
+        <menuitem id="point_root_lounge" name="Point Lounge" />
     </data>
 </openerp>
