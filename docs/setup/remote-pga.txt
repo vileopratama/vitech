@@ -1,0 +1,27 @@
+o open the port 5432 edit your /etc/postgresql/9.1/main/postgresql.conf and change
+listen_addresses='localhost'
+to
+
+listen_addresses='*'
+and reload or restart you DBMS
+
+invoke-rc.d postgresql restart
+now you can connect with
+
+$ psql -h hostname -U username -d database
+if you are unable to authentify yourself, then you need to give your user access rights to your database
+
+Edit your
+
+/etc/postgresql/9.1/main/pg_hba.conf
+and add
+
+host all all 0.0.0.0/0 md5 #ipv4 range
+host all all ::0/0 md5 #ipv6 range
+host all all all md5 #all ip
+
+md5 to trust
+
+hereafter you need also a reload
+
+invoke-rc.d postgresql reload
