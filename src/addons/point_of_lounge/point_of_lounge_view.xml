@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!-- Top menu item -->
-        <menuitem name="Lounge" id="menu_lounge_root" sequence="22"/>
+        <menuitem id="point_root_lounge" name="Lounge" />
     </data>
 </openerp>
