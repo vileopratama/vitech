@@ -3,9 +3,8 @@
     <data>
         <!-- Top menu item -->
         <menuitem name="Lounge"
-            id="menu_point_root"
+            id="menu_lounge_root"
             icon="fa-suitcase"
-            web_icon="point_of_sale,static/description/icon.png"
             sequence="22"/>
     </data>
 </openerp>

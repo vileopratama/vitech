@@ -2,7 +2,8 @@
 
 {
     'name': 'Point of Lounge',
-    'version': '1.0.1',
+    'version': '1.0.0',
+    'author' : 'Suhendar',
     'category': 'Point Of Lounge',
     'sequence': 20,
     'summary': 'Touchscreen Interface for Lounge',
