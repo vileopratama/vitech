@@ -1,10 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
         <!-- Top menu item -->
-        <menuitem name="Lounge"
-            id="menu_lounge_root"
-            icon="fa-suitcase"
-            sequence="22"/>
+        <menuitem name="Lounge" id="menu_lounge_root" sequence="22"/>
     </data>
 </openerp>
