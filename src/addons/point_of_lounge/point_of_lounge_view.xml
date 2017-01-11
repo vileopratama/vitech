@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+       <!-- Top menu item -->
+        <menuitem name="Lounge"
+            id="menu_lounge_root"
+            sequence="23"/>
+
+        <record model="ir.ui.view" id="view_lounge_config_search">
+            <field name="name">lounge.config.search.view</field>
+            <field name="model">lounge.config</field>
+            <field name="arch" type="xml">
+                <search string="Point of Lounge Config">
+                    <field name="name" />
+                    <filter string="Active" domain="[('state', '=', 'active')]" />
+                    <filter string="Inactive" domain="[('state', '=', 'inactive')]" />
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_lounge_config_kanban">
+            <field name="name">Point of Lounge</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lounge.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_lounge_config_search" />
+            <field name="domain">[('state','=','active')]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new Lounge config.
+              </p><p>
+                Configure at least one Point of Sale to be able to sell through the PoS interface.
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="action_lounge_config_kanban" parent="menu_lounge_root" name="Dashboard" id="menu_lounge_dashboard" sequence="1"/>
+
+    </data>
+</openerp>
