@@ -58,6 +58,11 @@
             <field name="arch" type="xml">
                 <form string="Lounge Session">
                     <header>
+                        <button name="open" type="workflow" string="Open Session"
+                                attrs="{'invisible' : ['|', ('cash_control', '=', False), ('state', '!=', 'opening_control')]}"
+                                class="oe_highlight"/>
+                        <button name="open_frontend_cb" type="object" string="Continue Selling" states="opened"
+                            class="oe_highlight"/>
                         <field name="state" widget="statusbar" statusbar_visible="opening_control,opened,closing_control,closed" nolabel="1" />
                     </header>
                     <sheet>
@@ -66,12 +71,12 @@
                             <field name="name" attrs="{'invisible': [('name','=','/')]}" class="oe_inline"/>
                         </h1>
                          <group>
-                              <group>
+                             <field name="cash_control" invisible="1" />
+                             <group>
                                 <field name="user_id"/>
-                                <!--<field name="currency_id" invisible="1"/>-->
                                 <field name="config_id"/>
                                 <field name="rescue" attrs="{'invisible': [('rescue', '=', False)]}" />
-                            </group>
+                             </group>
                              <group>
                                  <!--attrs="{'invisible' : [('state', '=', 'opening_control')]}"-->
                                 <field name="start_at" />
@@ -139,6 +144,8 @@
             action="action_lounge_config_pos"
             id="menu_pos_config_pos"
             />
+
+
 
         <menuitem
             name="Lounge Session"

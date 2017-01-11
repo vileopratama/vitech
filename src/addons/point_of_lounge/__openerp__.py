@@ -8,7 +8,7 @@
     'website': "http://www.example.com",
     'category': 'Uncategorized',
     'version': '9.0.1.0.0',
-    'depends': ['base'],
+    'depends': ['sale_stock', 'barcodes'],
     'data': [
         'point_of_lounge_view.xml',
         'point_of_lounge_dashboard.xml',

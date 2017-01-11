@@ -392,7 +392,7 @@ class pos_session(osv.osv):
 
         'state' : fields.selection(POS_SESSION_STATE, 'Status',
                 required=True, readonly=True,
-                select=1, copy=False),
+                select = 1, copy=False),
         'rescue': fields.boolean('Rescue session', readonly=True,
                                  help="Auto-generated session for orphan orders, ignored in constraints"),
         'sequence_number': fields.integer('Order Sequence Number', help='A sequence number that is incremented with each order'),
