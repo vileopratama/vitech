@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_lounge_config_kanban" model="ir.ui.view">
+        <field name="name">lounge.config.kanban.view</field>
+        <field name="model">lounge.config</field>
+        <field name="arch" type="xml">
+            <kanban create="false" class="o_kanban_dashboard o_pos_kanban">
+                <field name="name"/>
+                <field name="lounge_session_username"/>
+                <field name="current_session_id"/>
+                <templates>
+                     <t t-name="kanban-box">
+                         <div>
+                             <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary"><t t-esc="record.name.value"/></div>
+                                    <div class="o_secondary"><t t-esc="record.lounge_session_username.value || 'No Session' "/></div>
+                                </div>
+                                 <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">More <i class="fa fa-caret-down"/></a>
+                                </div>
+                             </div>
+                             <div class="container o_kanban_card_content o_visible">
+                                 <div class="row">
+                                     <div class="col-xs-6 o_kanban_primary_left">
+                                         <button t-if="!record.current_session_id.raw_value" class="btn btn-primary" name="open_session_cb" type="object">New Session</button>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="container o_kanban_card_manage_pane o_invisible">
+                                <div class="row">
+                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <span>View</span>
+                                        </div>
+
+                                        <div>
+                                            <a name="" type="action">Sessions</a>
+                                        </div>
+                                        <div>
+                                            <a name="" type="action">Sales Orders</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_new">
+                                        <div class="o_kanban_card_manage_title">
+                                            <span>Reports</span>
+                                        </div>
+
+                                        <div>
+                                            <a name="" type="action">Orders</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
+                                    <div class="col-xs-12 text-right">
+                                        <a type="edit">Settings</a>
+                                    </div>
+                                </div>
+                             </div>
+                         </div>
+                     </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

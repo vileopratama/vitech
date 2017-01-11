@@ -10,9 +10,13 @@
     'version': '9.0.1.0.0',
     'depends': ['base'],
     'data': [
-        'point_of_lounge_view.xml'
+        'point_of_lounge_view.xml',
+        'point_of_lounge_dashboard.xml',
     ],
     'demo': [
         #'demo.xml'
     ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }

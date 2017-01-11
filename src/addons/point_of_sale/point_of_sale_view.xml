@@ -770,8 +770,6 @@
             res_model="pos.order"
             context="{'search_default_session_id': active_id, 'default_session_id' : active_id }" />
 
-
-
         <record model="ir.ui.view" id="view_pos_session_form">
             <field name="name">pos.session.form.view</field>
             <field name="model">pos.session</field>
