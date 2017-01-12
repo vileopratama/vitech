@@ -44,12 +44,17 @@ class lounge_config(osv.osv):
                                                       limit=1, context=context)
         return res and res[0] or False
 
+    def _default_pricelist(self, cr, uid, context=None):
+        res = self.pool.get('product.pricelist').search(cr, uid, [], limit=1, context=context)
+        return res and res[0] or False
+
     _columns = {
         'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
         'picking_type_id': fields.many2one('stock.picking.type', 'Picking Type'),
         'stock_location_id': fields.many2one('stock.location', 'Stock Location', domain=[('usage', '=', 'internal')],
                                              required=True),
         'company_id': fields.many2one('res.company', 'Company', required=True),
+        'pricelist_id': fields.many2one('product.pricelist', 'Pricelist', required=True),
         'journal_id': fields.many2one('account.journal', 'Sale Journal',
                                       domain=[('type', '=', 'sale')],
                                       help="Accounting journal used to post sales entries."),
@@ -107,6 +112,7 @@ class lounge_config(osv.osv):
     _defaults = {
         'state': LOUNGE_CONFIG_STATE[0][0],
         'journal_id': _default_sale_journal,
+        'pricelist_id': _default_pricelist,
         # 'stock_location_id': _get_default_location,
     }
 

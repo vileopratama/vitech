@@ -26,6 +26,7 @@
                                 on_change="onchange_picking_type_id(picking_type_id)"/>
                             <field name="stock_location_id" groups="stock.group_locations"/>
                             <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="pricelist_id" groups="product.group_sale_pricelist"/>
                             <field name="journal_id" widget="selection"/>
                             <field name="group_by" groups="account.group_account_user"/>
                             <field name="barcode_nomenclature_id" />
