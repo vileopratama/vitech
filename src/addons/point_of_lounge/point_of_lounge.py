@@ -60,7 +60,7 @@ class lounge_config(osv.osv):
                                                    required=True),
         'journal_ids': fields.many2many('account.journal', 'lounge_config_journal_rel',
                                         'lounge_config_id', 'journal_id', 'Available Payment Methods',
-                                        domain="[('journal_user', '=', True ), ('type', 'in', ['bank', 'cash'])]", ),
+                                        domain="[('journal_user_lounge', '=', True ), ('type', 'in', ['bank', 'cash'])]", ),
         'sequence_id': fields.many2one('ir.sequence', 'Order IDs Sequence', readonly=True,
                                        help="This sequence is automatically created by Vitech but you can change it " \
                                             "to customize the reference numbers of your orders.", copy=False),
@@ -75,7 +75,7 @@ class lounge_config(osv.osv):
         'iface_invoicing': fields.boolean('Invoicing', help='Enables invoice generation from the Point of Sale'),
         'iface_precompute_cash': fields.boolean('Prefill Cash Payment',
                                                 help='The payment input will behave similarily to bank payment input, and will be prefilled with the exact due amount'),
-        'iface_start_categ_id': fields.many2one('pos.category', 'Start Category',
+        'iface_start_categ_id': fields.many2one('lounge.category', 'Start Service Category',
                                                 help='The point of sale will display this product category by default. If no category is specified, all available products will be shown'),
         'tip_product_id': fields.many2one('product.product', 'Tip Product',
                                           help="The product used to encode the customer tip. Leave empty if you do not accept tips."),
@@ -158,6 +158,31 @@ class lounge_config(osv.osv):
             'type': 'ir.actions.act_window',
         }"""
 
+#menu products
+class product_template(osv.osv):
+    _inherit = 'product.template'
+    _columns = {
+        'available_in_lounge': fields.boolean('Available in the Lounge',
+                                           help='Check if you want this product to appear in the Lounge Session'),
+        'lounge_to_weight': fields.boolean('To Weigh With Scale',
+                                    help="Check if the product should be weighted using the hardware scale integration"),
+        'lounge_categ_id': fields.many2one('lounge.category', 'Lounge Service Category',
+                                        help="Those categories are used to group similar products for lounge."),
+    }
+    _defaults = {
+        'lounge_to_weight': False,
+        'available_in_lounge': True,
+    }
+
+    def unlink(self, cr, uid, ids, context=None):
+        product_ctx = dict(context or {}, active_test=False)
+        if self.search_count(cr, uid, [('id', 'in', ids), ('available_in_lounge', '=', True)], context=product_ctx):
+            if self.pool['lounge.session'].search_count(cr, uid, [('state', '!=', 'closed')], context=context):
+                raise UserError(
+                    _('You cannot delete a product saleable in point of sale while a session is still opened.'))
+        return super(product_template, self).unlink(cr, uid, ids, context=context)
+
+#menu lounge session
 class lounge_session(osv.osv):
     _name = 'lounge.session'
     _order = 'id desc'
@@ -278,32 +303,32 @@ class lounge_session(osv.osv):
         jobj = self.pool.get('lounge.config')
         lounge_config = jobj.browse(cr, uid, config_id, context=context)
         context.update({'company_id': lounge_config.company_id.id})
-        #is_pos_user = self.pool['res.users'].has_group(cr, uid, 'point_of_sale.group_pos_user')
+        # is_pos_user = self.pool['res.users'].has_group(cr, uid, 'point_of_sale.group_pos_user')
         if not lounge_config.journal_id:
             jid = jobj.default_get(cr, uid, ['journal_id'], context=context)['journal_id']
             if jid:
-                jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_id': jid}, context=context)
+                 jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_id': jid}, context=context)
             else:
                 raise UserError(_("Unable to open the session. You have to assign a sale journal to your lounge of sale."))
 
         # define some cash journal if no payment method exists
         if not lounge_config.journal_ids:
             journal_proxy = self.pool.get('account.journal')
-            cashids = journal_proxy.search(cr, uid, [('journal_user', '=', True), ('type', '=', 'cash')],
-                                                   context=context)
+            cashids = journal_proxy.search(cr, uid, [('journal_user_lounge', '=', True), ('type', '=', 'cash')],context=context)
             if not cashids:
                 cashids = journal_proxy.search(cr, uid, [('type', '=', 'cash')], context=context)
                 if not cashids:
-                    cashids = journal_proxy.search(cr, uid, [('journal_user', '=', True)], context=context)
-                    journal_proxy.write(cr, SUPERUSER_ID, cashids, {'journal_user': True})
-                    jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_ids': [(6, 0, cashids)]})
+                    cashids = journal_proxy.search(cr, uid, [('journal_user_lounge', '=', True)], context=context)
+
+                journal_proxy.write(cr, SUPERUSER_ID, cashids, {'journal_user_lounge': True})
+                obj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_ids': [(6, 0, cashids)]})
 
         statements = []
-        create_statement = partial(self.pool['account.bank.statement'].create, cr, SUPERUSER_ID or uid)
+        create_statement = partial(self.pool['account.bank.statement'].create, cr,SUPERUSER_ID or uid)
         for journal in lounge_config.journal_ids:
-            #set the journal_id which should be used by
-            #account.bank.statement to set the opening balance of the
-            #newly created bank statement
+            # set the journal_id which should be used by
+            # account.bank.statement to set the opening balance of the
+            # newly created bank statement
             context['journal_id'] = journal.id if lounge_config.cash_control and journal.type == 'cash' else False
             st_values = {
                 'journal_id': journal.id,
@@ -311,14 +336,16 @@ class lounge_session(osv.osv):
             }
             statements.append(create_statement(st_values, context=context))
 
-        values.update({
-            'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'lounge.session', context=context),
-            'statement_ids': [(6, 0, statements)],
-            'config_id': config_id
-        })
+        #values.update({
+            #'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'lounge.session', context=context),
+            #'statement_ids': [(6, 0, statements)],
+            #'config_id': config_id
+        #})
 
         return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
 
+
+#lounge category
 class lounge_category(osv.osv):
     _name = "lounge.category"
     _description = "Public Service Category"

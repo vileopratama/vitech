@@ -189,7 +189,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="context" eval="{}"/>
-            <field name="domain" eval="[('available_in_pos','&lt;&gt;',False)]"/>
+            <field name="domain" eval="[('available_in_lounge','&lt;&gt;',False)]"/>
             <field name="search_view_id" eval="False"/> <!-- Force empty -->
             <field name="view_id" eval="False"/> <!-- Force empty -->
             <field name="help" type="html">
@@ -206,6 +206,7 @@
               </p>
             </field>
         </record>
+
         <menuitem
             action="product_template_action"
             id="menu_pos_products"
@@ -489,8 +490,6 @@
             <field name="view_mode">tree,calendar,form,graph</field>
             <field name="domain">[('date_order','like',time.strftime('%Y-%m'))]</field>
         </record>
-
-
 
         <!-- Product Public Categories -->
         <record id="product_pos_category_form_view" model="ir.ui.view">

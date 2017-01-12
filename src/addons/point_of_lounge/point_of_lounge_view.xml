@@ -133,44 +133,6 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_lounge_session_form">
-            <field name="name">lounge.session.form.view</field>
-            <field name="model">lounge.session</field>
-            <field name="arch" type="xml">
-                <form string="Lounge Session">
-                    <header>
-                        <button name="open" type="workflow" string="Open Session"
-                                attrs="{'invisible' : ['|', ('cash_control', '=', False), ('state', '!=', 'opening_control')]}"
-                                class="oe_highlight"/>
-                        <button name="open_frontend_cb" type="object" string="Continue Selling" states="opened"
-                            class="oe_highlight"/>
-                        <field name="state" widget="statusbar" statusbar_visible="opening_control,opened,closing_control,closed" nolabel="1" />
-                    </header>
-                    <sheet>
-                        <h1 class="oe_title">
-                            Session:
-                            <field name="name" attrs="{'invisible': [('name','=','/')]}" class="oe_inline"/>
-                        </h1>
-                         <group>
-                             <field name="cash_control" invisible="1" />
-                             <group>
-                                <field name="user_id"/>
-                                <field name="config_id"/>
-                                <field name="rescue" attrs="{'invisible': [('rescue', '=', False)]}" />
-                             </group>
-                             <group>
-                                 <!--attrs="{'invisible' : [('state', '=', 'opening_control')]}"-->
-                                <field name="start_at" />
-                                <field name="stop_at" attrs="{'invisible' : [('state', '!=', 'closed')]}"/>
-                            </group>
-                            <newline/>
-                         </group>
-
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
         <record model="ir.actions.act_window" id="action_lounge_session">
             <field name="name">Sessions</field>
             <field name="type">ir.actions.act_window</field>
@@ -193,6 +155,53 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_lounge_session_form">
+            <field name="name">lounge.session.form.view</field>
+            <field name="model">lounge.session</field>
+            <field name="view_type">form</field>
+            <field name="arch" type="xml">
+                <form string="Lounge Session">
+                    <header>
+                        <button name="open" type="workflow" string="Open Session"
+                                attrs="{'invisible' : ['|', ('cash_control', '=', False), ('state', '!=', 'opening_control')]}"
+                                class="oe_highlight"/>
+                        <button name="open_frontend_cb" type="object" string="Continue Selling" states="opened"
+                            class="oe_highlight"/>
+                        <button name="cashbox_control" type="workflow" string="End of Session"
+                            attrs="{'invisible' : ['|', ('cash_control', '=', False),('state', '!=', 'opened')]}"
+                            class="oe_highlight" />
+                        <button name="close" type="workflow" string="Validate Closing &amp; Post Entries"
+                            attrs="{'invisible' : ['|', ('cash_control', '=', True),('state', '!=', 'opened')]}"
+                            class="oe_highlight" />
+                        <button name="close" type="workflow" string="Validate Closing &amp; Post Entries" states="closing_control"
+                            class="oe_highlight" />
+                        <field name="state" widget="statusbar" statusbar_visible="opening_control,opened,closing_control,closed" nolabel="1" />
+                    </header>
+                    <sheet>
+                        <h1 class="oe_title">
+                            Session:
+                            <field name="name" attrs="{'invisible': [('name','=','/')]}" class="oe_inline"/>
+                        </h1>
+                         <group>
+                             <field name="cash_control" invisible="1" />
+                             <group>
+                                <field name="user_id"/>
+                                <field name="config_id"/>
+                                <field name="rescue" attrs="{'invisible': [('rescue', '=', False)]}" />
+                             </group>
+                             <group>
+                                 <!--attrs="{'invisible' : [('state', '=', 'opening_control')]}"-->
+                                <field name="start_at" attrs="{'invisible' : [('state', '=', 'opening_control')]}" />
+                                <field name="stop_at" attrs="{'invisible' : [('state', '!=', 'closed')]}"/>
+                            </group>
+                            <newline/>
+                         </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_lounge_session_tree">
             <field name="name">lounge.session.tree.view</field>
             <field name="model">lounge.session</field>
@@ -207,6 +216,64 @@
                 </tree>
             </field>
         </record>
+
+        <record id="product_lounge_template_action" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context" eval="{}"/>
+            <field name="domain" eval="[('available_in_lounge','&lt;&gt;',False)]"/>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new product.
+              </p><p>
+                You must define a product for everything you sell through
+                the point of sale interface.
+              </p><p>
+                Do not forget to set the price and the point of sale category
+                in which it should appear. If a product has no point of sale
+                category, you can not sell it through the point of sale
+                interface.
+              </p>
+            </field>
+        </record>
+
+        <record id="product_template_form_view" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <group name="sale_condition" position="after">
+                    <group name="lounge" string="Lounge">
+                        <field name="available_in_lounge"/>
+                        <field name="lounge_categ_id" attrs="{'invisible': [('available_in_lounge', '=', False)]}"/>
+                        <field name="lounge_to_weight" attrs="{'invisible': [('available_in_lounge', '=', False)]}"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.tree.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="sequence" widget="handle" />
+                </field>
+            </field>
+        </record>
+
+        <menuitem
+                action="product_lounge_template_action"
+                name="Products"
+                parent="menu_lounge_of_sale"
+                id="menu_lounge_product"
+                sequence="5"/>
 
         <menuitem name="Configuration" parent="menu_lounge_root"
             id="menu_lounge_config" sequence="100"/>
@@ -252,6 +319,8 @@
                 </tree>
             </field>
         </record>
+
+
 
         <record id="product_lounge_category_action" model="ir.actions.act_window">
             <field name="name">Lounge Service</field>
@@ -312,7 +381,7 @@
             />
 
         <menuitem
-            name="Lounge Session"
+            name="Session"
             parent="menu_lounge_of_sale"
             action="action_lounge_session"
             id="menu_lounge_session_all"
