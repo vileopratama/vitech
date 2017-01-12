@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_sale_config_settings_form_lounge" model="ir.ui.view">
+            <field name="name">lounge.config.settings.form</field>
+            <field name="model">lounge.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="General Settings" class="oe_form_configuration">
+                    <header>
+                        <button string="Apply" type="object"  name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <group string="Lounge">
+                        <field name="module_pos_discount" widget="radio"/>
+                        <field name="module_pos_reprint" widget="radio"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_lounge_configuration" model="ir.actions.act_window">
+            <field name="name">General Setting</field>
+            <field name="res_model">lounge.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="menu_lounge_global_settings" name="Settings"
+            parent="menu_lounge_config" sequence="7" action="action_lounge_configuration"/>
+
+    </data>
+</openerp>

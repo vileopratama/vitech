@@ -6,6 +6,50 @@
             id="menu_lounge_root"
             sequence="23"/>
 
+        <record model="ir.ui.view" id="view_lounge_config_form">
+            <field name="name">lounge.config.form.view</field>
+            <field name="model">lounge.config</field>
+            <field name="view_type">form</field>
+            <field name="arch" type="xml">
+                <form string="Lounge Configuration">
+                    <header>
+                        <button string="Set to Active" name="set_active" type="object" states="inactive,deprecated"/>
+                        <button string="Set to Inactive" name="set_inactive" type="object" states="active" />
+                        <button string="Set to Deprecated" name="set_deprecate" type="object" states="active,inactive" />
+                        <field name="state" widget="statusbar" statusbar_visible="active,inactive,deprecated" statusbar_colors='{"deprecated" : "red"}' nolabel="1"/>
+                    </header>
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name"/></h1>
+                        <group col="4">
+                            <field name="picking_type_id" widget="selection" groups="stock.group_locations"
+                                on_change="onchange_picking_type_id(picking_type_id)"/>
+                            <field name="stock_location_id" groups="stock.group_locations"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="journal_id" widget="selection"/>
+                            <field name="group_by" groups="account.group_account_user"/>
+                            <field name="barcode_nomenclature_id" />
+                            <field name="sequence_id" readonly="1" groups="base.group_no_one"/>
+                            <field name="fiscal_position_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_lounge_config_tree">
+            <field name="name">lounge.config.tree.view</field>
+            <field name="model">lounge.config</field>
+            <field name="arch" type="xml">
+                 <tree string="Lounge Configuration">
+                     <field name="name" />
+                     <field name="stock_location_id" groups="stock.group_locations"/>
+                     <field name="state" />
+                 </tree>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_lounge_config_search">
             <field name="name">lounge.config.search.view</field>
             <field name="model">lounge.config</field>
@@ -139,13 +183,96 @@
             <field name="search_view_id" ref="view_lounge_config_search" />
         </record>
 
+        <!-- Product Public Services -->
+        <record id="product_pos_category_form_view" model="ir.ui.view">
+            <field name="name">lounge.category.form</field>
+            <field name="model">lounge.category</field>
+            <field name="view_type">form</field>
+            <field name="arch" type="xml">
+                <form string="Service Categories">
+                    <sheet>
+                        <field name="image_medium" widget='image' class="oe_avatar oe_right"/>
+                        <div class="oe_left">
+                            <group>
+                                <field name="name"/>
+                                <field name="parent_id"/>
+                                <field name="sequence"/>
+                            </group>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_lounge_category_tree_view" model="ir.ui.view">
+            <field name="name">lounge.category.tree</field>
+            <field name="model">lounge.category</field>
+            <field name="field_parent" eval="False"/>
+            <field name="arch" type="xml">
+                <tree string="Product Product Categories">
+                    <field name="sequence" widget="handle"/>
+                    <field name="complete_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_lounge_category_action" model="ir.actions.act_window">
+            <field name="name">Lounge Service</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lounge.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="False"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new service.
+              </p><p>
+                Service are used to browse your products through the
+                touchscreen interface.
+              </p><p>
+                If you put a photo on the service, the layout of the
+                touchscreen interface will automatically. We suggest not to put
+                a photo on categories for small (1024x768) screens.
+              </p>
+            </field>
+         </record>
+
+        <record id="action_account_lounge_journal_form" model="ir.actions.act_window">
+            <field name="name">Payment Methods</field>
+            <field name="res_model">account.journal</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context" eval="{'default_journal_user_lounge': 1, 'default_type': 'cash'}"/>
+            <field name="domain">[('journal_user_lounge','=', 1)]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a payment method.
+              </p><p>
+                Payment methods are defined by accounting journals having the
+                field <i>Lounge Payment Method</i> checked. In order to be useable
+                from the touchscreen interface, you must set the payment method
+                on the <i>Lounge</i> configuration.
+              </p>
+            </field>
+        </record>
+
+        <menuitem name="Payment Method"
+                  action="action_account_lounge_journal_form"
+                  id="menu_action_account_lounge_journal_form_open"
+                  parent="menu_lounge_config"
+                  sequence="20"/>
+
+         <menuitem name="Service Category"
+                   action="product_lounge_category_action"
+                   id="menu_product_lounge_category"
+                   parent="menu_lounge_config"
+                   sequence="20" />
+
         <menuitem
             parent="menu_lounge_config"
             action="action_lounge_config_pos"
             id="menu_pos_config_pos"
             />
-
-
 
         <menuitem
             name="Lounge Session"

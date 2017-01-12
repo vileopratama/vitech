@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_account_journal_lounge_user_form">
+            <field name="name">Lounge Journal</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook[last()]" position="inside">
+                    <page string="Lounge Configuration" attrs="{'invisible': [('type','not in',['bank','cash'])]}">
+                        <group col="4" colspan="4">
+                            <field name="journal_user_lounge"/>
+                            <field name="amount_authorized_diff_lounge"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

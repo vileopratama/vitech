@@ -1,9 +1,8 @@
+import openerp
 from openerp.osv import fields, osv
-from openerp import SUPERUSER_ID
+from openerp import tools, SUPERUSER_ID
 from openerp.exceptions import UserError
 from functools import partial
-import time
-from openerp import api, fields as Fields
 
 class lounge_config(osv.osv):
     _name = 'lounge.config'
@@ -12,6 +11,16 @@ class lounge_config(osv.osv):
         ('inactive', 'Inactive'),
         ('deprecated', 'Deprecated')
     ]
+
+    def _get_currency(self, cr, uid, ids, fieldnames, args, context=None):
+        result = dict.fromkeys(ids, False)
+        for lounge_config in self.browse(cr, uid, ids, context=context):
+            if lounge_config.journal_id:
+                currency_id = lounge_config.journal_id.currency_id.id or lounge_config.journal_id.company_id.currency_id.id
+            else:
+                currency_id = self.pool['res.users'].browse(cr, uid, uid, context=context).company_id.currency_id.id
+            result[lounge_config.id] = currency_id
+        return result
 
     def _get_current_session(self, cr, uid, ids, fieldnames, args, context=None):
         result = dict()
@@ -37,19 +46,32 @@ class lounge_config(osv.osv):
 
     _columns = {
         'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
+        'picking_type_id': fields.many2one('stock.picking.type', 'Picking Type'),
+        'stock_location_id': fields.many2one('stock.location', 'Stock Location', domain=[('usage', '=', 'internal')],
+                                             required=True),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+        'journal_id': fields.many2one('account.journal', 'Sale Journal',
+                                      domain=[('type', '=', 'sale')],
+                                      help="Accounting journal used to post sales entries."),
+        'group_by': fields.boolean('Group Journal Items',
+                                   help="Check this if you want to group the Journal Items by Product while closing a Session"),
+        'barcode_nomenclature_id': fields.many2one('barcode.nomenclature', 'Barcodes',
+                                                   help='Defines what kind of barcodes are available and how they are assigned to products, customers and cashiers',
+                                                   required=True),
         'journal_ids': fields.many2many('account.journal', 'lounge_config_journal_rel',
                                         'lounge_config_id', 'journal_id', 'Available Payment Methods',
                                         domain="[('journal_user', '=', True ), ('type', 'in', ['bank', 'cash'])]", ),
+        'sequence_id': fields.many2one('ir.sequence', 'Order IDs Sequence', readonly=True,
+                                       help="This sequence is automatically created by Vitech but you can change it " \
+                                            "to customize the reference numbers of your orders.", copy=False),
+        'fiscal_position_ids': fields.many2many('account.fiscal.position', string='Fiscal Positions'),
+        'currency_id': fields.function(_get_currency, type="many2one", string="Currency", relation="res.currency"),
         'lounge_session_username': fields.function(_get_current_session_user, type='char'),
         'session_ids': fields.one2many('lounge.session', 'config_id', 'Sessions'),
         'state': fields.selection(LOUNGE_CONFIG_STATE, 'Status', required=True, readonly=True, copy=False),
         'current_session_id': fields.function(_get_current_session, multi="session", type="many2one",
                                               relation="lounge.session", string="Current Session"),
         'cash_control': fields.boolean('Cash Control', help="Check the amount of the cashbox at opening and closing."),
-        'company_id': fields.many2one('res.company', 'Company', required=True),
-        'journal_id': fields.many2one('account.journal', 'Sale Journal',
-                                      domain=[('type', '=', 'sale')],
-                                      help="Accounting journal used to post sales entries."),
     }
 
     _defaults = {
@@ -58,16 +80,26 @@ class lounge_config(osv.osv):
         # 'stock_location_id': _get_default_location,
     }
 
+    def set_active(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state' : 'active'}, context=context)
+
     # def _get_default_location(self, cr, uid, context=None):
     #    wh_obj = self.pool.get('stock.warehouse')
     #    user = self.pool.get('res.users').browse(cr, uid, uid, context)
      #   res = wh_obj.search(cr, uid, [('company_id', '=', user.company_id.id)], limit=1, context=context)
      #   if res and res[0]:
      #       return wh_obj.browse(cr, uid, res[0], context=context).lot_stock_id.id
-     #   return Fals
+     #   return False
 
+    """ Onchange Event """
+    def onchange_picking_type_id(self, cr, uid, ids, picking_type_id, context=None):
+        p_type_obj = self.pool.get("stock.picking.type")
+        p_type = p_type_obj.browse(cr, uid, picking_type_id, context=context)
+        if p_type.default_location_src_id and p_type.default_location_src_id.usage == 'internal' and p_type.default_location_dest_id and p_type.default_location_dest_id.usage == 'customer':
+            return {'value': {'stock_location_id': p_type.default_location_src_id.id}}
+        return False
 
-    def open_session_cb(self, cr, uid, ids, context=None):
+    """def open_session_cb(self, cr, uid, ids, context=None):
         assert len(ids) == 1, "you can open only one session at a time"
 
         proxy = self.pool.get('lounge.session')
@@ -94,7 +126,7 @@ class lounge_config(osv.osv):
             'res_id': session_id,
             'view_id': False,
             'type': 'ir.actions.act_window',
-        }
+        }"""
 
 class lounge_session(osv.osv):
     _name = 'lounge.session'
@@ -256,3 +288,63 @@ class lounge_session(osv.osv):
         })
 
         return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
+
+class lounge_category(osv.osv):
+    _name = "lounge.category"
+    _description = "Public Service Category"
+    _order = "sequence, name"
+
+    _constraints = [
+        (osv.osv._check_recursion, 'Error ! You cannot create recursive categories.', ['parent_id'])
+    ]
+
+    #@overide from function name
+    def name_get(self, cr, uid, ids, context=None):
+        res = []
+        for cat in self.browse(cr, uid, ids, context=context):
+            names = [cat.name]
+            pcat = cat.parent_id
+            while pcat:
+                names.append(pcat.name)
+                pcat = pcat.parent_id
+            res.append((cat.id, ' / '.join(reversed(names))))
+        return res
+
+    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = self.name_get(cr, uid, ids, context=context)
+        return dict(res)
+
+    _columns = {
+        'name': fields.char('Name', required=True, translate=True),
+        'sequence': fields.integer('Sequence',
+                                   help="Gives the sequence order when displaying a list of product categories."),
+        'complete_name': fields.function(_name_get_fnc, type="char", string='Name'),
+        'parent_id': fields.many2one('lounge.category', 'Parent Service', select=True),
+        'child_id': fields.one2many('lounge.category', 'parent_id', string='Children Service'),
+    }
+
+    # NOTE: there is no 'default image', because by default we don't show
+    # thumbnails for categories. However if we have a thumbnail for at least one
+    # category, then we display a default image on the other, so that the
+    # buttons have consistent styling.
+    # In this case, the default image is set by the js code.
+    image = openerp.fields.Binary("Image", attachment=True,
+                                  help="This field holds the image used as image for the cateogry, limited to 1024x1024px.")
+    image_medium = openerp.fields.Binary("Medium-sized image", attachment=True,
+                                         help="Medium-sized image of the category. It is automatically " \
+                                              "resized as a 128x128px image, with aspect ratio preserved. " \
+                                              "Use this field in form views or some kanban views.")
+    image_small = openerp.fields.Binary("Small-sized image", attachment=True,
+                                        help="Small-sized image of the category. It is automatically " \
+                                             "resized as a 64x64px image, with aspect ratio preserved. " \
+                                             "Use this field anywhere a small image is required.")
+
+    @openerp.api.model
+    def create(self, vals):
+        tools.image_resize_images(vals)
+        return super(lounge_category, self).create(vals)
+
+    @openerp.api.multi
+    def write(self, vals):
+        tools.image_resize_images(vals)
+        return super(lounge_category, self).write(vals)
