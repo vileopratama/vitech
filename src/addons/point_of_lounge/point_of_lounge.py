@@ -336,11 +336,12 @@ class lounge_session(osv.osv):
             }
             statements.append(create_statement(st_values, context=context))
 
-        #values.update({
-            #'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'lounge.session', context=context),
-            #'statement_ids': [(6, 0, statements)],
-            #'config_id': config_id
-        #})
+        values.update({
+            #'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'pos.session', context=context),
+            'name': 'pos-1',
+            'statement_ids': [(6, 0, statements)],
+            'config_id': config_id
+        })
 
         return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
 
