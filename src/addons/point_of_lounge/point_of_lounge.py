@@ -574,6 +574,13 @@ class lounge_order(osv.osv):
                                         states={'draft': [('readonly', False)]}, readonly=True),
         'statement_ids': fields.one2many('account.bank.statement.line', 'lounge_statement_id', 'Payments',
                                          states={'draft': [('readonly', False)]}, readonly=True),
+        'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True),
+        'location_id': fields.related('session_id', 'config_id', 'stock_location_id', string="Location",
+                                      type='many2one', store=True, relation='stock.location'),
+        'user_id': fields.many2one('res.users', 'Salesman',
+                                   help="Person who uses the cash register. It can be a reliever, a student or an interim employee."),
+        'picking_id': fields.many2one('stock.picking', 'Picking', readonly=True, copy=False),
+        'lounge_reference': fields.char('Receipt Ref', readonly=True, copy=False),
     }
 
     """
@@ -669,6 +676,7 @@ class lounge_order_line(osv.osv):
     """Function"""
 
     _columns = {
+        'name': fields.char('Line No', required=True, copy=False),
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,change_default=True),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
@@ -680,7 +688,7 @@ class lounge_order_line(osv.osv):
         'create_date': fields.datetime('Creation Date', readonly=True),
         'notice': fields.char('Discount Notice'),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-        'name': fields.char('Line No', required=True, copy=False),
+
     }
 
     _defaults = {
