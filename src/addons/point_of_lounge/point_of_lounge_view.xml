@@ -427,6 +427,85 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_lounge_lounge_form">
+             <field name="name">lounge.order</field>
+             <field name="model">lounge.order</field>
+             <field name="arch" type="xml">
+                 <form string="Lounge Orders">
+                     <header>
+                         <button name="%(action_lounge_payment)d" string="Payment" class="oe_highlight" type="action" states="draft" context="{'lounge_session_id' : session_id}"/>
+                         <button name="action_invoice" string="Invoice" type="object" states="paid" attrs="{'readonly': [('partner_id','=',False)]}"/>
+                         <button name="refund" string="Return Products" type="object"
+                            attrs="{'invisible':[('state','=','draft')]}"/>
+                         <button name="%(action_report_lounge_receipt)d" string="Reprint" type="action" states="paid,done,invoiced"/>
+                         <field name="state" widget="statusbar" statusbar_visible="draft,paid,done" statusbar_colors='{"cancel":"red"}'/>
+                     </header>
+                     <sheet>
+                         <group col="4" colspan="4" name="order_fields">
+                             <field name="name"/>
+                             <field name="date_order"/>
+                             <field name="session_id" />
+                             <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" domain="[('customer', '=', True)]" context="{'search_default_customer':1}" attrs="{'readonly': [('state','=','invoiced')]}"/>
+                             <field name="fiscal_position_id" options="{'no_create': True}"/>
+                         </group>
+                         <notebook colspan="4">
+                             <page string="Products">
+                                 <field name="lines" colspan="4" nolabel="1">
+                                     <tree string="Order lines" editable="bottom">
+                                         <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty,parent.partner_id)"/>
+                                         <field name="price_unit" on_change="onchange_qty(parent.pricelist_id,product_id, discount, qty, price_unit, context)" widget="monetary"/>
+                                         <field name="discount"  on_change="onchange_qty(parent.pricelist_id,product_id, discount, qty, price_unit, context)" widget="monetary"/>
+                                         <field name="qty" on_change="onchange_qty(parent.pricelist_id,product_id, discount, qty, price_unit, context)"/>
+                                         <field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
+                                         <field name="tax_ids" invisible="1"/>
+                                         <field name="price_subtotal" widget="monetary"/>
+                                         <field name="price_subtotal_incl" widget="monetary"/>
+                                     </tree>
+                                     <form string="Order lines">
+                                        <group col="4">
+                                            <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty,parent.partner_id)"/>
+                                            <field name="qty" on_change="onchange_qty(parent.pricelist_id,product_id, discount, qty, price_unit, context)"/>
+                                            <field name="discount"  on_change="onchange_qty(parent.pricelist_id,product_id, discount, qty, price_unit, context)" widget="monetary"/>
+                                            <field name="price_unit" on_change="onchange_qty(parent.pricelist_id,product_id, discount, qty, price_unit, context)" widget="monetary"/>
+                                            <field name="price_subtotal" invisible="1" widget="monetary"/>
+                                            <field name="price_subtotal_incl" invisible="1" widget="monetary"/>
+                                            <field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
+                                            <field name="tax_ids" invisible="1"/>
+                                            <field name="notice"/>
+                                        </group>
+                                    </form>
+                                 </field>
+                                 <group class="oe_subtotal_footer oe_right" colspan="2" name="order_total">
+                                     <field name="amount_tax" widget="monetary"/>
+                                     <div class="oe_subtotal_footer_separator oe_inline">
+                                        <label for="amount_total" />
+                                        <button name="button_dummy"
+                                        states="draft" string="(update)" class="oe_edit_only oe_link"/>
+                                    </div>
+                                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                 </group>
+                                <div class="oe_clear"/>
+                             </page>
+                             <page string="Payments">
+                                <field name="statement_ids" colspan="4" nolabel="1">
+                                    <tree editable="bottom" string="Statement lines">
+                                        <field name="journal_id"/>
+                                        <field name="statement_id"/>
+                                        <field name="amount"/>
+                                    </tree>
+                                </field>
+                            </page>
+                             <page name="extra" string="Extra Info">
+                                 <group string="General Information">
+                                     <field name="pricelist_id" groups="product.group_sale_pricelist"/>
+                                 </group>
+                             </page>
+                         </notebook>
+                     </sheet>
+                 </form>
+             </field>
+        </record>
+
         <record model="ir.actions.act_window" id="action_lounge_lounge_form">
             <field name="name">Orders</field>
             <field name="type">ir.actions.act_window</field>

@@ -11,6 +11,8 @@
     'depends': ['sale_stock', 'barcodes'],
     'data': [
         'wizard/lounge_box.xml',
+        'wizard/lounge_payment.xml',
+        'point_of_lounge_report.xml',
         'point_of_lounge_view.xml',
         'point_of_lounge_dashboard.xml',
         'res_config_view.xml',

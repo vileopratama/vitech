@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<odoo>
+    <data>
+        <report
+            id="action_report_lounge_receipt"
+            string="Receipt"
+            model="lounge.order"
+            report_type="qweb-pdf"
+            name="point_of_lounge.report_receipt"
+            file="point_of_lounge.report_receipt"
+            paperformat="point_of_sale.paperformat_posreceipt"/>
+        </data>
+</odoo>

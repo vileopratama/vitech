@@ -7,6 +7,8 @@ import uuid
 from openerp.tools.translate import _
 import time
 import logging
+import openerp.addons.decimal_precision as dp
+from openerp import api, fields as Fields
 
 _logger = logging.getLogger(__name__)
 
@@ -550,4 +552,208 @@ class lounge_order(osv.osv):
 
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
+        'date_order': fields.datetime('Order Date', readonly=True, select=True),
+        'session_id': fields.many2one('lounge.session', 'Session',
+                                      required=True,
+                                      select=1,
+                                      domain="[('state', '=', 'opened')]",
+                                      states={'draft': [('readonly', False)]},
+                                      readonly=True),
+        'state': fields.selection([('draft', 'New'),
+                                   ('cancel', 'Cancelled'),
+                                   ('paid', 'Paid'),
+                                   ('done', 'Posted'),
+                                   ('invoiced', 'Invoiced')],
+                                  'Status', readonly=True, copy=False),
+        'partner_id': fields.many2one('res.partner', 'Customer', change_default=True, select=1,
+                                      states={'draft': [('readonly', False)], 'paid': [('readonly', False)]}),
+        'fiscal_position_id': fields.many2one('account.fiscal.position', 'Fiscal Position'),
+        'lines': fields.one2many('lounge.order.line', 'order_id', 'Order Lines', states={'draft': [('readonly', False)]},
+                                 readonly=True, copy=True),
+        'pricelist_id': fields.many2one('product.pricelist', 'Pricelist', required=True,
+                                        states={'draft': [('readonly', False)]}, readonly=True),
+        'statement_ids': fields.one2many('account.bank.statement.line', 'lounge_statement_id', 'Payments',
+                                         states={'draft': [('readonly', False)]}, readonly=True),
+    }
+
+    """
+       Function
+       """
+    def _amount_line_tax(self, cr, uid, line, fiscal_position_id, context=None):
+        taxes = line.tax_ids.filtered(lambda t: t.company_id.id == line.order_id.company_id.id)
+        if fiscal_position_id:
+            taxes = fiscal_position_id.map_tax(taxes)
+        price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+        cur = line.order_id.pricelist_id.currency_id
+        taxes = taxes.compute_all(price, cur, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)['taxes']
+        val = 0.0
+        for c in taxes:
+            val += c.get('amount', 0.0)
+        return val
+
+    #summary
+    amount_tax = Fields.Float(compute='_compute_amount_all', string='Taxes', digits=0)
+    amount_total = Fields.Float(compute='_compute_amount_all', string='Total', digits=0)
+    amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},
+                               readonly=True, digits=0)
+    amount_return = Fields.Float(compute='_compute_amount_all', string='Returned', digits=0)
+
+    """
+        Function
+        """
+    @api.depends('statement_ids', 'lines.price_subtotal_incl', 'lines.discount')
+    def _compute_amount_all(self):
+        for order in self:
+            order.amount_paid = order.amount_return = order.amount_tax = 0.0
+            currency = order.pricelist_id.currency_id
+            order.amount_paid = sum(payment.amount for payment in order.statement_ids)
+            order.amount_return = sum(payment.amount < 0 and payment.amount or 0 for payment in order.statement_ids)
+            order.amount_tax = currency.round(
+                sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
+            amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
+            order.amount_total = order.amount_tax + amount_untaxed
+
+    """
+    Function
+    """
+    def _default_session(self, cr, uid, context=None):
+        so = self.pool.get('lounge.session')
+        session_ids = so.search(cr, uid, [('state','=', 'opened'), ('user_id','=',uid)], context=context)
+        return session_ids and session_ids[0] or False
+
+    def _default_pricelist(self, cr, uid, context=None):
+        session_ids = self._default_session(cr, uid, context)
+        if session_ids:
+            session_record = self.pool.get('lounge.session').browse(cr, uid, session_ids, context=context)
+            return session_record.config_id.pricelist_id and session_record.config_id.pricelist_id.id or False
+        return False
+    """
+        Function
+    """
+
+    _defaults = {
+        'user_id': lambda self, cr, uid, context: uid,
+        'state': 'draft',
+        'name': '/',
+        'date_order': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'nb_print': 0,
+        'sequence_number': 1,
+        'session_id': _default_session,
+        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+        'pricelist_id': _default_pricelist,
+    }
+
+    """
+    Start of On Change Event
+    """
+    def onchange_partner_id(self, cr, uid, ids, part=False, context=None):
+        if not part:
+            return {'value': {}}
+        pricelist = self.pool.get('res.partner').browse(cr, uid, part, context=context).property_product_pricelist.id
+        return {'value': {'pricelist_id': pricelist}}
+    """
+    End of On Change Event
+    """
+
+class lounge_order_line(osv.osv):
+    _name = "lounge.order.line"
+    _description = "Lines of Lounge"
+    _rec_name = "product_id"
+
+    """Function"""
+    def _get_tax_ids_after_fiscal_position(self, cr, uid, ids, field_name, args, context=None):
+        res = dict.fromkeys(ids, False)
+        for line in self.browse(cr, uid, ids, context=context):
+            res[line.id] = line.order_id.fiscal_position_id.map_tax(line.tax_ids)
+        return res
+    """Function"""
+
+    _columns = {
+        'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
+        'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,change_default=True),
+        'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
+        'discount': fields.float('Discount (%)', digits=0),
+        'price_unit': fields.float(string='Unit Price', digits=0),
+        'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',
+                                                         relation='account.tax', string='Taxes'),
+        'tax_ids': fields.many2many('account.tax', string='Taxes'),
+        'create_date': fields.datetime('Creation Date', readonly=True),
+        'notice': fields.char('Discount Notice'),
+        'company_id': fields.many2one('res.company', 'Company', required=True),
+        'name': fields.char('Line No', required=True, copy=False),
+    }
+
+    _defaults = {
+        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order.line',context=context),
+        'qty': lambda *a: 1,
+        'discount': lambda *a: 0.0,
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+    }
+
+    """SUM Function with compute """
+    price_subtotal = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal w/o Tax')
+    price_subtotal_incl = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal')
+
+    #defination api
+    @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
+    def _compute_amount_line_all(self):
+        for line in self:
+            currency = line.order_id.pricelist_id.currency_id
+            taxes = line.tax_ids.filtered(lambda tax: tax.company_id.id == line.order_id.company_id.id)
+            fiscal_position_id = line.order_id.fiscal_position_id
+            if fiscal_position_id:
+                taxes = fiscal_position_id.map_tax(taxes)
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            line.price_subtotal = line.price_subtotal_incl = price * line.qty
+            if taxes:
+                taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
+                line.price_subtotal = taxes['total_excluded']
+                line.price_subtotal_incl = taxes['total_included']
+
+            line.price_subtotal = currency.round(line.price_subtotal)
+            line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
+    """SUM Function with compute """
+
+    """On Change Event"""
+    def onchange_product_id(self, cr, uid, ids, pricelist, product_id, qty=0, partner_id=False, context=None):
+        context = context or {}
+        if not product_id:
+            return {}
+
+        if not pricelist:
+            raise UserError(_('You have to select a pricelist in the sale form , Please set one before choosing a product.'))
+
+        price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
+                                                             product_id, qty or 1.0, partner_id)[pricelist]
+
+        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0, qty, price, context=context)
+        result['value']['price_unit'] = 18
+        prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+        result['value']['tax_ids'] = prod.taxes_id.ids
+        return result
+
+    def onchange_qty(self, cr, uid, ids, pricelist, product, discount, qty, price_unit, context=None):
+        result = {}
+        if not product:
+            return result
+        if not pricelist:
+            raise UserError(_('You have to select a pricelist in the sale form !'))
+
+        account_tax_obj = self.pool.get('account.tax')
+        prod = self.pool.get('product.product').browse(cr, uid, product, context=context)
+        price = price_unit * (1 - (discount or 0.0) / 100.0)
+        result['price_subtotal'] = result['price_subtotal_incl'] = price * qty
+        cur = self.pool.get('product.pricelist').browse(cr, uid, [pricelist], context=context).currency_id
+        if (prod.taxes_id):
+            taxes = prod.taxes_id.compute_all(price, cur, qty, product=prod, partner=False)
+            result['price_subtotal'] = taxes['total_excluded']
+            result['price_subtotal_incl'] = taxes['total_included']
+            return {'value': result}
+
+    """On Change Event"""
+
+class account_bank_statement_line(osv.osv):
+    _inherit = 'account.bank.statement.line'
+    _columns = {
+        'lounge_statement_id': fields.many2one('lounge.order', string="Lounge statement", ondelete='cascade'),
     }
