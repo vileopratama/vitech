@@ -504,17 +504,18 @@
                                      <field name="picking_id" readonly="1"/>
                                      <field name="lounge_reference"/>
                                  </group>
-                             </page>
-                             <group string="Accounting Information">
-                                  <group>
-                                    <field name="sale_journal" domain="[('type','=','sale')]"/>
-                                    <field name="invoice_id" readonly="1" attrs="{'invisible':[('state','&lt;&gt;','invoiced')]}"/>
-                                    <field name="account_move" readonly="1" attrs="{'invisible':[('state','&lt;&gt;','done')]}"/>
-                                  </group>
-                                 <group>
-                                     <button name="%(lounge_invoice_report)d" string="Re-Print" icon="gtk-print" type="action" attrs="{'invisible':[('state','&lt;&gt;','invoiced')]}"/>
-                                 </group>
+                                 <group string="Accounting Information">
+                                    <group>
+                                        <field name="sale_journal" domain="[('type','=','sale')]"/>
+                                        <field name="invoice_id" readonly="1" attrs="{'invisible':[('state','&lt;&gt;','invoiced')]}"/>
+                                        <field name="account_move" readonly="1" attrs="{'invisible':[('state','&lt;&gt;','done')]}"/>
+                                    </group>
+                                     <group>
+                                         <button name="%(lounge_invoice_report)d" string="Re-Print" icon="gtk-print" type="action" attrs="{'invisible':[('state','&lt;&gt;','invoiced')]}"/>
+                                     </group>
                              </group>
+                             </page>
+
                              <page string="Notes" >
                                   <field name="note"/>
                              </page>
