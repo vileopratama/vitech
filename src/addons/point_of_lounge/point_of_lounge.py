@@ -541,3 +541,13 @@ class lounge_category(osv.osv):
     def write(self, vals):
         tools.image_resize_images(vals)
         return super(lounge_category, self).write(vals)
+
+
+class lounge_order(osv.osv):
+    _name = "lounge.order"
+    _description = "Lounge"
+    _order = "id desc"
+
+    _columns = {
+        'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
+    }

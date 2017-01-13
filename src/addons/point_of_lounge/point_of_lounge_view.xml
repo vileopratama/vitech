@@ -427,6 +427,32 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window" id="action_lounge_lounge_form">
+            <field name="name">Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lounge.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="False"/>
+            <field name="domain">[]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new order.
+              </p>
+                <p>
+                Use this menu to browse previous or edit orders. To record new
+                orders, you may use the menu <i>Your Session</i> for
+                the touchscreen interface.
+              </p>
+            </field>
+        </record>
+
+        <menuitem parent="menu_lounge_of_sale"
+                  id="menu_point_ofsale"
+                  action="action_lounge_lounge_form"
+                  sequence="1"
+                  />
+
         <menuitem name="Payment Method"
                   action="action_account_lounge_journal_form"
                   id="menu_action_account_lounge_journal_form_open"
