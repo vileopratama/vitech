@@ -9,5 +9,15 @@
             name="point_of_lounge.report_receipt"
             file="point_of_lounge.report_receipt"
             paperformat="point_of_sale.paperformat_posreceipt"/>
+
+        <report
+            id="lounge_invoice_report"
+            string="Invoice"
+            model="lounge.order"
+            report_type="qweb-pdf"
+            name="point_of_lounge.report_invoice"
+            file="point_of_lounge.report_invoice"
+        />
+
         </data>
 </odoo>

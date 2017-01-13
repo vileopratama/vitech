@@ -581,6 +581,11 @@ class lounge_order(osv.osv):
                                    help="Person who uses the cash register. It can be a reliever, a student or an interim employee."),
         'picking_id': fields.many2one('stock.picking', 'Picking', readonly=True, copy=False),
         'lounge_reference': fields.char('Receipt Ref', readonly=True, copy=False),
+        'note': fields.text('Internal Notes'),
+        'sale_journal': fields.related('session_id', 'config_id', 'journal_id', relation='account.journal',
+                                       type='many2one', string='Sale Journal', store=True, readonly=True),
+        'invoice_id': fields.many2one('account.invoice', 'Invoice', copy=False),
+        'account_move': fields.many2one('account.move', 'Journal Entry', readonly=True, copy=False),
     }
 
     """
@@ -735,9 +740,10 @@ class lounge_order_line(osv.osv):
                                                              product_id, qty or 1.0, partner_id)[pricelist]
 
         result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0, qty, price, context=context)
-        result['value']['price_unit'] = 18
+        result['value']['price_unit'] = price
         prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
         result['value']['tax_ids'] = prod.taxes_id.ids
+
         return result
 
     def onchange_qty(self, cr, uid, ids, pricelist, product, discount, qty, price_unit, context=None):
@@ -756,7 +762,8 @@ class lounge_order_line(osv.osv):
             taxes = prod.taxes_id.compute_all(price, cur, qty, product=prod, partner=False)
             result['price_subtotal'] = taxes['total_excluded']
             result['price_subtotal_incl'] = taxes['total_included']
-            return {'value': result}
+        #return
+        return {'value': result}
 
     """On Change Event"""
 
