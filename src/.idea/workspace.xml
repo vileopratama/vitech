@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bd3b3f1b-20eb-429b-a890-339bd50c9e1a" name="Default" comment="" />
+    <list default="true" id="bd3b3f1b-20eb-429b-a890-339bd50c9e1a" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/Lounge.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" />
+    </list>
     <ignored path="src.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,11 +37,9 @@
       <file leaf-file-name="point_of_lounge.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="587" column="100" lean-forward="false" selection-start-line="587" selection-start-column="100" selection-end-line="587" selection-end-column="100" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="464">
+              <caret line="678" column="94" lean-forward="false" selection-start-line="678" selection-start-column="94" selection-end-line="678" selection-end-column="94" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -43,10 +47,12 @@
       <file leaf-file-name="point_of_sale.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="871" column="100" lean-forward="true" selection-start-line="871" selection-start-column="8" selection-end-line="871" selection-end-column="100" />
+            <state relative-caret-position="322">
+              <caret line="934" column="13" lean-forward="true" selection-start-line="934" selection-start-column="13" selection-end-line="934" selection-end-column="13" />
               <folding>
                 <element signature="e#100#114#0" expanded="true" />
+                <element signature="e#50788#50861#1" expanded="true" />
+                <element signature="e#55020#55087#1" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -55,9 +61,133 @@
       <file leaf-file-name="point_of_lounge_view.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="513" column="41" lean-forward="false" selection-start-line="513" selection-start-column="41" selection-end-line="513" selection-end-column="41" />
-              <folding />
+            <state relative-caret-position="459">
+              <caret line="482" column="68" lean-forward="false" selection-start-line="482" selection-start-column="68" selection-end-line="482" selection-end-column="68" />
+              <folding>
+                <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#header#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#2;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#3;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#2;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#0;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#1;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#2;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#3;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#4;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#2;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#3;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#3;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#2;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#field#3;n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#0;n#field#3;n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#2;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#header#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#2;n#header#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#page#3;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#7;n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#7;n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#7;n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -65,9 +195,215 @@
       <file leaf-file-name="point_of_sale_view.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_view.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="94" column="62" lean-forward="false" selection-start-line="94" selection-start-column="62" selection-end-line="94" selection-end-column="62" />
-              <folding />
+            <state relative-caret-position="527">
+              <caret line="64" column="62" lean-forward="false" selection-start-line="64" selection-start-column="50" selection-end-line="64" selection-end-column="62" />
+              <folding>
+                <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#header#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#2;n#header#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#0;n#div#0;n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#1;n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#0;n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#page#3;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#7;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#7;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#7;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#search#0;n#field#2;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#2;n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#form#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#form#0;n#field#2;n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#calendar#0;n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#graph#0;n#field#3;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#form#0;n#field#2;n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#19;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#19;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#19;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#20;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#20;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#calendar#0;n#field#3;n#record#20;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#21;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#21;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#graph#0;n#field#3;n#record#21;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#22;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#form#0;n#field#2;n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#24;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#24;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#24;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#25;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#25;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#calendar#0;n#field#3;n#record#25;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#26;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#26;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#graph#0;n#field#3;n#record#26;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#27;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#sheet#0;n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#29;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#29;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#3;n#record#29;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#2;n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#field#3;n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#0;n#field#3;n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#32;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#3;n#record#32;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#field#3;n#record#32;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#6;n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#6;n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#6;n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#34;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#34;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#34;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#35;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#36;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#37;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#header#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#1;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#group#1;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#2;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#3;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#39;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#39;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#39;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#40;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#40;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#40;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#act_window#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#41;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#act_window#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#0;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#1;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#2;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#3;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#4;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#2;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#button#3;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#3;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#1;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#1;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#43;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#43;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#tree#0;n#field#2;n#record#43;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#search#0;n#field#2;n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#2;n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#2;n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#search#0;n#field#2;n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#group#0;n#search#0;n#field#2;n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#field#7;n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#0;n#field#7;n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#p#1;n#field#7;n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#menuitem#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -76,8 +412,16 @@
         <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_report.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
-              <caret line="19" column="10" lean-forward="true" selection-start-line="12" selection-start-column="8" selection-end-line="19" selection-end-column="10" />
-              <folding />
+              <caret line="19" column="10" lean-forward="false" selection-start-line="12" selection-start-column="8" selection-end-line="19" selection-end-column="10" />
+              <folding>
+                <element signature="n#report#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#report#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#report#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#report#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#report#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#report#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+                <element signature="n#report#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,9 +429,14 @@
       <file leaf-file-name="point_of_lounge_report.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="31" lean-forward="true" selection-start-line="13" selection-start-column="31" selection-end-line="13" selection-end-column="31" />
-              <folding />
+            <state relative-caret-position="391">
+              <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+              <folding>
+                <element signature="n#odoo#0;n#!!top" expanded="true" />
+                <element signature="n#data#0;n#odoo#0;n#!!top" expanded="true" />
+                <element signature="n#report#0;n#data#0;n#odoo#0;n#!!top" expanded="true" />
+                <element signature="n#report#1;n#data#0;n#odoo#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -118,7 +467,14 @@
       <find>sale_journal</find>
       <find>pos_invoice_report</find>
       <find>pricelist_id</find>
+      <find>name_get</find>
+      <find>amount_total</find>
+      <find>button_dummy</find>
+      <find>order_total</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -171,8 +527,8 @@
         <option value="$PROJECT_DIR$/addons/point_of_lounge/wizard/__init__.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/wizard/lounge_payment.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py" />
-        <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml" />
+        <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" />
       </list>
     </option>
@@ -187,7 +543,7 @@
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1874" />
-    <option name="height" value="1084" />
+    <option name="height" value="1096" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -205,6 +561,7 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -438,17 +795,18 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.textmate.bundles" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.appearance" />
     <property name="settings.editor.splitter.proportion" value="0.23212537" />
     <property name="nodejs_interpreter_path" value="C:/Apps/nodejs/node" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="js-jscs-nodeInterpreter" value="C:\Apps\nodejs\node.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -456,63 +814,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="src" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="TARGET" value="" />
-      <option name="SETTINGS_FILE" value="" />
-      <option name="CUSTOM_SETTINGS" value="false" />
-      <option name="USE_OPTIONS" value="false" />
-      <option name="OPTIONS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
-      <config-file value="" />
-      <node-interpreter value="project" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
-      <method />
-    </configuration>
-    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="src" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="PyLettuceRunConfigurationType" factoryName="Lettuce">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="src" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
-      <method />
-    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -542,16 +843,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <module name="src" />
-      <method />
-    </configuration>
-    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
-      <method />
-    </configuration>
-    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
-      <command value="run" />
-      <scripts />
-      <node-interpreter value="project" />
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Attests">
@@ -682,27 +973,27 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1874" height="1084" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1874" height="1096" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2183021" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2174381" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296582" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32864866" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296582" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -835,7 +1126,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" column="58" lean-forward="false" selection-start-line="3" selection-start-column="58" selection-end-line="3" selection-end-column="58" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -843,7 +1133,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="39">
           <caret line="4" column="38" lean-forward="false" selection-start-line="4" selection-start-column="38" selection-end-line="4" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -851,7 +1140,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -859,7 +1147,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -867,7 +1154,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -875,7 +1161,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -883,7 +1168,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -891,7 +1175,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-720">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -906,7 +1189,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="13" column="35" lean-forward="false" selection-start-line="13" selection-start-column="35" selection-end-line="13" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -914,7 +1196,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="42" lean-forward="false" selection-start-line="7" selection-start-column="42" selection-end-line="7" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -922,7 +1203,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -930,7 +1210,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -938,7 +1217,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -946,7 +1224,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -954,7 +1231,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -976,7 +1252,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
           <caret line="96" column="42" lean-forward="false" selection-start-line="96" selection-start-column="27" selection-end-line="96" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -984,7 +1259,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="79">
           <caret line="7" column="75" lean-forward="false" selection-start-line="7" selection-start-column="75" selection-end-line="7" selection-end-column="75" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1013,9 +1287,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="511">
           <caret line="88" column="20" lean-forward="false" selection-start-line="76" selection-start-column="4" selection-end-line="88" selection-end-column="20" />
-          <folding>
-            <element signature="e#100#111#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1037,7 +1308,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="39">
           <caret line="4" column="61" lean-forward="false" selection-start-line="4" selection-start-column="61" selection-end-line="4" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1059,7 +1329,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="82" lean-forward="false" selection-start-line="16" selection-start-column="82" selection-end-line="16" selection-end-column="82" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1067,7 +1336,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="27">
           <caret line="5" column="37" lean-forward="false" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1075,34 +1343,25 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="197">
           <caret line="15" column="22" lean-forward="false" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
-          <caret line="19" column="6" lean-forward="true" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
-          <folding />
+          <caret line="19" column="6" lean-forward="false" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="587" column="100" lean-forward="false" selection-start-line="587" selection-start-column="100" selection-end-line="587" selection-end-column="100" />
+        <state relative-caret-position="391">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="871" column="100" lean-forward="true" selection-start-line="871" selection-start-column="8" selection-end-line="871" selection-end-column="100" />
-          <folding>
-            <element signature="e#100#114#0" expanded="true" />
+            <element signature="n#odoo#0;n#!!top" expanded="true" />
+            <element signature="n#data#0;n#odoo#0;n#!!top" expanded="true" />
+            <element signature="n#report#0;n#data#0;n#odoo#0;n#!!top" expanded="true" />
+            <element signature="n#report#1;n#data#0;n#odoo#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1110,32 +1369,382 @@
     <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_report.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
-          <caret line="19" column="10" lean-forward="true" selection-start-line="12" selection-start-column="8" selection-end-line="19" selection-end-column="10" />
-          <folding />
+          <caret line="19" column="10" lean-forward="false" selection-start-line="12" selection-start-column="8" selection-end-line="19" selection-end-column="10" />
+          <folding>
+            <element signature="n#report#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#report#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#report#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#report#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#report#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#report#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#report#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml">
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="31" lean-forward="true" selection-start-line="13" selection-start-column="31" selection-end-line="13" selection-end-column="31" />
-          <folding />
+        <state relative-caret-position="322">
+          <caret line="934" column="13" lean-forward="true" selection-start-line="934" selection-start-column="13" selection-end-line="934" selection-end-column="13" />
+          <folding>
+            <element signature="e#100#114#0" expanded="true" />
+            <element signature="e#50788#50861#1" expanded="true" />
+            <element signature="e#55020#55087#1" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_view.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="94" column="62" lean-forward="false" selection-start-line="94" selection-start-column="62" selection-end-line="94" selection-end-column="62" />
+        <state relative-caret-position="527">
+          <caret line="64" column="62" lean-forward="false" selection-start-line="64" selection-start-column="50" selection-end-line="64" selection-end-column="62" />
+          <folding>
+            <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#header#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#2;n#header#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#0;n#div#0;n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#1;n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#0;n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#page#3;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#7;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#7;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#7;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#search#0;n#field#2;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#2;n#field#9;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#form#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#form#0;n#field#2;n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#calendar#0;n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#graph#0;n#field#3;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#form#0;n#field#2;n#record#18;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#19;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#19;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#19;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#20;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#20;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#calendar#0;n#field#3;n#record#20;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#21;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#21;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#graph#0;n#field#3;n#record#21;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#22;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#form#0;n#field#2;n#record#23;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#24;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#24;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#24;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#25;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#25;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#calendar#0;n#field#3;n#record#25;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#26;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#26;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#graph#0;n#field#3;n#record#26;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#27;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#sheet#0;n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#28;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#29;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#29;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#3;n#record#29;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#2;n#field#6;n#record#30;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#field#3;n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#0;n#field#3;n#record#31;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#32;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#32;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#field#3;n#record#32;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#6;n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#6;n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#6;n#record#33;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#34;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#34;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#34;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#35;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#36;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#37;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#header#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#0;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#1;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#group#1;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#2;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#3;n#sheet#0;n#form#0;n#field#2;n#record#38;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#39;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#39;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#39;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#40;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#40;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#40;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#act_window#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#41;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#act_window#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#0;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#1;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#2;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#3;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#4;n#header#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#2;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#3;n#div#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#3;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#1;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#1;n#sheet#0;n#form#0;n#field#2;n#record#42;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#43;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#43;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#43;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#search#0;n#field#2;n#record#44;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#2;n#field#6;n#record#45;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#search#0;n#field#2;n#record#46;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#7;n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#7;n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#7;n#record#47;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="678" column="94" lean-forward="false" selection-start-line="678" selection-start-column="94" selection-end-line="678" selection-end-column="94" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="513" column="41" lean-forward="false" selection-start-line="513" selection-start-column="41" selection-end-line="513" selection-end-column="41" />
-          <folding />
+        <state relative-caret-position="459">
+          <caret line="482" column="68" lean-forward="false" selection-start-line="482" selection-start-column="68" selection-end-line="482" selection-end-column="68" />
+          <folding>
+            <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#header#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#2;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#3;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#1;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#search#0;n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#2;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#0;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#1;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#2;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#3;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#4;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#2;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#3;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#3;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#2;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#field#3;n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#0;n#field#3;n#record#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#3;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#4;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#2;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#header#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#button#2;n#header#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#tree#0;n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#page#3;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#field#7;n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#0;n#field#7;n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#p#1;n#field#7;n#record#17;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#5;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#6;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#7;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#8;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+            <element signature="n#menuitem#9;n#data#0;n#openerp#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

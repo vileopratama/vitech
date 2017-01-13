@@ -479,8 +479,8 @@
                                      <field name="amount_tax" widget="monetary"/>
                                      <div class="oe_subtotal_footer_separator oe_inline">
                                         <label for="amount_total" />
-                                        <button name="button_dummy"
-                                        states="draft" string="(update)" class="oe_edit_only oe_link"/>
+                                        <button name="button_on_calc"
+                                        states="draft" string="[Auto Calculation]" class="oe_edit_only oe_link"/>
                                     </div>
                                     <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
                                  </group>

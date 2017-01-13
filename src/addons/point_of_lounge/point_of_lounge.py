@@ -667,6 +667,20 @@ class lounge_order(osv.osv):
     End of On Change Event
     """
 
+    """ Start of Override Event """
+    #@OVERRIDE CREATE
+    def create(self, cr, uid, values, context=None):
+        if values.get('session_id'):
+            #set name based on the sequence specified on the confi
+            session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
+            values['name'] = session.config_id.sequence_id._next()
+            values.setdefault('session_id', session.config_id.pricelist_id.id)
+        else:
+            # fallback on any pos.order sequence , change pos.order to lounge.order for future
+            values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
+        return super(lounge_order, self).create(cr, uid, values, context=context)
+    """ End of Override Event """
+
 class lounge_order_line(osv.osv):
     _name = "lounge.order.line"
     _description = "Lines of Lounge"
@@ -687,20 +701,12 @@ class lounge_order_line(osv.osv):
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
         'discount': fields.float('Discount (%)', digits=0),
         'price_unit': fields.float(string='Unit Price', digits=0),
-        'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',
-                                                         relation='account.tax', string='Taxes'),
+        'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',relation='account.tax', string='Taxes'),
         'tax_ids': fields.many2many('account.tax', string='Taxes'),
         'create_date': fields.datetime('Creation Date', readonly=True),
         'notice': fields.char('Discount Notice'),
         'company_id': fields.many2one('res.company', 'Company', required=True),
 
-    }
-
-    _defaults = {
-        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order.line',context=context),
-        'qty': lambda *a: 1,
-        'discount': lambda *a: 0.0,
-        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
     }
 
     """SUM Function with compute """
@@ -726,6 +732,13 @@ class lounge_order_line(osv.osv):
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
     """SUM Function with compute """
+
+    _defaults = {
+        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order.line',context=context),
+        'qty': lambda *a: 1,
+        'discount': lambda *a: 0.0,
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+    }
 
     """On Change Event"""
     def onchange_product_id(self, cr, uid, ids, pricelist, product_id, qty=0, partner_id=False, context=None):
