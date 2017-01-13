@@ -249,8 +249,8 @@
                                 </group>
                              </div>
                          </group>
-                        <separator string="Summary by Payment Methods" />
-                        <field name="statement_ids">
+                        <separator string="Summary by Payment Methods" attrs="{'invisible' : [('state', '=', 'opening_control')]}"/>
+                        <field name="statement_ids" attrs="{'invisible' : [('state', '=', 'opening_control')]}">
                             <tree string="Statements">
                                 <field name="name" />
                                 <field name="journal_id" />

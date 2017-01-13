@@ -5,6 +5,10 @@ from openerp.exceptions import UserError
 from functools import partial
 import uuid
 from openerp.tools.translate import _
+import time
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class lounge_config(osv.osv):
     _name = 'lounge.config'
