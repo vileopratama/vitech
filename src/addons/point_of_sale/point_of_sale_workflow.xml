@@ -6,7 +6,6 @@
       <field name="osv">pos.order</field>
       <field name="on_create">True</field>
     </record>
-
 <!--Activities-->
 
     <record model="workflow.activity" id="act_draft">

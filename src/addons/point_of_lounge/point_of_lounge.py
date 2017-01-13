@@ -3,6 +3,8 @@ from openerp.osv import fields, osv
 from openerp import tools, SUPERUSER_ID
 from openerp.exceptions import UserError
 from functools import partial
+import uuid
+from openerp.tools.translate import _
 
 class lounge_config(osv.osv):
     _name = 'lounge.config'
@@ -47,6 +49,45 @@ class lounge_config(osv.osv):
     def _default_pricelist(self, cr, uid, context=None):
         res = self.pool.get('product.pricelist').search(cr, uid, [], limit=1, context=context)
         return res and res[0] or False
+
+    def _get_default_location(self, cr, uid, context=None):
+        wh_obj = self.pool.get('stock.warehouse')
+        user = self.pool.get('res.users').browse(cr, uid, uid, context)
+        res = wh_obj.search(cr, uid, [('company_id', '=', user.company_id.id)], limit=1, context=context)
+        if res and res[0]:
+            return wh_obj.browse(cr, uid, res[0], context=context).lot_stock_id.id
+        return False
+
+    def _get_default_company(self, cr, uid, context=None):
+        company_id = self.pool.get('res.users')._get_company(cr, uid, context=context)
+        return company_id
+
+    def _get_default_nomenclature(self, cr, uid, context=None):
+        nom_obj = self.pool.get('barcode.nomenclature')
+        res = nom_obj.search(cr, uid, [], limit=1, context=context)
+        return res and res[0] or False
+
+    def _check_company_location(self, cr, uid, ids, context=None):
+        for config in self.browse(cr, uid, ids, context=context):
+            if config.stock_location_id.company_id and config.stock_location_id.company_id.id != config.company_id.id:
+                return False
+        return True
+
+    def _check_company_journal(self, cr, uid, ids, context=None):
+        for config in self.browse(cr, uid, ids, context=context):
+            if config.journal_id and config.journal_id.company_id.id != config.company_id.id:
+                return False
+        return True
+
+    def _check_company_payment(self, cr, uid, ids, context=None):
+        for config in self.browse(cr, uid, ids, context=context):
+            journal_ids = [j.id for j in config.journal_ids]
+            if self.pool['account.journal'].search(cr, uid, [
+                ('id', 'in', journal_ids),
+                ('company_id', '!=', config.company_id.id)
+            ], count=True, context=context):
+                return False
+        return True
 
     _columns = {
         'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
@@ -109,23 +150,78 @@ class lounge_config(osv.osv):
                                       help="A short text that will be inserted as a footer in the printed receipt"),
     }
 
+    _constraints = [
+        (_check_company_location, "The company of the stock location is different than the one of lounge",
+         ['company_id', 'stock_location_id']),
+        (_check_company_journal, "The company of the sale journal is different than the one of lounge",
+         ['company_id', 'journal_id']),
+        (_check_company_payment, "The company of a payment method is different than the one of lounge",
+         ['company_id', 'journal_ids']),
+    ]
+
     _defaults = {
+        'uuid': lambda self, cr, uid, context={}: str(uuid.uuid4()),
         'state': LOUNGE_CONFIG_STATE[0][0],
         'journal_id': _default_sale_journal,
+        'group_by': True,
+        'iface_invoicing': True,
+        'iface_print_auto': False,
+        'iface_print_skip_screen': True,
         'pricelist_id': _default_pricelist,
-        # 'stock_location_id': _get_default_location,
+        'stock_location_id': _get_default_location,
+        'company_id': _get_default_company,
+        'barcode_nomenclature_id': _get_default_nomenclature,
+        #'group_pos_manager_id': _get_group_pos_manager,
+        #'group_pos_user_id': _get_group_pos_user,
     }
 
     def set_active(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state' : 'active'}, context=context)
 
-    # def _get_default_location(self, cr, uid, context=None):
-    #    wh_obj = self.pool.get('stock.warehouse')
-    #    user = self.pool.get('res.users').browse(cr, uid, uid, context)
-     #   res = wh_obj.search(cr, uid, [('company_id', '=', user.company_id.id)], limit=1, context=context)
-     #   if res and res[0]:
-     #       return wh_obj.browse(cr, uid, res[0], context=context).lot_stock_id.id
-     #   return False
+    def name_get(self, cr, uid, ids, context=None):
+        result = []
+        states = {
+            'opening_control': _('Opening Control'),
+            'opened': _('In Progress'),
+            'closing_control': _('Closing Control'),
+            'closed': _('Closed & Posted'),
+        }
+        for record in self.browse(cr, uid, ids, context=context):
+            if (not record.session_ids) or (record.session_ids[0].state=='closed'):
+                result.append((record.id, record.name+' ('+_('not used')+')'))
+                continue
+            session = record.session_ids[0]
+            result.append((record.id, record.name + ' ('+session.user_id.name+')')) #, '+states[session.state]+')'))
+        return result
+
+    #@override on create
+    def create(self, cr, uid, values, context=None):
+        ir_sequence = self.pool.get('ir.sequence')
+        values['sequence_id'] = ir_sequence.create(cr, SUPERUSER_ID, {
+            'name': 'POS Order %s' % values['name'],
+            'padding': 4,
+            'prefix': "%s/" % values['name'],
+            'code': "pos.order",
+            'company_id': values.get('company_id', False),
+        }, context=context)
+
+        # TODO master: add field sequence_line_id on model
+        # this make sure we always have one available per company
+        ir_sequence.create(cr, SUPERUSER_ID, {
+            'name': 'POS order line %s' % values['name'],
+            'padding': 4,
+            'prefix': "%s/" % values['name'],
+            'code': "pos.order.line",
+            'company_id': values.get('company_id', False),
+        }, context=context)
+        return super(lounge_config, self).create(cr, uid, values, context=context)
+
+    #@override unlink / remove
+    def unlink(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.sequence_id:
+                obj.sequence_id.unlink()
+        return super(lounge_config, self).unlink(cr, uid, ids, context=context)
 
     """ Onchange Event """
     def onchange_picking_type_id(self, cr, uid, ids, picking_type_id, context=None):
@@ -135,34 +231,10 @@ class lounge_config(osv.osv):
             return {'value': {'stock_location_id': p_type.default_location_src_id.id}}
         return False
 
-    """def open_session_cb(self, cr, uid, ids, context=None):
-        assert len(ids) == 1, "you can open only one session at a time"
+    def onchange_iface_print_via_proxy(self, cr, uid, ids, print_via_proxy, context=None):
+        return {'value': {'iface_print_auto': print_via_proxy}}
 
-        proxy = self.pool.get('lounge.session')
-        record = self.browse(cr, uid, ids[0], context=context)
-        current_session_id = record.current_session_id
-        if not current_session_id:
-            values = {
-                'user_id': uid,
-                'config_id': record.id,
-            }
-            session_id = proxy.create(cr, uid, values, context=context)
-            self.write(cr, SUPERUSER_ID, record.id, {'current_session_id': session_id}, context=context)
-            if record.current_session_id.state == 'opened':
-                return self.open_ui(cr, uid, ids, context=context)
-            return self._open_session(session_id)
-        return self._open_session(current_session_id.id)
-
-    def _open_session(self, session_id):
-        return {
-            'name': _('Session'),
-            'view_type': 'form',
-            'view_mode': 'form,tree',
-            'res_model': 'lounge.session',
-            'res_id': session_id,
-            'view_id': False,
-            'type': 'ir.actions.act_window',
-        }"""
+    """ Onchange Event """
 
 #menu products
 class product_template(osv.osv):
@@ -192,6 +264,7 @@ class product_template(osv.osv):
 class lounge_session(osv.osv):
     _name = 'lounge.session'
     _order = 'id desc'
+
     LOUNGE_SESSION_STATE = [
         ('opening_control', 'Opening Control'),  # Signal open
         ('opened', 'In Progress'),  # Signal closing
@@ -207,6 +280,7 @@ class lounge_session(osv.osv):
                 'cash_register_id' : False,
                 'cash_control' : False,
             }
+
             if record.config_id.cash_control:
                 for st in record.statement_ids:
                     if st.journal_id.type == 'cash':
@@ -236,6 +310,10 @@ class lounge_session(osv.osv):
         'cash_control': fields.function(_compute_cash_all,
                                         multi='cash',
                                         type='boolean', string='Has Cash Control'),
+        'cash_journal_id': fields.function(_compute_cash_all,
+                                           multi='cash',
+                                           type='many2one', relation='account.journal',
+                                           string='Cash Journal', store=True),
         'currency_id': fields.related('config_id', 'currency_id', type="many2one", relation='res.currency',
                                       string="Currency"),
         'rescue': fields.boolean('Rescue session', readonly=True,
@@ -252,18 +330,50 @@ class lounge_session(osv.osv):
                                       relation='account.journal',
                                       string='Available Payment Methods'),
         'statement_ids': fields.one2many('account.bank.statement', 'lounge_session_id', 'Bank Statement', readonly=True),
+        'cash_register_id': fields.function(_compute_cash_all,
+                                            multi='cash',
+                                            type='many2one', relation='account.bank.statement',
+                                            string='Cash Register', store=True),
+        'cash_register_balance_start': fields.related('cash_register_id', 'balance_start',
+                                                      type='float',
+                                                      digits=0,
+                                                      string="Starting Balance",
+                                                      help="Total of opening cash control lines.",
+                                                      readonly=True),
+        'cash_register_total_entry_encoding': fields.related('cash_register_id', 'total_entry_encoding',
+                                                             string='Total Cash Transaction',
+                                                             readonly=True,
+                                                             help="Total of all paid sale orders"),
+        'cash_register_balance_end': fields.related('cash_register_id', 'balance_end',
+                                                    type='float',
+                                                    digits=0,
+                                                    string="Theoretical Closing Balance",
+                                                    help="Sum of opening balance and transactions.",
+                                                    readonly=True),
+        'cash_register_difference': fields.related('cash_register_id', 'difference',
+                                                   type='float',
+                                                   string='Difference',
+                                                   help="Difference between the theoretical closing balance and the real closing balance.",
+                                                   readonly=True),
+        'cash_register_balance_end_real': fields.related('cash_register_id', 'balance_end_real',
+                                                         type='float',
+                                                         digits=0,
+                                                         string="Ending Balance",
+                                                         help="Total of closing cash control lines.",
+                                                         readonly=True),
+        #'order_ids': fields.one2many('lounge.order', 'session_id', 'Orders'),
     }
 
     _defaults = {
         'name': '/',
         'user_id': lambda obj, cr, uid, context: uid,
-        'state': 'opening_control',
+        'state' : 'opening_control',
         'sequence_number': 1,
         'login_number': 0,
     }
 
     _sql_constraints = [
-        ('uniq_name', 'unique(name)', "Hallo Bro, The name of this POS Session must be unique !"),
+        ('uniq_name', 'unique(name)', "Hallo Bro, The name of this Lounge Session must be unique !"),
     ]
 
     def _check_unicity(self, cr, uid, ids, context=None):
@@ -300,7 +410,7 @@ class lounge_session(osv.osv):
         context = dict(context or {})
         config_id = values.get('config_id', False) or context.get('default_config_id', False)
         if not config_id:
-            raise UserError(_("You should assign a Point of Sale to your session."))
+            raise UserError(_("You should assign a Lounge to your session."))
 
         # journal_id is not required on the pos_config because it does not
         # exists at the installation. If nothing is configured at the
@@ -315,7 +425,7 @@ class lounge_session(osv.osv):
             if jid:
                  jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_id': jid}, context=context)
             else:
-                raise UserError(_("Unable to open the session. You have to assign a sale journal to your lounge of sale."))
+                raise UserError(_("Unable to open the session. You have to assign a sale journal to your lounge."))
 
         # define some cash journal if no payment method exists
         if not lounge_config.journal_ids:
@@ -327,7 +437,7 @@ class lounge_session(osv.osv):
                     cashids = journal_proxy.search(cr, uid, [('journal_user_lounge', '=', True)], context=context)
 
                 journal_proxy.write(cr, SUPERUSER_ID, cashids, {'journal_user_lounge': True})
-                obj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_ids': [(6, 0, cashids)]})
+                jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_ids': [(6, 0, cashids)]})
 
         statements = []
         create_statement = partial(self.pool['account.bank.statement'].create, cr,SUPERUSER_ID or uid)
@@ -343,13 +453,28 @@ class lounge_session(osv.osv):
             statements.append(create_statement(st_values, context=context))
 
         values.update({
-            #'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'pos.session', context=context),
-            'name': 'pos-1',
+            #ir sequence(lounge.session) create a new session in setting => sequence (Developer Mode)
+            'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'lounge.session', context=context),
             'statement_ids': [(6, 0, statements)],
-            'config_id': config_id
+            'config_id': config_id,
+            'start_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+            'state': 'opened',
+        })
+        return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
+
+    #@override delete data
+    def unlink(self, cr, uid, ids, context=None):
+        for obj in self.browse(cr, uid, ids, context=context):
+            self.pool.get('account.bank.statement').unlink(cr, uid, obj.statement_ids.ids, context=context)
+        return super(lounge_session, self).unlink(cr, uid, ids, context=context)
+
+    def login(self, cr, uid, ids, context=None):
+        this_record = self.browse(cr, uid, ids[0], context=context)
+        this_record.write({
+            'login_number': this_record.login_number + 1,
         })
 
-        return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
+    #Workflow Action
 
 
 #lounge category

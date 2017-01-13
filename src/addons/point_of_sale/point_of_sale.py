@@ -539,7 +539,7 @@ class pos_session(osv.osv):
         values.update({
             'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'pos.session', context=context),
             'statement_ids': [(6, 0, statements)],
-            'config_id': config_id
+            'config_id': config_id,
         })
 
         return super(pos_session, self).create(cr, is_pos_user and SUPERUSER_ID or uid, values, context=context)

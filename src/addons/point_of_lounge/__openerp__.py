@@ -10,6 +10,7 @@
     'version': '9.0.1.0.0',
     'depends': ['sale_stock', 'barcodes'],
     'data': [
+        'wizard/lounge_box.xml',
         'point_of_lounge_view.xml',
         'point_of_lounge_dashboard.xml',
         'res_config_view.xml',
