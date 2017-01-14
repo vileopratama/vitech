@@ -679,7 +679,105 @@ class lounge_order(osv.osv):
             # fallback on any pos.order sequence , change pos.order to lounge.order for future
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
         return super(lounge_order, self).create(cr, uid, values, context=context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(lounge_order, self).write(cr, uid, ids, vals, context=context)
+        # If you change the partner of the PoS order, change also the partner of the associated bank statement lines
+        partner_obj = self.pool.get('res.partner')
+        bsl_obj = self.pool.get("account.bank.statement.line")
+        if 'partner_id' in vals:
+            for posorder in self.browse(cr, uid, ids, context=context):
+                if posorder.invoice_id:
+                    raise UserError(_("You cannot change the partner of a order for which an invoice has already been issued."))
+                if vals['partner_id']:
+                    p_id = partner_obj.browse(cr, uid, vals['partner_id'], context=context)
+                    part_id = partner_obj._find_accounting_partner(p_id).id
+                else:
+                    part_id = False
+                bsl_ids = [x.id for x in posorder.statement_ids]
+                bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
+        return res
+
+    def unlink(self, cr, uid, ids, context=None):
+        for rec in self.browse(cr, uid, ids, context=context):
+            if rec.state not in ('draft','cancel'):
+                raise UserError(_('In order to delete a lounge order, it must be new or cancelled.'))
+        return super(lounge_order, self).unlink(cr, uid, ids, context=context)
     """ End of Override Event """
+
+    """ Parsing Data From Payment View """
+    def add_payment(self, cr, uid, order_id, data, context=None):
+        """Create a new payment for the order"""
+        context = dict(context or {})
+        statement_line_obj = self.pool.get('account.bank.statement.line')
+        property_obj = self.pool.get('ir.property')
+        order = self.browse(cr, uid, order_id, context=context)
+        date = data.get('payment_date', time.strftime('%Y-%m-%d'))
+        if len(date) > 10:
+            timestamp = datetime.strptime(date, tools.DEFAULT_SERVER_DATETIME_FORMAT)
+            ts = fields.datetime.context_timestamp(cr, uid, timestamp, context)
+            date = ts.strftime(tools.DEFAULT_SERVER_DATE_FORMAT)
+        args = {
+            'amount': data['amount'],
+            'date': date,
+            'name': order.name + ': ' + (data.get('payment_name', '') or ''),
+            'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False,
+        }
+        journal_id = data.get('journal', False)
+        statement_id = data.get('statement_id', False)
+        assert journal_id or statement_id, "No statement_id or journal_id passed to the method!"
+        journal = self.pool['account.journal'].browse(cr, uid, journal_id, context=context)
+        # use the company of the journal and not of the current user
+        company_cxt = dict(context, force_company=journal.company_id.id)
+        account_def = property_obj.get(cr, uid, 'property_account_receivable_id', 'res.partner', context=company_cxt)
+        args['account_id'] = (order.partner_id and order.partner_id.property_account_receivable_id \
+                              and order.partner_id.property_account_receivable_id.id) or (
+                             account_def and account_def.id) or False
+
+        if not args['account_id']:
+            if not args['partner_id']:
+                msg = _('There is no receivable account defined to make payment.')
+            else:
+                msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (order.partner_id.name, order.partner_id.id,)
+            raise UserError(msg)
+
+        context.pop('lounge_session_id', False)
+
+        for statement in order.session_id.statement_ids:
+            if statement.id == statement_id:
+                journal_id = statement.journal_id.id
+                break
+            elif statement.journal_id.id == journal_id:
+                statement_id = statement.id
+                break
+
+        if not statement_id:
+            raise UserError(_('You have to open at least one cashbox.'))
+
+        args.update({
+            'statement_id': statement_id,
+            'lounge_statement_id': order_id,
+            'journal_id': journal_id,
+            'ref': order.session_id.name,
+        })
+
+        statement_line_obj.create(cr, uid, args, context=context)
+        return statement_id
+
+    def test_paid(self, cr, uid, ids, context=None):
+        """A Point of Sale is paid when the sum
+        @return: True
+        """
+        for order in self.browse(cr, uid, ids, context=context):
+            if order.lines and not order.amount_total:
+                return True
+            if (not order.lines) or (not order.statement_ids) or \
+                (abs(order.amount_total - order.amount_paid) > 0.00001):
+                return False
+        return True
+        """ Parsing Data From Payment View """
+
+
 
 class lounge_order_line(osv.osv):
     _name = "lounge.order.line"
