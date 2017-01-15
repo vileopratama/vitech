@@ -23,7 +23,7 @@ class order(report_sxw.rml_parse):
 		})
 
 	def discount(self, order_id):
-		sql = 'select discount, price_unit, qty from pos_order_line where order_id = %s '
+		sql = 'select discount, price_unit, qty from lounge_order_line where order_id = %s '
 		self.cr.execute(sql, (order_id,))
 		res = self.cr.fetchall()
 		dsum = 0
@@ -33,7 +33,7 @@ class order(report_sxw.rml_parse):
 		return dsum
 
 	def netamount(self, order_line_id):
-		sql = 'select (qty*price_unit) as net_price from pos_order_line where id = %s'
+		sql = 'select (qty*price_unit) as net_price from lounge_order_line where id = %s'
 		self.cr.execute(sql, (order_line_id,))
 		res = self.cr.fetchone()
 		return res[0]
@@ -43,7 +43,7 @@ class order(report_sxw.rml_parse):
 		sql = """ select aj.name,absl.amount as amt from account_bank_statement as abs
 	                    LEFT JOIN account_bank_statement_line as absl ON abs.id = absl.statement_id
 	                    LEFT JOIN account_journal as aj ON aj.id = abs.journal_id
-	                    WHERE absl.pos_statement_id =%d""" % (order_id)
+	                    WHERE absl.lounge_statement_id =%d""" % (order_id)
 		self.cr.execute(sql)
 		data = self.cr.dictfetchall()
 		return data

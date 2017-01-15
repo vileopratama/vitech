@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd3b3f1b-20eb-429b-a890-339bd50c9e1a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addons/point_of_lounge/data/report_paperformat.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_sale_workflow.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addons/point_of_lounge/report/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addons/point_of_lounge/report/lounge_receipt.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addons/point_of_lounge/views/report_receipt.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/__init__.py" afterPath="$PROJECT_DIR$/addons/point_of_lounge/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py" afterPath="$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/report/lounge_receipt.py" afterPath="$PROJECT_DIR$/addons/point_of_lounge/report/lounge_receipt.py" />
     </list>
     <ignored path="src.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -40,101 +31,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="report_receipt.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/views/report_receipt.xml">
+      <file leaf-file-name="default_barcode_patterns.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/addons/point_of_sale/data/default_barcode_patterns.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="38" lean-forward="true" selection-start-line="26" selection-start-column="38" selection-end-line="26" selection-end-column="38" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="report_paperformat.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/data/report_paperformat.xml">
+        <entry file="file://$PROJECT_DIR$/addons/point_of_sale/data/report_paperformat.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="272">
+              <caret line="16" column="33" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="point_of_lounge_report.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pos_receipt.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/pos_receipt.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="lounge_receipt.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/report/lounge_receipt.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-79">
-              <caret line="2" column="37" lean-forward="false" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__openerp__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_sale/__openerp__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="49" column="37" lean-forward="true" selection-start-line="49" selection-start-column="37" selection-end-line="49" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_sale/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/report/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="21" lean-forward="true" selection-start-line="0" selection-start-column="21" selection-end-line="0" selection-end-column="21" />
+            <state relative-caret-position="187">
+              <caret line="11" column="23" lean-forward="true" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -151,7 +72,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>pos</find>
       <find>add</find>
       <find>test_paid</find>
       <find>def signal_workflow</find>
@@ -181,6 +101,7 @@
       <find>action_report_pos_receipt</find>
       <find>report_receipt</find>
       <find>report_sxw</find>
+      <find>report_invoice</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -235,13 +156,13 @@
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_sale_workflow.xml" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" />
-        <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/data/report_paperformat.xml" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/views/report_receipt.xml" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/__init__.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/report/__init__.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/report/lounge_receipt.py" />
+        <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml" />
       </list>
     </option>
   </component>
@@ -351,7 +272,77 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="wizard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="addons" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="point_of_sale" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="addons" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="point_of_sale" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="addons" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="point_of_sale" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="posbox" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -762,176 +753,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/account_bank_statement.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/account_statement_report.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="35" lean-forward="false" selection-start-line="13" selection-start-column="35" selection-end-line="13" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/account_statement_view.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="42" lean-forward="false" selection-start-line="7" selection-start-column="42" selection-end-line="7" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_dashboard.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_data.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_demo.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1377">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/res_config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/res_users_view.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="79">
-          <caret line="7" column="75" lean-forward="false" selection-start-line="7" selection-start-column="75" selection-end-line="7" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/res_users.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="5" lean-forward="false" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/security/point_of_sale_security.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1309">
-          <caret line="77" column="0" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/wizard/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="21" lean-forward="false" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_payment.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
-          <caret line="5" column="37" lean-forward="false" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/wizard/lounge_payment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="28" column="40" lean-forward="false" selection-start-line="28" selection-start-column="40" selection-end-line="28" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_payment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="74">
-          <caret line="63" column="44" lean-forward="true" selection-start-line="63" selection-start-column="44" selection-end-line="63" selection-end-column="44" />
-          <folding>
-            <element signature="e#1065#1191#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/wizard/lounge_payment.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="44" lean-forward="true" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_workflow.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="38" column="0" lean-forward="false" selection-start-line="31" selection-start-column="4" selection-end-line="38" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="1224" column="20" lean-forward="false" selection-start-line="1222" selection-start-column="4" selection-end-line="1224" selection-end-column="20" />
-          <folding>
-            <element signature="e#50788#50861#1" expanded="false" />
-            <element signature="e#55020#55087#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="436">
-          <caret line="835" column="30" lean-forward="false" selection-start-line="835" selection-start-column="30" selection-end-line="835" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#14#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_sale_workflow.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="28" column="53" lean-forward="false" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_box.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_box.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -941,22 +762,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_confirm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_confirm.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_details.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -980,14 +785,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_payment.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="37" lean-forward="true" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/pos_report.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="56">
@@ -1004,130 +801,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_open_statement.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_sequence.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="7" lean-forward="true" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="436" column="69" lean-forward="true" selection-start-line="436" selection-start-column="41" selection-end-line="436" selection-end-column="69" />
-          <folding>
-            <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#header#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#1;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#2;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#3;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#search#0;n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#0;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#1;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#menuitem#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#search#0;n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#0;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#1;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#2;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#0;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#1;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#2;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#3;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#4;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#0;n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#0;n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#2;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#3;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#3;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#0;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#1;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#2;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#0;n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#menuitem#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#menuitem#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#0;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#1;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#2;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#0;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#p#1;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#div#0;n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#button#0;n#div#0;n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#tree#0;n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-            <element signature="n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1344,38 +1022,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/pos_order_report_view.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="20" lean-forward="true" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_report.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="25" column="34" lean-forward="true" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/data/report_paperformat.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="33" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_receipt.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="733">
-          <caret line="84" column="24" lean-forward="true" selection-start-line="67" selection-start-column="16" selection-end-line="84" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -1408,42 +1054,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/report/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="21" lean-forward="true" selection-start-line="0" selection-start-column="21" selection-end-line="0" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/views/report_receipt.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="38" lean-forward="true" selection-start-line="26" selection-start-column="38" selection-end-line="26" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/data/report_paperformat.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1456,10 +1070,396 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="950" column="8" lean-forward="false" selection-start-line="950" selection-start-column="8" selection-end-line="950" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#14#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/report/lounge_receipt.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-79">
-          <caret line="2" column="37" lean-forward="false" selection-start-line="2" selection-start-column="37" selection-end-line="2" selection-end-column="37" />
+        <state relative-caret-position="901">
+          <caret line="53" column="39" lean-forward="true" selection-start-line="53" selection-start-column="39" selection-end-line="53" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/views/report_receipt.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="38" lean-forward="true" selection-start-line="26" selection-start-column="38" selection-end-line="26" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="448" column="40" lean-forward="false" selection-start-line="448" selection-start-column="40" selection-end-line="448" selection-end-column="40" />
+          <folding>
+            <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#header#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#tree#0;n#field#0;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#1;n#group#1;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#2;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#3;n#sheet#0;n#form#0;n#field#3;n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#tree#0;n#field#2;n#record#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#search#0;n#field#2;n#record#2;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#0;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#1;n#field#7;n#record#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#menuitem#1;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#search#0;n#field#2;n#record#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#0;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#1;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#2;n#field#6;n#record#5;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#0;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#1;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#2;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#3;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#4;n#header#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#button#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#button#1;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#2;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#3;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#h1#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#div#0;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#3;n#div#1;n#group#0;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#tree#0;n#field#1;n#sheet#0;n#form#0;n#field#3;n#record#6;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#tree#0;n#field#2;n#record#7;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#0;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#1;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#2;n#field#9;n#record#8;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#0;n#field#3;n#record#10;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#menuitem#3;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#menuitem#4;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#11;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#div#0;n#sheet#0;n#form#0;n#field#3;n#record#12;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#tree#0;n#field#3;n#record#13;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#0;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#1;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#2;n#field#6;n#record#14;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#0;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#p#1;n#field#6;n#record#15;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#form#0;n#field#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#button#0;n#div#0;n#group#0;n#page#0;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#tree#0;n#field#0;n#page#1;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#0;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+            <element signature="n#group#1;n#group#1;n#page#2;n#notebook#0;n#sheet#0;n#form#0;n#field#2;n#record#16;n#data#0;n#openerp#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_report.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="46" lean-forward="false" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_demo.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="9" column="43" lean-forward="false" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_data.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="9" column="8" lean-forward="true" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_dashboard.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="73">
+          <caret line="6" column="43" lean-forward="true" selection-start-line="6" selection-start-column="43" selection-end-line="6" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_report.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="48" lean-forward="false" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="1217" column="9" lean-forward="true" selection-start-line="1217" selection-start-column="9" selection-end-line="1217" selection-end-column="9" />
+          <folding>
+            <element signature="e#50788#50861#1" expanded="false" />
+            <element signature="e#55020#55087#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/account_statement_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="42" lean-forward="false" selection-start-line="7" selection-start-column="42" selection-end-line="7" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/account_statement_report.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="10" lean-forward="true" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_payment.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_open_statement.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="37" lean-forward="true" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_details.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="14" lean-forward="false" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_discount.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/wizard/pos_confirm.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="33" lean-forward="false" selection-start-line="5" selection-start-column="33" selection-end-line="5" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/templates.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="5" column="32" lean-forward="false" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_usersproduct.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="5" column="37" lean-forward="true" selection-start-line="5" selection-start-column="37" selection-end-line="5" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_userlabel.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_statement.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="7" column="25" lean-forward="true" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/account_bank_statement.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_sessionsummary.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="6" lean-forward="true" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_saleslines.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_receipt.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2">
+          <caret line="22" column="28" lean-forward="true" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_payment.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-29">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/report_detailsofsales.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-29">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/views/point_of_sale.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="24" lean-forward="false" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/pos_order_report_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5">
+          <caret line="2" column="10" lean-forward="true" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/data/report_paperformat.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/controllers/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/controllers/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/data/default_barcode_patterns.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/data/report_paperformat.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="33" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/report/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="23" lean-forward="true" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
           <folding />
         </state>
       </provider>
