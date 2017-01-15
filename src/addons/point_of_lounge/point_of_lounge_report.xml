@@ -8,7 +8,7 @@
             report_type="qweb-pdf"
             name="point_of_lounge.report_receipt"
             file="point_of_lounge.report_receipt"
-            paperformat="point_of_sale.paperformat_posreceipt"/>
+            paperformat="point_of_lounge.paperformat_posreceipt"/>
 
         <report
             id="lounge_invoice_report"
@@ -17,6 +17,17 @@
             report_type="qweb-pdf"
             name="point_of_lounge.report_invoice"
             file="point_of_lounge.report_invoice"
+        />
+
+        <!--Main Report Receipt-->
+        <report
+            id="action_report_lounge_receipt"
+            string="Receipt"
+            model="lounge.order"
+            report_type="qweb-pdf"
+            name="point_of_lounge.report_receipt"
+            file="point_of_lounge.report_receipt"
+            paperformat="point_of_lounge.paperformat_posreceipt"
         />
 
         </data>

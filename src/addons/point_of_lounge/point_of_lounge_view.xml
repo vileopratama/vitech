@@ -385,8 +385,6 @@
             </field>
         </record>
 
-
-
         <record id="product_lounge_category_action" model="ir.actions.act_window">
             <field name="name">Lounge Service</field>
             <field name="type">ir.actions.act_window</field>
@@ -435,8 +433,7 @@
                      <header>
                          <button name="%(action_lounge_payment)d" string="Payment" class="oe_highlight" type="action" states="draft" context="{'lounge_session_id' : session_id}"/>
                          <button name="action_invoice" string="Invoice" type="object" states="paid" attrs="{'readonly': [('partner_id','=',False)]}"/>
-                         <button name="refund" string="Return Products" type="object"
-                            attrs="{'invisible':[('state','=','draft')]}"/>
+                         <button name="refund" string="Return Products" type="object" attrs="{'invisible':[('state','=','draft')]}"/>
                          <button name="%(action_report_lounge_receipt)d" string="Reprint" type="action" states="paid,done,invoiced"/>
                          <field name="state" widget="statusbar" statusbar_visible="draft,paid,done" statusbar_colors='{"cancel":"red"}'/>
                      </header>
@@ -546,7 +543,7 @@
         </record>
 
         <menuitem parent="menu_lounge_of_sale"
-                  id="menu_point_ofsale"
+                  id="menu_point_of_sale"
                   action="action_lounge_lounge_form"
                   sequence="1"
                   />

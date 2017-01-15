@@ -586,6 +586,8 @@ class lounge_order(osv.osv):
                                        type='many2one', string='Sale Journal', store=True, readonly=True),
         'invoice_id': fields.many2one('account.invoice', 'Invoice', copy=False),
         'account_move': fields.many2one('account.move', 'Journal Entry', readonly=True, copy=False),
+        'picking_type_id': fields.related('session_id', 'config_id', 'picking_type_id', string="Picking Type",
+                                          type='many2one', relation='stock.picking.type'),
     }
 
     """
@@ -606,8 +608,7 @@ class lounge_order(osv.osv):
     #summary
     amount_tax = Fields.Float(compute='_compute_amount_all', string='Taxes', digits=0)
     amount_total = Fields.Float(compute='_compute_amount_all', string='Total', digits=0)
-    amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},
-                               readonly=True, digits=0)
+    amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},readonly=True, digits=0)
     amount_return = Fields.Float(compute='_compute_amount_all', string='Returned', digits=0)
 
     """
@@ -625,9 +626,7 @@ class lounge_order(osv.osv):
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
 
-    """
-    Function
-    """
+    """Function"""
     def _default_session(self, cr, uid, context=None):
         so = self.pool.get('lounge.session')
         session_ids = so.search(cr, uid, [('state','=', 'opened'), ('user_id','=',uid)], context=context)
@@ -639,9 +638,7 @@ class lounge_order(osv.osv):
             session_record = self.pool.get('lounge.session').browse(cr, uid, session_ids, context=context)
             return session_record.config_id.pricelist_id and session_record.config_id.pricelist_id.id or False
         return False
-    """
-        Function
-    """
+    """Function """
 
     _defaults = {
         'user_id': lambda self, cr, uid, context: uid,
@@ -764,6 +761,83 @@ class lounge_order(osv.osv):
         statement_line_obj.create(cr, uid, args, context=context)
         return statement_id
 
+    #function update stock
+    def create_picking(self, cr, uid, ids, context=None):
+        """Create a picking for each order and validate it."""
+        picking_obj = self.pool.get('stock.picking')
+        partner_obj = self.pool.get('res.partner')
+        move_obj = self.pool.get('stock.move')
+        for order in self.browse(cr, uid, ids, context=context):
+            if all(t == 'service' for t in order.lines.mapped('product_id.type')):
+                continue
+            addr = order.partner_id and partner_obj.address_get(cr, uid, [order.partner_id.id], ['delivery']) or {}
+            picking_type = order.picking_type_id
+            picking_id = False
+            location_id = order.location_id.id
+            if order.partner_id:
+                destination_id = order.partner_id.property_stock_customer.id
+            else:
+                if (not picking_type) or (not picking_type.default_location_dest_id):
+                    customerloc, supplierloc = self.pool['stock.warehouse']._get_partner_locations(cr, uid, [], context=context)
+                    destination_id = customerloc.id
+                else:
+                    destination_id = picking_type.default_location_dest_id.id
+
+            # All qties negative => Create negative
+            if picking_type:
+                pos_qty = all([x.qty >= 0 for x in order.lines])
+                # Check negative quantities
+                picking_id = picking_obj.create(cr, uid, {
+                    'origin': order.name,
+                    'partner_id': addr.get('delivery', False),
+                    'date_done': order.date_order,
+                    'picking_type_id': picking_type.id,
+                    'company_id': order.company_id.id,
+                    'move_type': 'direct',
+                    'note': order.note or "",
+                    'location_id': location_id if pos_qty else destination_id,
+                    'location_dest_id': destination_id if pos_qty else location_id,
+                }, context=context)
+                self.write(cr, uid, [order.id], {'picking_id': picking_id}, context=context)
+
+            move_list = []
+            for line in order.lines:
+                if line.product_id and line.product_id.type not in ['product', 'consu']:
+                    continue
+
+                move_list.append(move_obj.create(cr, uid, {
+                    'name': line.name,
+                    'product_uom': line.product_id.uom_id.id,
+                    'picking_id': picking_id,
+                    'picking_type_id': picking_type.id,
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': abs(line.qty),
+                    'state': 'draft',
+                    'location_id': location_id if line.qty >= 0 else destination_id,
+                    'location_dest_id': destination_id if line.qty >= 0 else location_id,
+                }, context=context))
+
+            if picking_id:
+                picking_obj.action_confirm(cr, uid, [picking_id], context=context)
+                picking_obj.force_assign(cr, uid, [picking_id], context=context)
+                # Mark pack operations as done
+                pick = picking_obj.browse(cr, uid, picking_id, context=context)
+                for pack in pick.pack_operation_ids:
+                    self.pool['stock.pack.operation'].write(cr, uid, [pack.id], {'qty_done': pack.product_qty},
+                                                                context=context)
+                picking_obj.action_done(cr, uid, [picking_id], context=context)
+            elif move_list:
+                move_obj.action_confirm(cr, uid, move_list, context=context)
+                move_obj.force_assign(cr, uid, move_list, context=context)
+                move_obj.action_done(cr, uid, move_list, context=context)
+
+        return True
+
+    #function analytic account
+    def _prepare_analytic_account(self, cr, uid, line, context=None):
+        '''This method is designed to be inherited in a custom module'''
+        return False
+
     def test_paid(self, cr, uid, ids, context=None):
         """A Point of Sale is paid when the sum
         @return: True
@@ -777,6 +851,101 @@ class lounge_order(osv.osv):
         return True
         """ Parsing Data From Payment View """
 
+    def action_paid(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'paid'}, context=context)
+        self.create_picking(cr, uid, ids, context=context)
+        return True
+
+    def action_invoice(self, cr, uid, ids, context=None):
+        inv_ref = self.pool.get('account.invoice')
+        inv_line_ref = self.pool.get('account.invoice.line')
+        product_obj = self.pool.get('product.product')
+        inv_ids = []
+
+        for order in self.pool.get('lounge.order').browse(cr, uid, ids, context=context):
+            # Force company for all SUPERUSER_ID action
+            company_id = order.company_id.id
+            local_context = dict(context or {}, force_company=company_id, company_id=company_id)
+            if order.invoice_id:
+                inv_ids.append(order.invoice_id.id)
+                continue
+
+            if not order.partner_id:
+                raise UserError(_('Please provide a partner for the sale.'))
+
+            acc = order.partner_id.property_account_receivable_id.id
+            inv = {
+                'name': order.name,
+                'origin': order.name,
+                'account_id': acc,
+                'journal_id': order.sale_journal.id or None,
+                'type': 'out_invoice',
+                'reference': order.name,
+                'partner_id': order.partner_id.id,
+                'comment': order.note or '',
+                'currency_id': order.pricelist_id.currency_id.id,  # considering partner's sale pricelist's currency
+                'company_id': company_id,
+                'user_id': uid,
+            }
+
+            invoice = inv_ref.new(cr, uid, inv)
+            invoice._onchange_partner_id()
+            invoice.fiscal_position_id = order.fiscal_position_id
+            inv = invoice._convert_to_write(invoice._cache)
+            if not inv.get('account_id', None):
+                inv['account_id'] = acc
+            inv_id = inv_ref.create(cr, SUPERUSER_ID, inv, context=local_context)
+            self.write(cr, uid, [order.id], {'invoice_id': inv_id, 'state': 'invoiced'}, context=local_context)
+            inv_ids.append(inv_id)
+            for line in order.lines:
+                inv_name = product_obj.name_get(cr, uid, [line.product_id.id], context=local_context)[0][1]
+                inv_line = {
+                    'invoice_id': inv_id,
+                    'product_id': line.product_id.id,
+                    'quantity': line.qty,
+                    'account_analytic_id': self._prepare_analytic_account(cr, uid, line, context=local_context),
+                    'name': inv_name,
+                }
+
+                # Oldlink trick
+                invoice_line = inv_line_ref.new(cr, SUPERUSER_ID, inv_line, context=local_context)
+                invoice_line._onchange_product_id()
+                invoice_line.invoice_line_tax_ids = [tax.id for tax in invoice_line.invoice_line_tax_ids if
+                                                     tax.company_id.id == company_id]
+                fiscal_position_id = line.order_id.fiscal_position_id
+                if fiscal_position_id:
+                    invoice_line.invoice_line_tax_ids = fiscal_position_id.map_tax(invoice_line.invoice_line_tax_ids)
+                invoice_line.invoice_line_tax_ids = [tax.id for tax in invoice_line.invoice_line_tax_ids]
+                # We convert a new id object back to a dictionary to write to bridge between old and new api
+                inv_line = invoice_line._convert_to_write(invoice_line._cache)
+                inv_line.update(price_unit=line.price_unit, discount=line.discount)
+                inv_line_ref.create(cr, SUPERUSER_ID, inv_line, context=local_context)
+
+            inv_ref.compute_taxes(cr, SUPERUSER_ID, [inv_id], context=local_context)
+            self.signal_workflow(cr, uid, [order.id], 'invoice')
+            inv_ref.signal_workflow(cr, SUPERUSER_ID, [inv_id], 'validate')
+
+        if not inv_ids: return {}
+
+        mod_obj = self.pool.get('ir.model.data')
+        res = mod_obj.get_object_reference(cr, uid, 'account', 'invoice_form')
+        res_id = res and res[1] or False
+
+        return {
+            'name': _('Customer Invoice'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': [res_id],
+            'res_model': 'account.invoice',
+            'context': "{'type':'out_invoice'}",
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            'res_id': inv_ids and inv_ids[0] or False,
+        }
+
+
+    def action_invoice_state(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'invoiced'}, context=context)
 
 
 class lounge_order_line(osv.osv):
