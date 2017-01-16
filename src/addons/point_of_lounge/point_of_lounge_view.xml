@@ -522,6 +522,25 @@
              </field>
         </record>
 
+         <record model="ir.ui.view" id="view_lounge_order_tree">
+             <field name="name">Orders</field>
+             <field name="model">lounge.order</field>
+             <field name="arch" type="xml">
+                 <tree string="Lounge Orders" decoration-info="state == 'draft'" decoration-muted="state in ('done','cancel')">
+                     <field name="name"/>
+                     <field name="lounge_reference"/>
+                     <field name="partner_id"/>
+                     <field name="date_order"/>
+                     <field name="user_id"/>
+                     <field name="invoice_id"/>
+                     <field name="amount_total" sum="Amount total" widget="monetary"/>
+                     <field name="company_id" groups="base.group_multi_company"/>
+                     <field name="state"/>
+                     <field name="session_id" />
+                 </tree>
+             </field>
+         </record>
+
         <record model="ir.actions.act_window" id="action_lounge_lounge_form">
             <field name="name">Orders</field>
             <field name="type">ir.actions.act_window</field>

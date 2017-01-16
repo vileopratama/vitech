@@ -560,7 +560,7 @@ class pos_session(osv.osv):
         for record in self.browse(cr, uid, ids, context=context):
             values = {}
             if not record.start_at:
-                values['start_at'] = time.strftime('%Y-%m-%d %H:%M:%S')
+                values2['start_at'] = time.strftime('%Y-%m-%d %H:%M:%S')
             values['state'] = 'opened'
             record.write(values)
             for st in record.statement_ids:
