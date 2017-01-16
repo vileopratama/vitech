@@ -9,6 +9,7 @@ import time
 import logging
 import openerp.addons.decimal_precision as dp
 from openerp import api, fields as Fields
+from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
