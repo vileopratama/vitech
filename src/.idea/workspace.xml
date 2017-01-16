@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd3b3f1b-20eb-429b-a890-339bd50c9e1a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" afterPath="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py" afterPath="$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py" />
     </list>
     <ignored path="src.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,11 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="point_of_lounge.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="point_of_lounge.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="473">
-              <caret line="1093" column="12" lean-forward="false" selection-start-line="1093" selection-start-column="12" selection-end-line="1093" selection-end-column="12" />
+            <state relative-caret-position="248">
+              <caret line="522" column="66" lean-forward="true" selection-start-line="522" selection-start-column="66" selection-end-line="522" selection-end-column="66" />
               <folding />
             </state>
           </provider>
@@ -43,12 +44,12 @@
       <file leaf-file-name="point_of_sale.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10">
-              <caret line="1377" column="14" lean-forward="true" selection-start-line="1377" selection-start-column="14" selection-end-line="1377" selection-end-column="14" />
+            <state relative-caret-position="3971">
+              <caret line="562" column="71" lean-forward="true" selection-start-line="562" selection-start-column="71" selection-end-line="562" selection-end-column="71" />
               <folding>
                 <element signature="e#100#114#0" expanded="false" />
-                <element signature="e#50784#50857#1" expanded="false" />
-                <element signature="e#55016#55083#1" expanded="false" />
+                <element signature="e#50783#50856#1" expanded="false" />
+                <element signature="e#55015#55082#1" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -57,18 +58,18 @@
       <file leaf-file-name="point_of_sale_workflow.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_workflow.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="24" column="36" lean-forward="true" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="39" />
+            <state relative-caret-position="187">
+              <caret line="59" column="41" lean-forward="true" selection-start-line="59" selection-start-column="41" selection-end-line="59" selection-end-column="41" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="point_of_lounge_workflow.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="point_of_lounge_workflow.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="28" column="52" lean-forward="false" selection-start-line="28" selection-start-column="10" selection-end-line="28" selection-end-column="52" />
+            <state relative-caret-position="188">
+              <caret line="102" column="47" lean-forward="false" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -77,8 +78,8 @@
       <file leaf-file-name="point_of_lounge_view.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="168" column="111" lean-forward="true" selection-start-line="168" selection-start-column="111" selection-end-line="168" selection-end-column="111" />
+            <state relative-caret-position="612">
+              <caret line="160" column="54" lean-forward="true" selection-start-line="160" selection-start-column="54" selection-end-line="160" selection-end-column="54" />
               <folding>
                 <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
                 <element signature="n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
@@ -352,10 +353,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>report_sxw</find>
-      <find>report_invoice</find>
-      <find>invoice_id</find>
-      <find>refund</find>
       <find>config_id = values.get('config_id', False) or context.get('default_config_id', False)</find>
       <find>POS_SESSION_STATE</find>
       <find>action_open</find>
@@ -378,10 +375,14 @@
       <find>start_to_open</find>
       <find>pos</find>
       <find>_confirm_orders</find>
-      <find>act_opening_control</find>
       <find>create_account_move</find>
       <find>_create_account_move_line</find>
+      <find>act_opening_control</find>
       <find>def action_done</find>
+      <find>action_done</find>
+      <find>wkf_action_close</find>
+      <find>menu_point_root</find>
+      <find>_confirm_orders_confirm_orders</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -440,9 +441,9 @@
         <option value="$PROJECT_DIR$/addons/point_of_lounge/__openerp__.py" />
         <option value="$PROJECT_DIR$/addons/point_of_sale/point_of_sale_workflow.xml" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml" />
+        <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml" />
         <option value="$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py" />
         <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py" />
-        <option value="$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml" />
       </list>
     </option>
   </component>
@@ -1601,10 +1602,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3971">
+          <caret line="562" column="71" lean-forward="true" selection-start-line="562" selection-start-column="71" selection-end-line="562" selection-end-column="71" />
+          <folding>
+            <element signature="e#100#114#0" expanded="false" />
+            <element signature="e#50783#50856#1" expanded="false" />
+            <element signature="e#55015#55082#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="102" column="47" lean-forward="false" selection-start-line="102" selection-start-column="31" selection-end-line="102" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_view.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="168" column="111" lean-forward="true" selection-start-line="168" selection-start-column="111" selection-end-line="168" selection-end-column="111" />
+        <state relative-caret-position="612">
+          <caret line="160" column="54" lean-forward="true" selection-start-line="160" selection-start-column="54" selection-end-line="160" selection-end-column="54" />
           <folding>
             <element signature="n#menuitem#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
             <element signature="n#record#0;n#data#0;n#openerp#0;n#!!top" expanded="false" />
@@ -1678,38 +1699,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale.py">
+    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_workflow.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10">
-          <caret line="1377" column="14" lean-forward="true" selection-start-line="1377" selection-start-column="14" selection-end-line="1377" selection-end-column="14" />
-          <folding>
-            <element signature="e#100#114#0" expanded="false" />
-            <element signature="e#50784#50857#1" expanded="false" />
-            <element signature="e#55016#55083#1" expanded="false" />
-          </folding>
+        <state relative-caret-position="187">
+          <caret line="59" column="41" lean-forward="true" selection-start-line="59" selection-start-column="41" selection-end-line="59" selection-end-column="41" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="1093" column="12" lean-forward="false" selection-start-line="1093" selection-start-column="12" selection-end-line="1093" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_sale/point_of_sale_workflow.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="24" column="36" lean-forward="true" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/addons/point_of_lounge/point_of_lounge_workflow.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="28" column="52" lean-forward="false" selection-start-line="28" selection-start-column="10" selection-end-line="28" selection-end-column="52" />
+        <state relative-caret-position="248">
+          <caret line="522" column="66" lean-forward="true" selection-start-line="522" selection-start-column="66" selection-end-line="522" selection-end-column="66" />
           <folding />
         </state>
       </provider>
