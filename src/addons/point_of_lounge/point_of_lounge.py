@@ -563,7 +563,7 @@ class lounge_session(osv.osv):
         return {
             'type' : 'ir.actions.act_url',
             'target': 'self',
-            'url':   '/pos/web/',
+            'url':   '/lounge/cashier/',
         }
 
 #lounge category

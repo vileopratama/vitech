@@ -19,6 +19,7 @@
         'res_config_view.xml',
         'account_statement_view.xml',
         'views/report_receipt.xml',
+        'views/templates.xml',
         'point_of_lounge_dashboard.xml',
     ],
     'demo': [
