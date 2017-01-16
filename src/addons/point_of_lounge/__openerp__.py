@@ -15,11 +15,11 @@
         'wizard/lounge_payment.xml',
         'point_of_lounge_report.xml',
         'point_of_lounge_view.xml',
-        'point_of_lounge_dashboard.xml',
         'point_of_lounge_workflow.xml',
         'res_config_view.xml',
         'account_statement_view.xml',
         'views/report_receipt.xml',
+        'point_of_lounge_dashboard.xml',
     ],
     'demo': [
         #'demo.xml'

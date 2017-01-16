@@ -368,7 +368,7 @@ class lounge_session(osv.osv):
                                                          string="Ending Balance",
                                                          help="Total of closing cash control lines.",
                                                          readonly=True),
-        #'order_ids': fields.one2many('lounge.order', 'session_id', 'Orders'),
+        'order_ids': fields.one2many('lounge.order', 'session_id', 'Orders'),
     }
 
     _defaults = {
@@ -482,7 +482,7 @@ class lounge_session(osv.osv):
 
     #Workflow Action
     def wkf_action_opening_control(self, cr, uid, ids, context=None):
-        return self.write2(cr, uid, ids, {'state': 'opening_control'}, context=context)
+        return self.write(cr, uid, ids, {'state': 'opening_control'}, context=context)
 
     def wkf_action_open(self, cr, uid, ids, context=None):
         # second browse because we need to refetch the data from the DB for cash_register_id
@@ -500,10 +500,8 @@ class lounge_session(osv.osv):
         for session in self.browse(cr, uid, ids, context=context):
             for statement in session.statement_ids:
                 if (statement != session.cash_register_id) and (statement.balance_end != statement.balance_end_real):
-                    self.pool.get('account.bank.statement').write(cr, uid, [statement.id],
-                                                                  {'balance_end_real': statement.balance_end})
-        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')},
-                          context=context)
+                    self.pool.get('account.bank.statement').write(cr, uid, [statement.id],{'balance_end_real': statement.balance_end})
+        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')},context=context)
 
     def wkf_action_close(self, cr, uid, ids, context=None):
         # Close CashBox
@@ -519,8 +517,9 @@ class lounge_session(osv.osv):
                 if (st.journal_id.type not in ['bank', 'cash']):
                     raise UserError(_("The type of the journal for your payment method should be bank or cash "))
                 self.pool['account.bank.statement'].button_confirm_bank(cr, SUPERUSER_ID, [st.id],context=local_context)
+
         #function _confirm order
-        #self._confirm_orders(cr, uid, ids, context=local_context)
+        self._confirm_orders(cr, uid, ids, context=local_context)
         self.write(cr, uid, ids, {'state': 'closed'}, context=local_context)
 
         obj = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_lounge', 'menu_lounge_root')[1]
@@ -565,6 +564,7 @@ class lounge_session(osv.osv):
             'target': 'self',
             'url':   '/pos/web/',
         }
+
 #lounge category
 class lounge_category(osv.osv):
     _name = "lounge.category"
@@ -1067,6 +1067,174 @@ class lounge_order(osv.osv):
             'target': 'current',
         }
         return abs
+
+    def create_account_move(self, cr, uid, ids, context=None):
+        return self._create_account_move_line(cr, uid, ids, None, None, context=context)
+
+    def _create_account_move(self, cr, uid, dt, ref, journal_id, company_id, context=None):
+        start_at_datetime = datetime.strptime(dt, tools.DEFAULT_SERVER_DATETIME_FORMAT)
+        date_tz_user = fields.datetime.context_timestamp(cr, uid, start_at_datetime, context=context)
+        date_tz_user = date_tz_user.strftime(tools.DEFAULT_SERVER_DATE_FORMAT)
+        return self.pool['account.move'].create(cr, SUPERUSER_ID, {'ref': ref, 'journal_id': journal_id, 'date': date_tz_user}, context=context)
+
+    def _create_account_move_line(self, cr, uid, ids, session=None, move_id=None, context=None):
+        # Tricky, via the workflow, we only have one id in the ids variable
+        """Create a account move line of order grouped by products or not."""
+        account_move_obj = self.pool.get('account.move')
+        account_tax_obj = self.pool.get('account.tax')
+        property_obj = self.pool.get('ir.property')
+        cur_obj = self.pool.get('res.currency')
+
+        #session_ids = set(order.session_id for order in self.browse(cr, uid, ids, context=context))
+
+        if session and not all(session.id == order.session_id.id for order in self.browse(cr, uid, ids, context=context)):
+            raise UserError(_('Selected orders do not have the same session!'))
+
+        grouped_data = {}
+        have_to_group_by = session and session.config_id.group_by or False
+
+        for order in self.browse(cr, uid, ids, context=context):
+            if order.account_move:
+                continue
+            if order.state != 'paid':
+                continue
+
+            current_company = order.sale_journal.company_id
+
+            group_tax = {}
+            account_def = property_obj.get(cr, uid, 'property_account_receivable_id', 'res.partner', context=context)
+
+            order_account = order.partner_id and \
+                            order.partner_id.property_account_receivable_id and \
+                            order.partner_id.property_account_receivable_id.id or \
+                            account_def and account_def.id
+
+            if move_id is None:
+                # Create an entry for the sale
+                move_id = self._create_account_move(cr, uid, order.session_id.start_at, order.name, order.sale_journal.id, order.company_id.id, context=context)
+
+            move = account_move_obj.browse(cr, SUPERUSER_ID, move_id, context=context)
+
+            def insert_data(data_type, values):
+                # if have_to_group_by:
+
+                # 'quantity': line.qty,
+                # 'product_id': line.product_id.id,
+                values.update({
+                    'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False,
+                    'move_id' : move_id,
+                })
+
+                if data_type == 'product':
+                    key = ('product', values['partner_id'], (values['product_id'], tuple(values['tax_ids'][0][2]), values['name']), values['analytic_account_id'], values['debit'] > 0)
+                elif data_type == 'tax':
+                    key = ('tax', values['partner_id'], values['tax_line_id'], values['debit'] > 0)
+                elif data_type == 'counter_part':
+                    key = ('counter_part', values['partner_id'], values['account_id'], values['debit'] > 0)
+                else:
+                    return
+
+                grouped_data.setdefault(key, [])
+
+                # if not have_to_group_by or (not grouped_data[key]):
+                #     grouped_data[key].append(values)
+                # else:
+                #     pass
+
+                if have_to_group_by:
+                    if not grouped_data[key]:
+                        grouped_data[key].append(values)
+                    else:
+                        for line in grouped_data[key]:
+                            if line.get('tax_code_id') == values.get('tax_code_id'):
+                                current_value = line
+                                current_value['quantity'] = current_value.get('quantity', 0.0) +  values.get('quantity', 0.0)
+                                current_value['credit'] = current_value.get('credit', 0.0) + values.get('credit', 0.0)
+                                current_value['debit'] = current_value.get('debit', 0.0) + values.get('debit', 0.0)
+                                break
+                        else:
+                            grouped_data[key].append(values)
+                else:
+                    grouped_data[key].append(values)
+
+            #because of the weird way the lounge order is written, we need to make sure there is at least one line,
+            #because just after the 'for' loop there are references to 'line' and 'income_account' variables (that
+            #are set inside the for loop)
+            #TOFIX: a deep refactoring of this method (and class!) is needed in order to get rid of this stupid hack
+            assert order.lines, _('The Lounge order must have lines when calling this method')
+            # Create an move for each order line
+
+            cur = order.pricelist_id.currency_id
+            for line in order.lines:
+                amount = line.price_subtotal
+
+                # Search for the income account
+                if  line.product_id.property_account_income_id.id:
+                    income_account = line.product_id.property_account_income_id.id
+                elif line.product_id.categ_id.property_account_income_categ_id.id:
+                    income_account = line.product_id.categ_id.property_account_income_categ_id.id
+                else:
+                    raise UserError(_('Please define income '\
+                        'account for this product: "%s" (id:%d).') \
+                        % (line.product_id.name, line.product_id.id))
+
+                name = line.product_id.name
+                if line.notice:
+                    # add discount reason in move
+                    name = name + ' (' + line.notice + ')'
+
+                # Create a move for the line for the order line
+                insert_data('product', {
+                    'name': name,
+                    'quantity': line.qty,
+                    'product_id': line.product_id.id,
+                    'account_id': income_account,
+                    'analytic_account_id': self._prepare_analytic_account(cr, uid, line, context=context),
+                    'credit': ((amount>0) and amount) or 0.0,
+                    'debit': ((amount<0) and -amount) or 0.0,
+                    'tax_ids': [(6, 0, line.tax_ids_after_fiscal_position.ids)],
+                    'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
+                })
+
+                # Create the tax lines
+                taxes = []
+                for t in line.tax_ids_after_fiscal_position:
+                    if t.company_id.id == current_company.id:
+                        taxes.append(t.id)
+                if not taxes:
+                    continue
+                for tax in account_tax_obj.browse(cr,uid, taxes, context=context).compute_all(line.price_unit * (100.0-line.discount) / 100.0, cur, line.qty)['taxes']:
+                    insert_data('tax', {
+                        'name': _('Tax') + ' ' + tax['name'],
+                        'product_id': line.product_id.id,
+                        'quantity': line.qty,
+                        'account_id': tax['account_id'] or income_account,
+                        'credit': ((tax['amount']>0) and tax['amount']) or 0.0,
+                        'debit': ((tax['amount']<0) and -tax['amount']) or 0.0,
+                        'tax_line_id': tax['id'],
+                        'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
+                    })
+
+            # counterpart
+            insert_data('counter_part', {
+                'name': _("Trade Receivables"), #order.name,
+                'account_id': order_account,
+                'credit': ((order.amount_total < 0) and -order.amount_total) or 0.0,
+                'debit': ((order.amount_total > 0) and order.amount_total) or 0.0,
+                'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
+            })
+
+            order.write({'state':'done', 'account_move': move_id})
+
+        all_lines = []
+        for group_key, group_data in grouped_data.iteritems():
+            for value in group_data:
+                all_lines.append((0, 0, value),)
+        if move_id: #In case no order was changed
+            self.pool.get("account.move").write(cr, SUPERUSER_ID, [move_id], {'line_ids':all_lines}, context=dict(context or {}, dont_create_taxes=True))
+            self.pool.get("account.move").post(cr, SUPERUSER_ID, [move_id], context=context)
+
+        return True
 
 class lounge_order_line(osv.osv):
     _name = "lounge.order.line"

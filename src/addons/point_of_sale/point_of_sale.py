@@ -572,7 +572,7 @@ class pos_session(osv.osv):
         return self.write(cr, uid, ids, {'state' : 'opening_control'}, context=context)
 
     def wkf_action_closing_control(self, cr, uid, ids, context=None):
-        for session in self.browse(cr, uid, ids, context=context):
+        for session2 in self.browse(cr, uid, ids, context=context):
             for statement in session.statement_ids:
                 if (statement != session.cash_register_id) and (statement.balance_end != statement.balance_end_real):
                     self.pool.get('account.bank.statement').write(cr, uid, [statement.id], {'balance_end_real': statement.balance_end})
