@@ -280,6 +280,7 @@ class lounge_session(osv.osv):
 
     def _compute_cash_all(self, cr, uid, ids, fieldnames, args, context=None):
         result = dict()
+
         for record in self.browse(cr, uid, ids, context=context):
             result[record.id] = {
                 'cash_journal_id' : False,
@@ -459,12 +460,11 @@ class lounge_session(osv.osv):
             statements.append(create_statement(st_values, context=context))
 
         values.update({
-            #ir sequence(lounge.session) create a new session in setting => sequence (Developer Mode)
             'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'lounge.session', context=context),
             'statement_ids': [(6, 0, statements)],
             'config_id': config_id,
-            'start_at': time.strftime('%Y-%m-%d %H:%M:%S'),
-            'state': 'opened',
+            #'start_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+            #'state': 'opened',
         })
         return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
 
@@ -481,7 +481,94 @@ class lounge_session(osv.osv):
         })
 
     #Workflow Action
+    def wkf_action_opening_control(self, cr, uid, ids, context=None):
+        return self.write2(cr, uid, ids, {'state': 'opening_control'}, context=context)
 
+    def wkf_action_open(self, cr, uid, ids, context=None):
+        # second browse because we need to refetch the data from the DB for cash_register_id
+        for record in self.browse(cr, uid, ids, context=context):
+            values = {}
+            if not record.start_at:
+                values['start_at'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            values['state'] = 'opened'
+            record.write(values)
+            for st in record.statement_ids:
+                st.button_open()
+        return True
+
+    def wkf_action_closing_control(self, cr, uid, ids, context=None):
+        for session in self.browse(cr, uid, ids, context=context):
+            for statement in session.statement_ids:
+                if (statement != session.cash_register_id) and (statement.balance_end != statement.balance_end_real):
+                    self.pool.get('account.bank.statement').write(cr, uid, [statement.id],
+                                                                  {'balance_end_real': statement.balance_end})
+        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')},
+                          context=context)
+
+    def wkf_action_close(self, cr, uid, ids, context=None):
+        # Close CashBox
+        local_context = dict(context)
+        for record in self.browse(cr, uid, ids, context=context):
+            company_id = record.config_id.company_id.id
+            local_context.update({'force_company': company_id, 'company_id': company_id})
+            for st in record.statement_ids:
+                if abs(st.difference) > st.journal_id.amount_authorized_diff:
+                    # The pos manager can close statements with maximums.
+                    if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_sale.group_pos_manager"):
+                        raise UserError(_(
+                            "Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (
+                                        st.difference, st.journal_id.amount_authorized_diff))
+                if (st.journal_id.type not in ['bank', 'cash']):
+                    raise UserError(_("The type of the journal for your payment method should be bank or cash "))
+                self.pool['account.bank.statement'].button_confirm_bank(cr, SUPERUSER_ID, [st.id],
+                                                                        context=local_context)
+        self._confirm_orders(cr, uid, ids, context=local_context)
+        self.write(cr, uid, ids, {'state': 'closed'}, context=local_context)
+
+        obj = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_sale', 'menu_point_root')[1]
+        return {
+            'type': 'ir.actions.client',
+            'name': 'Point of Sale Menu',
+            'tag': 'reload',
+            'params': {'menu_id': obj},
+        }
+
+    def _confirm_orders(self, cr, uid, ids, context=None):
+        pos_order_obj = self.pool.get('pos.order')
+        for session in self.browse(cr, uid, ids, context=context):
+            company_id = session.config_id.journal_id.company_id.id
+            local_context = dict(context or {}, force_company=company_id)
+            order_ids = [order.id for order in session.order_ids if order.state == 'paid']
+
+            move_id = pos_order_obj._create_account_move(cr, uid, session.start_at, session.name, session.config_id.journal_id.id, company_id, context=context)
+
+            pos_order_obj._create_account_move_line(cr, uid, order_ids, session, move_id, context=local_context)
+
+            for order in session.order_ids:
+                if order.state == 'done':
+                    continue
+                if order.state not in ('paid', 'invoiced'):
+                    raise UserError(_("You cannot confirm all orders of this session, because they have not the 'paid' status"))
+                else:
+                    pos_order_obj.signal_workflow(cr, uid, [order.id], 'done')
+
+        return True
+
+    def open_frontend_cb(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+        if not ids:
+            return {}
+        for session in self.browse(cr, uid, ids, context=context):
+            if session.user_id.id != uid:
+                raise UserError(_("You cannot use the session of another users. This session is owned by %s. "
+                                    "Please first close this one to use this point of sale.") % session.user_id.name)
+        context.update({'active_id': ids[0]})
+        return {
+            'type' : 'ir.actions.act_url',
+            'target': 'self',
+            'url':   '/pos/web/',
+        }
 
 #lounge category
 class lounge_category(osv.osv):
@@ -947,6 +1034,43 @@ class lounge_order(osv.osv):
     def action_invoice_state(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'invoiced'}, context=context)
 
+    #on submit button refund
+    def refund(self, cr, uid, ids, context=None):
+        """Create a copy of order  for refund order"""
+        clone_list = []
+        line_obj = self.pool.get('lounge.order.line')
+
+        for order in self.browse(cr, uid, ids, context=context):
+            current_session_ids = self.pool.get('lounge.session').search(cr, uid, [('state', '!=', 'closed'), ('user_id', '=', uid)], context=context)
+            if not current_session_ids:
+                raise UserError(
+                    _('To return product(s), you need to open a session that will be used to register the refund.'))
+
+            clone_id = self.copy(cr, uid, order.id, {
+                'name': order.name + ' REFUND',  # not used, name forced by create
+                'session_id': current_session_ids[0],
+                'date_order': time.strftime('%Y-%m-%d %H:%M:%S'),
+            }, context=context)
+            clone_list.append(clone_id)
+
+        for clone in self.browse(cr, uid, clone_list, context=context):
+            for order_line in clone.lines:
+                line_obj.write(cr, uid, [order_line.id], {
+                    'qty': -order_line.qty
+                }, context=context)
+
+        abs = {
+            'name': _('Return Products'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'lounge.order',
+            'res_id': clone_list[0],
+            'view_id': False,
+            'context': context,
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+        }
+        return abs
 
 class lounge_order_line(osv.osv):
     _name = "lounge.order.line"

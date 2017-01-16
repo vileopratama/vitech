@@ -45,7 +45,6 @@
       <field name="kind">function</field>
     </record>
 
-
 <!--Transitions-->
 
     <record model="workflow.transition" id="trans_draft_paid">
@@ -167,8 +166,5 @@
       <field name="act_to" ref="act_close" />
       <field name="condition">cash_control == False</field>
     </record>
-
-
-
   </data>
 </openerp>

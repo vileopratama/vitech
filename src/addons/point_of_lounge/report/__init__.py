@@ -1,1 +1,2 @@
 import lounge_receipt
+import lounge_invoice

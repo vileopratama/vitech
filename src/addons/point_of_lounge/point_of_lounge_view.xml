@@ -181,7 +181,7 @@
                     <sheet>
                         <field name="cash_register_id" invisible="1"/>
                         <div class="oe_button_box" name="button_box">
-                             <button class="oe_stat_button" name="%(action_lounge_box_in)d"
+                            <button class="oe_stat_button" name="%(action_lounge_box_in)d"
                                     type="action" icon="fa-level-down"
                                     attrs="{'invisible': ['|', ('cash_control', '=', False), ('state', 'not in', ['opened', 'closing_control'])]}">
                                 <div class="o_form_field o_stat_info">
@@ -219,10 +219,10 @@
                          <group>
                              <field name="cash_control" invisible="1" />
                              <group>
-                                <field name="user_id"/>
+                                 <field name="user_id"/>
                                  <field name="currency_id" invisible="1"/>
-                                <field name="config_id"/>
-                                <field name="rescue" attrs="{'invisible': [('rescue', '=', False)]}" />
+                                 <field name="config_id"/>
+                                 <field name="rescue" attrs="{'invisible': [('rescue', '=', False)]}" />
                              </group>
                              <group>
                                 <field name="start_at" attrs="{'invisible' : [('state', '=', 'opening_control')]}" />

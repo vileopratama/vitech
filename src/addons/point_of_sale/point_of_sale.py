@@ -344,7 +344,7 @@ class pos_session(osv.osv):
 
     POS_SESSION_STATE = [
         ('opening_control', 'Opening Control'),  # Signal open
-        ('opened', 'In Progress'),                    # Signal closing
+        ('opened', 'In Progress'),               # Signal closing
         ('closing_control', 'Closing Control'),  # Signal close
         ('closed', 'Closed & Posted'),
     ]
