@@ -96,6 +96,20 @@ class lounge_config(osv.osv):
                 return False
         return True
 
+    def _get_group_lounge_manager(self, cr, uid, context=None):
+        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
+        if group:
+            return group[1]
+        else:
+            return False
+
+    def _get_group_lounge_user(self, cr, uid, context=None):
+        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
+        if group:
+            return group[1]
+        else:
+            return False
+
     _columns = {
         'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
         'picking_type_id': fields.many2one('stock.picking.type', 'Picking Type'),
@@ -155,6 +169,10 @@ class lounge_config(osv.osv):
                                       help="A short text that will be inserted as a header in the printed receipt"),
         'receipt_footer': fields.text('Receipt Footer',
                                       help="A short text that will be inserted as a footer in the printed receipt"),
+        'group_lounge_manager_id': fields.many2one('res.groups', 'Point of Lounge Manager Group',
+                                                help='This field is there to pass the id of the pos manager group to the point of sale client'),
+        'group_lounge_user_id': fields.many2one('res.groups', 'Point of Lounge User Group',
+                                             help='This field is there to pass the id of the pos user group to the point of sale client'),
     }
 
     _constraints = [
@@ -178,8 +196,8 @@ class lounge_config(osv.osv):
         'stock_location_id': _get_default_location,
         'company_id': _get_default_company,
         'barcode_nomenclature_id': _get_default_nomenclature,
-        #'group_pos_manager_id': _get_group_pos_manager,
-        #'group_pos_user_id': _get_group_pos_user,
+        'group_lounge_manager_id': _get_group_lounge_manager,
+        'group_lounge_user_id': _get_group_lounge_user,
     }
 
     def set_active(self, cr, uid, ids, context=None):
