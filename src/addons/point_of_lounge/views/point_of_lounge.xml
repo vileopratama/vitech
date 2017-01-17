@@ -16,6 +16,9 @@
 	        <script type="text/javascript" src="/point_of_lounge/static/src/js/chrome.js"></script>
 	        <script type="text/javascript" src="/point_of_lounge/static/src/js/devices.js"></script>
 	        <script type="text/javascript" src="/point_of_lounge/static/src/js/gui.js"></script>
+            <script type="text/javascript" src="/point_of_lounge/static/src/js/popups.js"></script>
+            <script type="text/javascript" src="/point_of_lounge/static/src/js/screens.js"></script>
+            <script type="text/javascript" src="/point_of_lounge/static/src/js/tests.js"></script>
         </template>
     </data>
 </openerp>

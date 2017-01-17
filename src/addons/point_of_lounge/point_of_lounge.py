@@ -1,15 +1,19 @@
-import openerp
-from openerp.osv import fields, osv
-from openerp import tools, SUPERUSER_ID
-from openerp.exceptions import UserError
-from functools import partial
-import uuid
-from openerp.tools.translate import _
-import time
+# -*- coding: utf-8 -*-
 import logging
-import openerp.addons.decimal_precision as dp
-from openerp import api, fields as Fields
+import psycopg2
+import time
 from datetime import datetime
+import uuid
+import sets
+from functools import partial
+import openerp
+import openerp.addons.decimal_precision as dp
+from openerp import tools, models, SUPERUSER_ID
+from openerp.osv import fields, osv
+from openerp.tools import float_is_zero
+from openerp.tools.translate import _
+from openerp.exceptions import UserError
+from openerp import api, fields as Fields
 
 _logger = logging.getLogger(__name__)
 
@@ -97,17 +101,17 @@ class lounge_config(osv.osv):
         return True
 
     def _get_group_lounge_manager(self, cr, uid, context=None):
-        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
-        if group:
-            return group[1]
-        else:
+        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
+        #if group:
+         #   return group[1]
+        #else:
             return False
 
     def _get_group_lounge_user(self, cr, uid, context=None):
-        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
-        if group:
-            return group[1]
-        else:
+        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
+        #if group:
+        #    return group[1]
+        #else:
             return False
 
     _columns = {
@@ -260,6 +264,7 @@ class lounge_config(osv.osv):
         return {'value': {'iface_print_auto': print_via_proxy}}
 
     """ Onchange Event """
+
 
 #menu products
 class product_template(osv.osv):
@@ -651,6 +656,87 @@ class lounge_order(osv.osv):
     _description = "Lounge"
     _order = "id desc"
 
+    def _process_order(self, cr, uid, order, context=None):
+        prec_acc = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
+        session = self.pool.get('lounge.session').browse(cr, uid, order['lounge_session_id'], context=context)
+
+        if session.state == 'closing_control' or session.state == 'closed':
+            session_id = self._get_valid_session(cr, uid, order, context=context)
+            session = self.pool.get('pos.session').browse(cr, uid, session_id, context=context)
+            order['lounge_session_id'] = session_id
+
+        order_id = self.create(cr, uid, self._order_fields(cr, uid, order, context=context), context)
+        journal_ids = set()
+
+        for payments in order['statement_ids']:
+            if not float_is_zero(payments[2]['amount'], precision_digits=prec_acc):
+                self.add_payment(cr, uid, order_id, self._payment_fields(cr, uid, payments[2], context=context),
+                                 context=context)
+            journal_ids.add(payments[2]['journal_id'])
+
+        if session.sequence_number <= order['sequence_number']:
+            session.write({'sequence_number': order['sequence_number'] + 1})
+            session.refresh()
+
+        if not float_is_zero(order['amount_return'], precision_digits=prec_acc):
+            cash_journal = session.cash_journal_id.id
+            if not cash_journal:
+                # Select for change one of the cash journals used in this payment
+                cash_journal_ids = self.pool['account.journal'].search(cr, uid, [
+                    ('type', '=', 'cash'),
+                    ('id', 'in', list(journal_ids)),
+                ], limit=1, context=context)
+                if not cash_journal_ids:
+                    # If none, select for change one of the cash journals of the POS
+                    # This is used for example when a customer pays by credit card
+                    # an amount higher than total amount of the order and gets cash back
+                    cash_journal_ids = [statement.journal_id.id for statement in session.statement_ids
+                                        if statement.journal_id.type == 'cash']
+                    if not cash_journal_ids:
+                        raise UserError(
+                            _("No cash statement found for this session. Unable to record returned cash."))
+                cash_journal = cash_journal_ids[0]
+            self.add_payment(cr, uid, order_id, {
+                'amount': -order['amount_return'],
+                'payment_date': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'payment_name': _('return'),
+                'journal': cash_journal,
+            }, context=context)
+
+        return order_id
+
+    def create_from_ui(self, cr, uid, orders, context=None):
+        submitted_references = [o['data']['name'] for o in orders]
+        existing_order_ids = self.search(cr, uid, [('lounge_reference', 'in', submitted_references)],
+                                             context=context)
+        existing_orders = self.read(cr, uid, existing_order_ids, ['lounge_reference'], context=context)
+        existing_references = set([o['lounge_reference'] for o in existing_orders])
+        orders_to_save = [o for o in orders if o['data']['name'] not in existing_references]
+        order_ids = []
+
+        for tmp_order in orders_to_save:
+            to_invoice = tmp_order['to_invoice']
+            order = tmp_order['data']
+
+            if to_invoice:
+                self._match_payment_to_invoice(cr, uid, order, context=context)
+
+            order_id = self._process_order(cr, uid, order, context=context)
+            order_ids.append(order_id)
+            try:
+                self.signal_workflow(cr, uid, [order_id], 'paid')
+            except psycopg2.OperationalError:
+                #do not hide transactional errors, the order(s) won't be saved!
+                 raise
+            except Exception as e:
+                _logger.error('Could not fully process the POS Order: %s', tools.ustr(e))
+
+            if to_invoice:
+                self.action_invoice(cr, uid, [order_id], context)
+                order_obj = self.browse(cr, uid, order_id, context)
+                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [order_obj.invoice_id.id],'invoice_open')
+        return order_ids
+
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=True, select=True),
@@ -689,7 +775,6 @@ class lounge_order(osv.osv):
         'account_move': fields.many2one('account.move', 'Journal Entry', readonly=True, copy=False),
         'picking_type_id': fields.related('session_id', 'config_id', 'picking_type_id', string="Picking Type",
                                           type='many2one', relation='stock.picking.type'),
-
     }
 
     """
@@ -1254,6 +1339,38 @@ class lounge_order(osv.osv):
             self.pool.get("account.move").post(cr, SUPERUSER_ID, [move_id], context=context)
 
         return True
+
+    def _get_valid_session(self, cr, uid, order, context=None):
+        session = self.pool.get('lounge.session')
+        closed_session = session.browse(cr, uid, order['lounge_session_id'], context=context)
+        open_sessions = session.search(cr, uid, [('state', '=', 'opened'),
+                                                 ('config_id', '=', closed_session.config_id.id),
+                                                 ('user_id', '=', closed_session.user_id.id)],
+                                       limit=1, order="start_at DESC", context=context)
+
+        _logger.warning('session %s (ID: %s) was closed but received order %s (total: %s) belonging to it',
+                        closed_session.name,
+                        closed_session.id,
+                        order['name'],
+                        order['amount_total'])
+
+        if open_sessions:
+            open_session = session.browse(cr, uid, open_sessions[0], context=context)
+            _logger.warning('using session %s (ID: %s) for order %s instead',
+                            open_session.name,
+                            open_session.id,
+                            order['name'])
+            return open_session.id
+        else:
+            _logger.warning('attempting to create new session for order %s', order['name'])
+            new_session_id = session.create(cr, uid, {
+                'config_id': closed_session.config_id.id,
+            }, context=context)
+            new_session = session.browse(cr, uid, new_session_id, context=context)
+            # bypass opening_control (necessary when using cash control)
+            new_session.signal_workflow('open')
+            return new_session_id
+
 
 class lounge_order_line(osv.osv):
     _name = "lounge.order.line"

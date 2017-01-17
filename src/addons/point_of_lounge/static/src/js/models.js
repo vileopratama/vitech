@@ -28,7 +28,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	// this is done asynchronously, a ready deferred alows the GUI to wait interactively
 	// for the loading to be completed
 	// There is a single instance of the PosModel for each Front-End instance, it is usually called
-	// 'pos' and is available to all widgets extending PosWidget.
+	// 'lounge' and is available to all widgets extending PosWidget.
 
 	exports.LoungeModel = Backbone.Model.extend({
 	    initialize: function(session, attributes) {
@@ -248,8 +248,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	       },
 	    },{
 	        model:  'res.users',
-	        fields: ['name','pos_security_pin','groups_id','barcode'],
-	        domain: function(self){ return [['company_id','=',self.user.company_id[0]],'|', ['groups_id','=', self.config.group_pos_manager_id[0]],['groups_id','=', self.config.group_pos_user_id[0]]]; },
+	        fields: ['name','lounge_security_pin','groups_id','barcode'],
+	        domain: function(self){ return [['company_id','=',self.user.company_id[0]],'|', ['groups_id','=', self.config.group_lounge_manager_id[0]],['groups_id','=', self.config.group_lounge_user_id[0]]]; },
 	        loaded: function(self,users){
 	            // we attribute a role to the user, 'cashier' or 'manager', depending
 	            // on the group the user belongs.
@@ -258,10 +258,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	                var user = users[i];
 	                for (var j = 0; j < user.groups_id.length; j++) {
 	                    var group_id = user.groups_id[j];
-	                    if (group_id === self.config.group_pos_manager_id[0]) {
+	                    if (group_id === self.config.group_lounge_manager_id[0]) {
 	                        user.role = 'manager';
 	                        break;
-	                    } else if (group_id === self.config.group_pos_user_id[0]) {
+	                    } else if (group_id === self.config.group_lounge_user_id[0]) {
 	                        user.role = 'cashier';
 	                    }
 	                }

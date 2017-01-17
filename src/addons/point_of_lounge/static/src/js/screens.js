@@ -24,7 +24,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.hidden = false;
 	    },
 
-	    barcode_product_screen:         'products',     //if defined, this screen will be loaded when a product is scanned
+	    barcode_product_screen:'products',     //if defined, this screen will be loaded when a product is scanned
 
 	    // what happens when a product is scanned :
 	    // it will add the product to the order and go to barcode_product_screen.

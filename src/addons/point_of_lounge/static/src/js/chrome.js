@@ -13,7 +13,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 	var QWeb = core.qweb;
 
 	var OrderSelectorWidget = PosBaseWidget.extend({
-	    template: 'OrderSelectorWidget',
+	    template: 'OrderSelectorWidget2',
 	    init: function(parent, options) {
 	        this._super(parent, options);
 	        this.lounge.get('orders').bind('add remove change',this.renderElement,this);
@@ -630,7 +630,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 	            'name':   'proxy_status',
 	            'widget': ProxyStatusWidget,
 	            'append':  '.pos-rightheader',
-	            'condition': function(){ return this.pos.config.use_proxy; },
+	            'condition': function(){ return this.lounge.config.use_proxy; },
 	        },{
 	            'name':   'notification',
 	            'widget': SynchNotificationWidget,

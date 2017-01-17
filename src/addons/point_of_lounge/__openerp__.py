@@ -11,13 +11,14 @@
     'depends': ['sale_stock', 'barcodes'],
     'data': [
         'data/report_paperformat.xml',
+        'module/module_data.xml',
         'security/point_of_lounge_security.xml',
         'security/ir.model.access.csv',
         'wizard/lounge_box.xml',
         'wizard/lounge_payment.xml',
         'point_of_lounge_report.xml',
         'point_of_lounge_view.xml',
-        'point_of_lounge_data.xml',
+        #'point_of_lounge_data.xml',
         'point_of_lounge_workflow.xml',
         'res_config_view.xml',
         'account_statement_view.xml',
@@ -33,5 +34,8 @@
     ],
     'installable': True,
     'application': True,
+    'qweb': [
+        'static/src/xml/pos.xml'
+    ],
     'auto_install': False,
 }
