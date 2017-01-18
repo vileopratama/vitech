@@ -614,7 +614,7 @@ td {
     margin-right: 0;
     text-align: center;
     vertical-align: top;
-    width: 45%;
+    width: 38%;
     border: none;
     border-radius: 0;
 }
@@ -627,10 +627,10 @@ td {
     margin-top: 8px;
     margin-left: 0px;
     border: none;
-    width:45%;
+    width:38%;
 }
 
-.pos .actionFromTime > input,.pos .actionToTime > input{
+/*.pos .actionFromTime > input,.pos .actionToTime > input{
 	display: block;
     width: 100%;
     height: 34px;
@@ -648,7 +648,7 @@ td {
     -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
-/*  ********* The actionpad (payment, set customer) ********* */
+ ********* The actionpad (payment, set customer) ********* */
 
 .pos .actionpad {
     display: inline-block;
@@ -897,10 +897,9 @@ td {
     right: 2px;
 }
 .pos .searchbox input {
-    width: 100px;
+    width: 400px;
     border: 1px solid #cecbcb;
-    padding: 10px 20px;
-    padding-left: 38px;
+    padding: 10px 20px 5px 38px;
     margin: 6px;
     background: url("../img/search.png") no-repeat 15px;
     background-color: white;
@@ -2438,4 +2437,8 @@ td {
 }
 .pos .not-supported-browser img{
     border-collapse: separate;
+}
+
+.x-input-group {
+    margin: 16px 16px 16px 16px;
 }

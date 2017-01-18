@@ -106,12 +106,24 @@
     </t>
 
     <t t-name="LoungeActionpadWidget">
-	    <div class="actionFromTime">
-			<input type="text" class="timepicker" id="date_from" placeholder='Date From'></input>
-	    </div>
-
-	    <div class="actionToTime">
-			 <input type="text" class="timepicker" id="date_to" placeholder='Date To'></input>
+	    <div class="actionTime">
+            <div class="x-input-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class='input-group date' id='from_date'>
+                                <input type='text' class="form-control" t-field="o.event_time" t-field-options='{"widget": "float_time"}'></input>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <field name="date" />
+                    </div>
+                </div>
+            </div>
 	    </div>
 
         <div class="actionpad">

@@ -7,11 +7,15 @@
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/lounge.css" id="lounge-stylesheet"/>
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/keyboard.css" />
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/wickedpicker.css" />
-
-            <script type="text/javascript" src="/point_of_lounge/static/src/js/wickedpicker.js"></script>
+            <link rel="stylesheet" href="/point_of_lounge/static/src/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="/point_of_lounge/static/src/css/bootstrap-datetimepicker.min.css" />
+            <script type="text/javascript" src="/point_of_lounge/static/src/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="/point_of_lounge/static/src/js/bootstrap-datetimepicker.min.js"></script>
             <script type="text-javascript">
                 $(function () {
-                    jQuery("#date_from").wickedpicker();
+                    $("#from_date").datetimepicker({
+                        format: 'LT'
+                    });
                 });
             </script>
             <script type="text/javascript" src="/point_of_lounge/static/lib/fastclick.js"></script>
@@ -27,6 +31,7 @@
             <script type="text/javascript" src="/point_of_lounge/static/src/js/popups.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/src/js/screens.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/src/js/tests.js"></script>
+
 
         </template>
     </data>
