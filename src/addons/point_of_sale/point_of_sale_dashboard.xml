@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
+
     <record id="action_pos_session_filtered" model="ir.actions.act_window">
         <field name="name">Sessions</field>
         <field name="type">ir.actions.act_window</field>
@@ -98,8 +99,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="container o_kanban_card_manage_pane o_invisible">
+                            </div><div class="container o_kanban_card_manage_pane o_invisible">
                                 <div class="row">
                                     <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view">
                                         <div class="o_kanban_card_manage_title">

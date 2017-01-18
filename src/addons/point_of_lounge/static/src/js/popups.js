@@ -51,7 +51,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 	    },
 
 	    // hides the popup. keep in mind that this is called in
-	    // the initialization pass of the pos instantiation,
+	    // the initialization pass of the lounge instantiation,
 	    // so you don't want to do anything fancy in here
 	    hide: function(){
 	        if (this.$el) {
@@ -105,7 +105,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 	        this.$('.email').off('click').click(function(){
 	            self.gui.send_email( self.lounge.company.email,
-	                _t('IMPORTANT: Bug Report From Odoo Point Of Sale'),
+	                _t('IMPORTANT: Bug Report From Vitech Lounge'),
 	                self.options.body);
 	        });
 	    }

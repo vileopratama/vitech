@@ -109,7 +109,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 
 	/* -------- The Header Button --------- */
 	// Used to quickly add buttons with simple
-	// labels and actions to the point of sale
+	// labels and actions to the lounge
 	// header.
 
 	var HeaderButtonWidget = PosBaseWidget.extend({
@@ -260,7 +260,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 	        this.$('.button.delete_unpaid_orders').click(function(){
 	            self.gui.show_popup('confirm',{
 	                'title': _t('Delete Unpaid Orders ?'),
-	                'body':  _t('This operation will permanently destroy all unpaid orders from all sessions that have been put in the local storage. You will lose all the data and exit the point of sale. This operation cannot be undone.'),
+	                'body':  _t('This operation will permanently destroy all unpaid orders from all sessions that have been put in the local storage. You will lose all the data and exit the lounge. This operation cannot be undone.'),
 	                confirm: function(){
 	                    self.lounge.db.remove_all_unpaid_orders();
 	                    window.location = '/';
@@ -304,7 +304,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 
 	/* --------- The Status Widget -------- */
 	// Base class for widgets that want to display
-	// status in the point of sale header.
+	// status in the point of lounge header.
 	var StatusWidget = PosBaseWidget.extend({
 	    status: ['connected','connecting','disconnected','warning','error'],
 	    set_status: function(status,msg){
@@ -569,7 +569,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 
 	        if(err.message === 'XmlHttpRequestError '){
 	            title = 'Network Failure (XmlHttpRequestError)';
-	            body  = 'The Point of Sale could not be loaded due to a network problem.\n Please check your internet connection.';
+	            body  = 'The Lounge could not be loaded due to a network problem.\n Please check your internet connection.';
 	        }else if(err.message === 'OpenERP Server Error'){
 	            title = err.data.message;
 	            body  = err.data.debug;

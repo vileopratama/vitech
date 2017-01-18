@@ -344,7 +344,7 @@ class pos_session(osv.osv):
 
     POS_SESSION_STATE = [
         ('opening_control', 'Opening Control'),  # Signal open
-        ('opened', 'In Progress'),               # Signal closing
+        ('opened', 'In Progress'),                    # Signal closing
         ('closing_control', 'Closing Control'),  # Signal close
         ('closed', 'Closed & Posted'),
     ]
@@ -392,7 +392,7 @@ class pos_session(osv.osv):
 
         'state' : fields.selection(POS_SESSION_STATE, 'Status',
                 required=True, readonly=True,
-                select = 1, copy=False),
+                select=1, copy=False),
         'rescue': fields.boolean('Rescue session', readonly=True,
                                  help="Auto-generated session for orphan orders, ignored in constraints"),
         'sequence_number': fields.integer('Order Sequence Number', help='A sequence number that is incremented with each order'),
@@ -539,7 +539,7 @@ class pos_session(osv.osv):
         values.update({
             'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'pos.session', context=context),
             'statement_ids': [(6, 0, statements)],
-            'config_id': config_id,
+            'config_id': config_id
         })
 
         return super(pos_session, self).create(cr, is_pos_user and SUPERUSER_ID or uid, values, context=context)
@@ -572,7 +572,7 @@ class pos_session(osv.osv):
         return self.write(cr, uid, ids, {'state' : 'opening_control'}, context=context)
 
     def wkf_action_closing_control(self, cr, uid, ids, context=None):
-        for session2 in self.browse(cr, uid, ids, context=context):
+        for session in self.browse(cr, uid, ids, context=context):
             for statement in session.statement_ids:
                 if (statement != session.cash_register_id) and (statement.balance_end != statement.balance_end_real):
                     self.pool.get('account.bank.statement').write(cr, uid, [statement.id], {'balance_end_real': statement.balance_end})

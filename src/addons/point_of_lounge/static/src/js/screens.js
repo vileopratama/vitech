@@ -807,7 +807,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	// Above the numpad and the actionpad, buttons
 	// for extra actions and controls by point of
-	// sale extensions modules.
+	// lounge extensions modules.
 
 	var action_button_classes = [];
 	var define_action_button = function(classe, options){
@@ -1320,7 +1320,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	// The receipt screen displays the order's
 	// receipt and allows it to be printed in a web browser.
-	// The receipt screen is not shown if the point of sale
+	// The receipt screen is not shown if the point of lounge
 	// is set up to print with the proxy. Altough it could
 	// be useful to do so...
 

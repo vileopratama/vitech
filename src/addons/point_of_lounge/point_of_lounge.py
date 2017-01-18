@@ -354,7 +354,7 @@ class lounge_session(osv.osv):
         'sequence_number': fields.integer('Order Sequence Number',
                                           help='A sequence number that is incremented with each order'),
         'login_number': fields.integer('Login Sequence Number',
-                                       help='A sequence number that is incremented each time a user resumes the pos session'),
+                                       help='A sequence number that is incremented each time a user resumes the lounge session'),
         'journal_ids': fields.related('config_id', 'journal_ids',
                                       type='many2many',
                                       readonly=True,
@@ -662,7 +662,7 @@ class lounge_order(osv.osv):
 
         if session.state == 'closing_control' or session.state == 'closed':
             session_id = self._get_valid_session(cr, uid, order, context=context)
-            session = self.pool.get('pos.session').browse(cr, uid, session_id, context=context)
+            session = self.pool.get('lounge.session').browse(cr, uid, session_id, context=context)
             order['lounge_session_id'] = session_id
 
         order_id = self.create(cr, uid, self._order_fields(cr, uid, order, context=context), context)

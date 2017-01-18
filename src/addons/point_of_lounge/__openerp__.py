@@ -3,7 +3,7 @@
     'name': "Point Of Lounge",
     'summary': "Short subtitle phrase",
     'description': """Long description""",
-    'author': "Your name",
+    'author': "Suhendar",
     'license': "AGPL-3",
     'website': "http://www.example.com",
     'category': 'Sales',
@@ -26,7 +26,7 @@
         'views/templates.xml',
         'views/point_of_lounge.xml',
         'res_users_view.xml',
-
+        'point_of_lounge.xml',
         'point_of_lounge_dashboard.xml',
     ],
     'demo': [
@@ -35,7 +35,7 @@
     'installable': True,
     'application': True,
     'qweb': [
-        'static/src/xml/pos.xml'
+        'static/src/xml/lounge.xml'
     ],
     'auto_install': False,
 }

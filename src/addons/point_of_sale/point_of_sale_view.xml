@@ -189,7 +189,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="context" eval="{}"/>
-            <field name="domain" eval="[('available_in_lounge','&lt;&gt;',False)]"/>
+            <field name="domain" eval="[('available_in_pos','&lt;&gt;',False)]"/>
             <field name="search_view_id" eval="False"/> <!-- Force empty -->
             <field name="view_id" eval="False"/> <!-- Force empty -->
             <field name="help" type="html">
@@ -206,7 +206,6 @@
               </p>
             </field>
         </record>
-
         <menuitem
             action="product_template_action"
             id="menu_pos_products"
@@ -491,6 +490,8 @@
             <field name="domain">[('date_order','like',time.strftime('%Y-%m'))]</field>
         </record>
 
+
+
         <!-- Product Public Categories -->
         <record id="product_pos_category_form_view" model="ir.ui.view">
             <field name="name">pos.category.form</field>
@@ -769,6 +770,8 @@
             res_model="pos.order"
             context="{'search_default_session_id': active_id, 'default_session_id' : active_id }" />
 
+
+
         <record model="ir.ui.view" id="view_pos_session_form">
             <field name="name">pos.session.form.view</field>
             <field name="model">pos.session</field>
@@ -783,10 +786,11 @@
                         <button name="cashbox_control" type="workflow" string="End of Session"
                             attrs="{'invisible' : ['|', ('cash_control', '=', False),('state', '!=', 'opened')]}" 
                             class="oe_highlight" />
-                        <button name="closex" type="workflow" string="Val Closing &amp; Post Entries"
+                        <button name="close" type="workflow" string="Validate Closing &amp; Post Entries"
                             attrs="{'invisible' : ['|', ('cash_control', '=', True),('state', '!=', 'opened')]}"
                             class="oe_highlight" />
-                        <button name="close" type="workflow" string="Validate Closing &amp; Post Entries" states="closing_control" class="oe_highlight" />
+                        <button name="close" type="workflow" string="Validate Closing &amp; Post Entries" states="closing_control"
+                            class="oe_highlight" />
                         
                         <field name="state" widget="statusbar" statusbar_visible="opening_control,opened,closing_control,closed" nolabel="1" />
                         
@@ -876,6 +880,7 @@
                                 <field name="state" />
                             </tree>
                         </field>
+
                     </sheet>
                 </form>
             </field>

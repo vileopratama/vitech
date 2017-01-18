@@ -4,7 +4,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	var core = require('web.core');
 
 	var PosDB = core.Class.extend({
-	    name: 'openerp_pos_db', //the prefix of the localstorage data
+	    name: 'openerp_lounge_db', //the prefix of the localstorage data
 	    limit: 100,  // the maximum number of results returned by a search
 	    init: function(options){
 	        options = options || {};
@@ -122,7 +122,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    category_contains: function(categ_id, product_id) {
 	        var product = this.product_by_id[product_id];
 	        if (product) {
-	            var cid = product.pos_categ_id[0];
+	            var cid = product.lounge_categ_id[0];
 	            while (cid && cid !== categ_id){
 	                cid = this.category_parent[cid];
 	            }

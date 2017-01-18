@@ -83,7 +83,7 @@ var JobQueue = function(){
 
 
 // this object interfaces with the local proxy to communicate to the various hardware devices
-// connected to the Point of Sale. As the communication only goes from the POS to the proxy,
+// connected to the Point of Sale. As the communication only goes from the LOUNGE to the proxy,
 // methods are used both to signal an event, and to fetch information.
 
 var ProxyDevice  = core.Class.extend(core.mixins.PropertiesMixin,{
@@ -494,7 +494,7 @@ var BarcodeReader = core.Class.extend({
     // that sets the callback for each action. if a callback for the
     // specified action already exists, it is replaced.
     //
-    // possible actions include :
+    // all actions include :
     // 'product' | 'cashier' | 'client' | 'discount'
     set_action_callback: function(action, callback){
         if(arguments.length == 2){

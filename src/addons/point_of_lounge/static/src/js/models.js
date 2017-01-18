@@ -20,7 +20,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	var exports = {};
 
-	// The PosModel contains the Point Of Sale's representation of the backend.
+	// The PosModel contains Lounge representation of the backend.
 	// Since the PoS must work in standalone ( Without connection to the server )
 	// it must contains a representation of the server's PoS backend.
 	// (taxes, product list, configuration options, etc.)  this representation
@@ -86,8 +86,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.bind('change:selectedOrder', update_client, this);
 
 	        // We fetch the backend data on the server asynchronously. this is done only when the pos user interface is launched,
-	        // Any change on this data made on the server is thus not reflected on the point of sale until it is relaunched.
-	        // when all the data has loaded, we compute some stuff, and declare the Pos ready to be used.
+	        // Any change on this data made on the server is thus not reflected on the lounge  until it is relaunched.
+	        // when all the data has loaded, we compute some stuff, and declare the Lounge ready to be used.
 	        this.ready = this.load_server_data().then(function(){
 	            return self.after_load_server_data();
 	        });
@@ -236,7 +236,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	                                    self.config.iface_cashdrawer;
 
 	            if (self.config.company_id[0] !== self.user.company_id[0]) {
-	                throw new Error(_t("Error: The Point of Sale User must belong to the same company as the Point of Sale. You are probably trying to load the point of sale as an administrator in a multi-company setup, with the administrator account set to the wrong company."));
+	                throw new Error(_t("Error: The Longe User must belong to the same company as the Point of Lounge. You are probably trying to load the point of sale as an administrator in a multi-company setup, with the administrator account set to the wrong company."));
 	            }
 
 	            self.db.set_uuid(self.config.uuid);
@@ -967,7 +967,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	});
 
 	// Add fields to the list of read fields when a model is loaded
-	// by the point of sale.
+	// by the lounge
 	// e.g: module.load_fields("product.product",['price','category'])
 
 	exports.load_fields = function(model_name, fields) {
@@ -988,7 +988,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    }
 	};
 
-	// Loads openerp models at the point of sale startup.
+	// Loads openerp models at the point of lounge startup.
 	// load_models take an array of model loader declarations.
 	// - The models will be loaded in the array order.
 	// - If no openerp model name is provided, no server data
@@ -1081,7 +1081,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    init_from_JSON: function(json) {
 	        this.product = this.lounge.db.get_product_by_id(json.product_id);
 	        if (!this.product) {
-	            console.error('ERROR: attempting to recover product not available in the point of sale');
+	            console.error('ERROR: attempting to recover product not available in the lounge');
 	        }
 	        this.price = json.price_unit;
 	        this.set_discount(json.discount);
@@ -1484,7 +1484,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	// An order more or less represents the content of a client's shopping cart (the OrderLines)
 	// plus the associated payment information (the Paymentlines)
-	// there is always an active ('selected') order in the Pos, a new one is created
+	// there is always an active ('selected') order in the Lounge, a new one is created
 	// automaticaly once an order is completed and sent to the server.
 	exports.Order = Backbone.Model.extend({
 	    initialize: function(attributes,options){

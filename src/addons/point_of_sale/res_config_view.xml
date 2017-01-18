@@ -26,7 +26,6 @@
                 </form>
             </field>
         </record>
-
         <record id="action_pos_configuration" model="ir.actions.act_window">
             <field name="name">Configure Point of Sale</field>
             <field name="res_model">pos.config.settings</field>

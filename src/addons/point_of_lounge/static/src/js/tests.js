@@ -3,7 +3,7 @@ odoo.define('point_of_lounge.Tour', function (require) {
 	var Tour = require('web.Tour');
 
 	Tour.register({
-	    id: 'pos_basic_order',
+	    id: 'lounge_basic_order',
 	    name: 'Complete a basic order trough the Front-End',
 	    path: '/web#model=lounge.config&action=point_of_lounge.action_lounge_config_kanban',
 	    mode: 'test',
@@ -26,8 +26,9 @@ odoo.define('point_of_lounge.Tour', function (require) {
 	            waitFor: '.loader:hidden',
 	        },
 	        {
-	            title: 'Loading The Point of Sale',
-	            waitFor: '.pos',
+	            title: 'Loading The Point of :Lounge',
+	            waitFor: '.lounge',
+	            //waitFor: '.pos',
 	        },
 	        {
 	            title: 'On va manger des CHIPS!',
@@ -76,7 +77,7 @@ odoo.define('point_of_lounge.Tour', function (require) {
 	            waitFor: ".oe_status.js_synch .js_connected:visible",
 	        },
 	        {
-	            title: "Let's close the Point of Sale",
+	            title: "Let's close the Point of Lounge",
 	            element: ".header-button:contains('Close')",
 	        },
 	        {

@@ -6,6 +6,7 @@
       <field name="osv">pos.order</field>
       <field name="on_create">True</field>
     </record>
+
 <!--Activities-->
 
     <record model="workflow.activity" id="act_draft">
@@ -44,6 +45,7 @@
       <field name="action">action_cancel()</field>
       <field name="kind">function</field>
     </record>
+
 
 <!--Transitions-->
 
@@ -166,5 +168,8 @@
       <field name="act_to" ref="act_close" />
       <field name="condition">cash_control == False</field>
     </record>
+
+
+
   </data>
 </openerp>
