@@ -10,6 +10,7 @@
                      <meta name="viewport" content=" width=1024, user-scalable=no"/>
                      <meta name="apple-mobile-web-app-capable" content="yes"/>
                      <meta name="mobile-web-app-capable" content="yes"/>
+                     <meta charset="utf-8" />
                      <link rel="shortcut icon" sizes="196x196" href="/point_of_lounge/static/src/img/touch-icon-196.png"/>
                      <link rel="shortcut icon" sizes="128x128" href="/point_of_lounge/static/src/img/touch-icon-128.png"/>
                      <link rel="apple-touch-icon" href="/point_of_lounge/static/src/img/touch-icon-iphone.png"/>
