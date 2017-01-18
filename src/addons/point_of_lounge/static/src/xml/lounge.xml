@@ -107,11 +107,11 @@
 
     <t t-name="ActionpadWidget">
 	    <div class="actionFromTime">
-			<input class="timepicker" id="date_from" placeholder='Date From'></input>
+			<input type="text" class="timepicker" id="date_from" placeholder='Date From'></input>
 	    </div>
 
 	    <div class="actionToTime">
-			 <input class="timepicker" id="date_to" placeholder='Date To'></input>
+			 <input type="text" class="timepicker" id="date_to" placeholder='Date To'></input>
 	    </div>
 
         <div class="actionpad">
