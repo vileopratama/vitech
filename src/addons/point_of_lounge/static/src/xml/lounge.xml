@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="ui_template" xml:space="preserve">
-    <t t-name="Chrome">
+    <t t-name="LoungeChrome">
         <div class="pos">
             <div class="pos-topheader">
                 <div class="pos-branding">
@@ -47,7 +47,7 @@
         </div>
     </t>
 
-    <t t-name="SynchNotificationWidget">
+    <t t-name="LoungeSynchNotificationWidget">
         <div class="oe_status js_synch">
             <span class='js_msg oe_hidden'>0</span>
             <div class="js_connected oe_icon oe_green">
@@ -65,7 +65,7 @@
         </div>
     </t>
 
-    <t t-name="ProxyStatusWidget">
+    <t t-name="LoungeProxyStatusWidget">
         <div class="oe_status js_proxy">
             <span class='js_msg oe_orange oe_hidden'></span>
             <div class="js_connected oe_icon oe_green">
@@ -83,29 +83,29 @@
         </div>
     </t>
 
-    <t t-name="HeaderButtonWidget">
+    <t t-name="LoungeHeaderButtonWidget">
         <div class="header-button">
             <t t-esc="widget.label" />
         </div>
     </t>
 
-    <t t-name="PosCloseWarning">
+    <t t-name="LoungePosCloseWarning">
         <div>There are pending operations that could not be saved into the database, are you sure you want to exit?</div>
     </t>
 
-    <t t-name="ActionButtonWidget">
+    <t t-name="LoungeActionButtonWidget">
         <div class='control-button'>
             <t t-esc='widget.label' />
         </div>
     </t>
 
-    <t t-name="SetFiscalPositionButton">
+    <t t-name="LoungeSetFiscalPositionButton">
         <div class='control-button'>
             <i class='fa fa-book' /> Tax
         </div>
     </t>
 
-    <t t-name="ActionpadWidget">
+    <t t-name="LoungeActionpadWidget">
 	    <div class="actionFromTime">
 			<input type="text" class="timepicker" id="date_from" placeholder='Date From'></input>
 	    </div>
@@ -133,7 +133,7 @@
         </div>
     </t>
 
-    <t t-name="NumpadWidget">
+    <t t-name="LoungeNumpadWidget">
         <div class="numpad">
             <button class="input-button number-char">1</button>
             <button class="input-button number-char">2</button>
@@ -159,7 +159,7 @@
         </div>
     </t>
 
-    <t t-name="CategoryButton">
+    <t t-name="LoungeCategoryButton">
         <span class='category-button js-category-switch' t-att-data-category-id="category.id" >
             <div class="category-img">
                 <img t-att-src="image_url" />
@@ -170,13 +170,13 @@
         </span>
     </t>
 
-    <t t-name="CategorySimpleButton">
+    <t t-name="LoungeCategorySimpleButton">
         <span class='category-simple-button js-category-switch' t-att-data-category-id="category.id" >
             <t t-esc="category.name"/>
         </span>
     </t>
 
-    <t t-name="ProductCategoriesWidget">
+    <t t-name="LoungeProductCategoriesWidget">
         <div>
         <header class='rightpane-header'>
             <div class="breadcrumbs">
@@ -210,7 +210,7 @@
         </div>
     </t>
 
-    <t t-name="ProductListWidget">
+    <t t-name="LoungeProductListWidget">
         <div class='product-list-container'>
             <div class="product-list-scroller touch-scrollable">
                 <div class="product-list">
@@ -220,7 +220,7 @@
         </div>
     </t>
 
-    <t t-name="ProductScreenWidget">
+    <t t-name="LoungeProductScreenWidget">
         <div class="product-screen screen">
             <div class="leftpane">
                 <div class='window'>
@@ -266,7 +266,7 @@
         </div>
     </t>
 
-    <t t-name="ScaleScreenWidget">
+    <t t-name="LoungeScaleScreenWidget">
         <div class="scale-screen screen">
             <div class="screen-content">
                 <div class="top-content">
@@ -295,7 +295,7 @@
         </div>
     </t>
 
-    <t t-name="ClientLine">
+    <t t-name="LoungeClientLine">
         <tr class='client-line' t-att-data-id='partner.id'>
             <td><t t-esc='partner.name' /></td>
             <td><t t-esc='partner.address' /></td>
@@ -303,7 +303,7 @@
         </tr>
     </t>
 
-    <t t-name="ClientDetailsEdit">
+    <t t-name="LoungeClientDetailsEdit">
         <section class='client-details edit'>
             <div class='client-picture'>
                 <t t-if='!partner.id'>
@@ -366,7 +366,7 @@
             </div>
         </section>
     </t>
-    <t t-name="ClientDetails">
+    <t t-name="LoungeClientDetails">
         <section class='client-details'>
             <div class='client-picture'>
                 <img t-att-src='widget.partner_icon_url(partner.id)' />
@@ -419,7 +419,7 @@
         </section>
     </t>
 
-    <t t-name="ClientListScreenWidget">
+    <t t-name="LoungeClientListScreenWidget">
         <div class="clientlist-screen screen">
             <div class="screen-content">
                 <section class="top-content">
@@ -472,7 +472,7 @@
         </div>
     </t>
 
-    <t t-name="PaymentScreen-Paymentlines">
+    <t t-name="LoungePaymentScreen-Paymentlines">
         <t t-if="!paymentlines.length">
             <div class='paymentlines-empty'>
                 <div class='total'>
@@ -549,7 +549,7 @@
 
     </t>
 
-    <t t-name="PaymentScreen-Numpad">
+    <t t-name="LoungePaymentScreen-Numpad">
         <div class="numpad">
             <button class="input-button number-char" data-action='1'>1</button>
             <button class="input-button number-char" data-action='2'>2</button>
@@ -575,7 +575,7 @@
         </div>
     </t>
 
-    <t t-name="PaymentScreen-Paymentmethods">
+    <t t-name="LoungePaymentScreen-Paymentmethods">
         <div class='paymentmethods'>
             <t t-foreach="widget.lounge.cashregisters" t-as="cashregister">
                 <div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
@@ -586,7 +586,7 @@
 
     </t>
 
-    <t t-name="PaymentScreenWidget">
+    <t t-name="LoungePaymentScreenWidget">
         <div class='payment-screen screen'>
             <div class='screen-content'>
                 <div class='top-content'>
@@ -649,7 +649,7 @@
          </div>
      </t>
 
-    <t t-name="ReceiptScreenWidget">
+    <t t-name="LoungeReceiptScreenWidget">
         <div class='receipt-screen screen'>
             <div class='screen-content'>
                 <div class='top-content'>
@@ -670,7 +670,7 @@
         </div>
     </t>
 
-    <t t-name="XmlReceipt">
+    <t t-name="LoungeXmlReceipt">
         <receipt align='center' width='40' value-thousands-separator='' >
             <t t-if='receipt.company.logo'>
                 <img t-att-src='receipt.company.logo' />
@@ -836,7 +836,7 @@
         </receipt>
     </t>
 
-    <t t-name="PopupWidget">
+    <t t-name="LoungePopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-alert">
                 <p class="title"><t t-esc=" widget.options.title || 'Alert' " /></p>
@@ -850,7 +850,7 @@
         </div>
     </t>
 
-    <t t-name="ErrorPopupWidget">
+    <t t-name="LoungeErrorPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-error">
                 <p class="title"><t t-esc=" widget.options.title || 'Error' " /></p>
@@ -864,7 +864,7 @@
         </div>
     </t>
 
-    <t t-name="ErrorTracebackPopupWidget">
+    <t t-name="LoungeErrorTracebackPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-error">
                 <p class="title"><t t-esc=" widget.options.title || 'Error' " /></p>
@@ -884,7 +884,7 @@
         </div>
     </t>
 
-    <t t-name="ErrorBarcodePopupWidget">
+    <t t-name="LoungeErrorBarcodePopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-barcode">
                 <p class="title">Unknown Barcode
@@ -904,7 +904,7 @@
         </div>
     </t>
 
-    <t t-name="ConfirmPopupWidget">
+    <t t-name="LoungeConfirmPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-confirm">
                 <p class="title"><t t-esc=" widget.options.title || 'Confirm ?' " /></p>
@@ -921,7 +921,7 @@
         </div>
     </t>
 
-    <t t-name="TextInputPopupWidget">
+    <t t-name="LoungeTextInputPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-textinput">
                 <p class="title"><t t-esc=" widget.options.title || '' " /></p>
@@ -938,7 +938,7 @@
         </div>
     </t>
 
-    <t t-name="TextAreaPopupWidget">
+    <t t-name="LoungeTextAreaPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-textinput">
                 <p class="title"><t t-esc=" widget.options.title || '' " /></p>
@@ -955,7 +955,7 @@
         </div>
     </t>
 
-    <t t-name="SelectionPopupWidget">
+    <t t-name="LoungeSelectionPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-selection">
                 <p class="title"><t t-esc=" widget.options.title || 'Select' " /></p>
@@ -975,7 +975,7 @@
         </div>
     </t>
 
-    <t t-name="NumberPopupWidget">
+    <t t-name="LoungeNumberPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-number">
                 <p class="title"><t t-esc=" widget.options.title || '' " /></p>
@@ -1030,7 +1030,7 @@
         </div>
     </t>
 
-    <t t-name="OrderImportPopupWidget">
+    <t t-name="LoungeOrderImportPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-import">
                 <p class="title">Finished Importing Orders</p>
@@ -1087,7 +1087,7 @@
         </span>
     </t>
 
-    <t t-name="Orderline">
+    <t t-name="LoungeOrderline">
         <li t-attf-class="orderline #{ line.selected ? 'selected' : '' }">
             <span class="product-name">
                 <t t-esc="line.get_product().display_name"/>
@@ -1121,7 +1121,7 @@
         </li>
     </t>
 
-    <t t-name="OrderWidget">
+    <t t-name="LoungeOrderWidget">
         <div class="order-container">
             <div class="order-scroller touch-scrollable">
                 <div class="order">
@@ -1149,7 +1149,7 @@
 
 
 
-    <t t-name="DebugWidget">
+    <t t-name="LoungeDebugWidget">
         <div class="debug-widget oe_hidden">
             <h1>Debug Window</h1>
             <div class="toggle"><i class='fa fa-times' /></div>
@@ -1223,7 +1223,7 @@
         </tr>
     </t>
 
-    <t t-name="OrderSelectorWidget">
+    <t t-name="LoungeOrderSelectorWidget">
         <div class="order-selector">
             <span class="orders touch-scrollable">
 
@@ -1254,13 +1254,13 @@
         </div>
     </t>
 
-    <t t-name="UsernameWidget">
+    <t t-name="LoungeUsernameWidget">
         <span class="username">
             <t t-esc="widget.get_name()" />
         </span>
     </t>
 
-    <t t-name="PosTicket">
+    <t t-name="LoungePosTicket">
         <div class="pos-sale-ticket">
 
             <div class="pos-center-align"><t t-esc="moment().format('L LT')"/> <t t-esc="order.name"/></div>
@@ -1358,7 +1358,7 @@
 
     <!-- Onscreen Keyboard :
          http://net.tutsplus.com/tutorials/javascript-ajax/creating-a-keyboard-with-css-and-jquery/ -->
-    <t t-name="OnscreenKeyboardFull">
+    <t t-name="LoungeOnscreenKeyboardFull">
         <div class="keyboard_frame">
             <ul class="keyboard full_keyboard">
                 <li class="symbol"><span class="off">`</span><span class="on">~</span></li>
@@ -1420,7 +1420,7 @@
         </div>
     </t>
 
-    <t t-name="OnscreenKeyboardSimple">
+    <t t-name="LoungeOnscreenKeyboardSimple">
         <div class="keyboard_frame">
             <ul class="keyboard simple_keyboard">
                 <li class="symbol firstitem row_qwerty"><span class="off">q</span><span class="on">1</span></li>

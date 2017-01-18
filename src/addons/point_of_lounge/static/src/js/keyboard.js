@@ -17,14 +17,14 @@ var Widget = require('web.Widget');
 // automatically shown when the input_selector gets focused.
 
 var OnscreenKeyboardWidget = Widget.extend({
-    template: 'OnscreenKeyboardSimple',
+    template: 'LoungeOnscreenKeyboardSimple',
     init: function(parent, options){
         this._super(parent,options);
         options = options || {};
 
         this.keyboard_model = options.keyboard_model || 'simple';
         if(this.keyboard_model === 'full'){
-            this.template = 'OnscreenKeyboardFull';
+            this.template = 'LoungeOnscreenKeyboardFull';
         }
 
         this.input_selector = options.input_selector || '.searchbox input';

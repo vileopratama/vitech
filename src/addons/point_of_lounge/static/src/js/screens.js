@@ -215,7 +215,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// a product on the electronic scale.
 
 	var ScaleScreenWidget = ScreenWidget.extend({
-	    template:'ScaleScreenWidget',
+	    template:'LoungeScaleScreenWidget',
 
 	    next_screen: 'products',
 	    previous_screen: 'products',
@@ -329,7 +329,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// The numpad that edits the order lines.
 
 	var NumpadWidget = PosBaseWidget.extend({
-	    template:'NumpadWidget',
+	    template:'LoungeNumpadWidget',
 	    init: function(parent) {
 	        this._super(parent);
 	        this.state = new models.NumpadState();
@@ -370,7 +370,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// customer selection button
 
 	var ActionpadWidget = PosBaseWidget.extend({
-	    template: 'ActionpadWidget',
+	    template: 'LoungeActionpadWidget',
 	    init: function(parent, options) {
 	        var self = this;
 	        this._super(parent, options);
@@ -396,7 +396,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// Displays the current Order.
 
 	var OrderWidget = PosBaseWidget.extend({
-	    template:'OrderWidget',
+	    template:'LoungeOrderWidget',
 	    init: function(parent, options) {
 	        var self = this;
 	        this._super(parent,options);
@@ -470,7 +470,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	    },
 	    render_orderline: function(orderline){
-	        var el_str  = QWeb.render('Orderline',{widget:this, line:orderline});
+	        var el_str  = QWeb.render('LoungeOrderline',{widget:this, line:orderline});
 	        var el_node = document.createElement('div');
 	            el_node.innerHTML = _.str.trim(el_str);
 	            el_node = el_node.childNodes[0];
@@ -505,7 +505,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 	        var orderlines = order.get_orderlines();
 
-	        var el_str  = QWeb.render('OrderWidget',{widget:this, order:order, orderlines:orderlines});
+	        var el_str  = QWeb.render('LoungeOrderWidget',{widget:this, order:order, orderlines:orderlines});
 
 	        var el_node = document.createElement('div');
 	            el_node.innerHTML = _.str.trim(el_str);
@@ -551,7 +551,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	//  - clear_search()   does what it says.
 
 	var ProductCategoriesWidget = PosBaseWidget.extend({
-	    template: 'ProductCategoriesWidget',
+	    template: 'LoungeProductCategoriesWidget',
 	    init: function(parent, options){
 	        var self = this;
 	        this._super(parent,options);
@@ -616,7 +616,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        if(!cached){
 	            if(with_image){
 	                var image_url = this.get_image_url(category);
-	                var category_html = QWeb.render('CategoryButton',{
+	                var category_html = QWeb.render('LoungeCategoryButton',{
 	                        widget:  this,
 	                        category: category,
 	                        image_url: this.get_image_url(category),
@@ -626,7 +626,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                    category_node.innerHTML = category_html;
 	                    category_node = category_node.childNodes[0];
 	            }else{
-	                var category_html = QWeb.render('CategorySimpleButton',{
+	                var category_html = QWeb.render('LoungeCategorySimpleButton',{
 	                        widget:  this,
 	                        category: category,
 	                    });
@@ -734,7 +734,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	//   what to do when a product is clicked.
 
 	var ProductListWidget = PosBaseWidget.extend({
-	    template:'ProductListWidget',
+	    template:'LoungeProductListWidget',
 	    init: function(parent, options) {
 	        var self = this;
 	        this._super(parent,options);
@@ -835,7 +835,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	};
 
 	var ActionButtonWidget = PosBaseWidget.extend({
-	    template: 'ActionButtonWidget',
+	    template: 'LoungeActionButtonWidget',
 	    label: _t('Button'),
 	    renderElement: function(){
 	        var self = this;
@@ -857,7 +857,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	/* -------- The Product Screen -------- */
 
 	var ProductScreenWidget = ScreenWidget.extend({
-	    template:'ProductScreenWidget',
+	    template:'LoungeProductScreenWidget',
 
 	    start: function(){
 
@@ -932,7 +932,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// customers.
 
 	var ClientListScreenWidget = ScreenWidget.extend({
-	    template: 'ClientListScreenWidget',
+	    template: 'LoungeClientListScreenWidget',
 
 	    init: function(parent, options){
 	        this._super(parent, options);
@@ -1039,7 +1039,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var partner    = partners[i];
 	            var clientline = this.partner_cache.get_node(partner.id);
 	            if(!clientline){
-	                var clientline_html = QWeb.render('ClientLine',{widget: this, partner:partners[i]});
+	                var clientline_html = QWeb.render('LoungeClientLine',{widget: this, partner:partners[i]});
 	                var clientline = document.createElement('tbody');
 	                clientline.innerHTML = clientline_html;
 	                clientline = clientline.childNodes[1];
@@ -1262,7 +1262,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        if(visibility === 'show'){
 	            contents.empty();
-	            contents.append($(QWeb.render('ClientDetails',{widget:this,partner:partner})));
+	            contents.append($(QWeb.render('LoungeClientDetails',{widget:this,partner:partner})));
 
 	            var new_height   = contents.height();
 
@@ -1281,7 +1281,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        } else if (visibility === 'edit') {
 	            this.editing_client = true;
 	            contents.empty();
-	            contents.append($(QWeb.render('ClientDetailsEdit',{widget:this,partner:partner})));
+	            contents.append($(QWeb.render('LoungeClientDetailsEdit',{widget:this,partner:partner})));
 	            this.toggle_save_button();
 
 	            contents.find('.image-uploader').on('change',function(event){
@@ -1325,7 +1325,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// be useful to do so...
 
 	var ReceiptScreenWidget = ScreenWidget.extend({
-	    template: 'ReceiptScreenWidget',
+	    template: 'LoungeReceiptScreenWidget',
 	    show: function(){
 	        this._super();
 	        var self = this;
@@ -1369,7 +1369,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            receipt: this.lounge.get_order().export_for_printing(),
 	            paymentlines: this.lounge.get_order().get_paymentlines()
 	        };
-	        var receipt = QWeb.render('XmlReceipt',env);
+	        var receipt = QWeb.render('LoungeXmlReceipt',env);
 
 	        this.lounge.proxy.print_receipt(receipt);
 	        this.lounge.get_order()._printed = true;
@@ -1438,7 +1438,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_receipt: function() {
 	        var order = this.lounge.get_order();
-	        this.$('.pos-receipt-container').html(QWeb.render('PosTicket',{
+	        this.$('.pos-receipt-container').html(QWeb.render('LoungePosTicket',{
 	                widget:this,
 	                order: order,
 	                receipt: order.export_for_printing(),
@@ -1457,7 +1457,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// it is unfortunately quite complicated.
 
 	var PaymentScreenWidget = ScreenWidget.extend({
-	    template:      'PaymentScreenWidget',
+	    template:      'LoungePaymentScreenWidget',
 	    back_screen:   'product',
 	    init: function(parent, options) {
 	        var self = this;
@@ -1585,7 +1585,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_numpad: function() {
 	        var self = this;
-	        var numpad = $(QWeb.render('PaymentScreen-Numpad', { widget:this }));
+	        var numpad = $(QWeb.render('LoungePaymentScreen-Numpad', { widget:this }));
 	        numpad.on('click','button',function(){
 	            self.click_numpad($(this));
 	        });
@@ -1629,7 +1629,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 
 	        this.$('.paymentlines-container').empty();
-	        var lines = $(QWeb.render('PaymentScreen-Paymentlines', {
+	        var lines = $(QWeb.render('LoungePaymentScreen-Paymentlines', {
 	            widget: this,
 	            order: order,
 	            paymentlines: lines,
@@ -1660,7 +1660,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
-	        var methods = $(QWeb.render('PaymentScreen-Paymentmethods', { widget:this }));
+	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', { widget:this }));
 	            methods.on('click','.paymentmethod',function(){
 	                self.click_paymentmethods($(this).data('id'));
 	            });
@@ -1903,7 +1903,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	gui.define_screen({name:'payment', widget: PaymentScreenWidget});
 
 	var set_fiscal_position_button = ActionButtonWidget.extend({
-	    template: 'SetFiscalPositionButton',
+	    template: 'LoungeSetFiscalPositionButton',
 	    button_click: function () {
 	        var self = this;
 	        var selection_list = _.map(self.lounge.fiscal_positions, function (fiscal_position) {

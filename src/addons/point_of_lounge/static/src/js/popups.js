@@ -7,7 +7,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var PopupWidget = PosBaseWidget.extend({
-	    template: 'PopupWidget',
+	    template: 'LoungePopupWidget',
 	    init: function(parent, args) {
 	        this._super(parent, args);
 	        this.options = {};
@@ -84,7 +84,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 	gui.define_popup({name:'alert', widget: PopupWidget});
 
 	var ErrorPopupWidget = PopupWidget.extend({
-	    template:'ErrorPopupWidget',
+	    template:'LoungeErrorPopupWidget',
 	    show: function(options){
 	        this._super(options);
 	        this.gui.play_sound('error');
@@ -94,7 +94,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var ErrorTracebackPopupWidget = ErrorPopupWidget.extend({
-	    template:'ErrorTracebackPopupWidget',
+	    template:'LoungeErrorTracebackPopupWidget',
 	    show: function(opts) {
 	        var self = this;
 	        this._super(opts);
@@ -114,7 +114,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var ErrorBarcodePopupWidget = ErrorPopupWidget.extend({
-	    template:'ErrorBarcodePopupWidget',
+	    template:'LoungeErrorBarcodePopupWidget',
 	    show: function(barcode){
 	        this._super({barcode: barcode});
 	    },
@@ -123,7 +123,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var ConfirmPopupWidget = PopupWidget.extend({
-	    template: 'ConfirmPopupWidget',
+	    template: 'LoungeConfirmPopupWidget',
 	});
 	gui.define_popup({name:'confirm', widget: ConfirmPopupWidget});
 
@@ -146,7 +146,7 @@ odoo.define('point_of_lounge.popups', function (require) {
  */
 
 	var SelectionPopupWidget = PopupWidget.extend({
-	    template: 'SelectionPopupWidget',
+	    template: 'LoungeSelectionPopupWidget',
 	    show: function(options){
 	        options = options || {};
 	        var self = this;
@@ -168,7 +168,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var TextInputPopupWidget = PopupWidget.extend({
-	    template: 'TextInputPopupWidget',
+	    template: 'LoungeTextInputPopupWidget',
 	    show: function(options){
 	        options = options || {};
 	        this._super(options);
@@ -188,13 +188,13 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var TextAreaPopupWidget = TextInputPopupWidget.extend({
-	    template: 'TextAreaPopupWidget',
+	    template: 'LoungeTextAreaPopupWidget',
 	});
 	gui.define_popup({name:'textarea', widget: TextAreaPopupWidget});
 
 
 	var NumberPopupWidget = PopupWidget.extend({
-	    template: 'NumberPopupWidget',
+	    template: 'LoungeNumberPopupWidget',
 	    show: function(options){
 	        options = options || {};
 	        this._super(options);
@@ -235,7 +235,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 	gui.define_popup({name:'password', widget: PasswordPopupWidget});
 
 	var OrderImportPopupWidget = PopupWidget.extend({
-	    template: 'OrderImportPopupWidget',
+	    template: 'LoungeOrderImportPopupWidget',
 	});
 	gui.define_popup({name:'orderimport', widget: OrderImportPopupWidget});
 
