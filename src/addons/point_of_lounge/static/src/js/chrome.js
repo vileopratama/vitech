@@ -13,7 +13,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 	var QWeb = core.qweb;
 
 	var OrderSelectorWidget = PosBaseWidget.extend({
-	    template: 'OrderSelectorWidget2',
+	    template: 'OrderSelectorWidget',
 	    init: function(parent, options) {
 	        this._super(parent, options);
 	        this.lounge.get('orders').bind('add remove change',this.renderElement,this);

@@ -2,6 +2,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	"use strict";
 
 	var core = require('web.core');
+
 	var PosDB = core.Class.extend({
 	    name: 'openerp_pos_db', //the prefix of the localstorage data
 	    limit: 100,  // the maximum number of results returned by a search

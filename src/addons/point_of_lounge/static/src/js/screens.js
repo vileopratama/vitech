@@ -8,6 +8,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	var Model = require('web.DataModel');
 	var utils = require('web.utils');
 	var formats = require('web.formats');
+
 	var QWeb = core.qweb;
 	var _t = core._t;
 	var round_pr = utils.round_precision;
@@ -509,7 +510,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var el_node = document.createElement('div');
 	            el_node.innerHTML = _.str.trim(el_str);
 	            el_node = el_node.childNodes[0];
-
 
 	        var list_container = el_node.querySelector('.orderlines');
 	        for(var i = 0, len = orderlines.length; i < len; i++){

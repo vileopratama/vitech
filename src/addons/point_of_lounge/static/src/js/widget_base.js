@@ -6,6 +6,7 @@ odoo.define('point_of_lounge.BaseWidget', function (require) {
 	var Widget = require('web.Widget');
 
 	var round_di = utils.round_decimals;
+
 	var PosBaseWidget = Widget.extend({
 	    init:function(parent,options){
 	        this._super(parent);

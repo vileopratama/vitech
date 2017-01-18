@@ -3,6 +3,7 @@ odoo.define('point_of_lounge.devices', function (require) {
 
 var core = require('web.core');
 var Session = require('web.Session');
+
 var _t = core._t;
 // the JobQueue schedules a sequence of 'jobs'. each job is
 // a function returning a deferred. the queue waits for each job to finish
