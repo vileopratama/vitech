@@ -1417,7 +1417,7 @@ td {
     border-image-outset: initial;
     border-image-repeat: initial;
     background: rgba(255,255,255,0.4);
-    font-size: 20px;
+    font-size: 17px;
     transition: all 150ms linear;
 }
 .payment-screen .paymentlines-empty .total {
@@ -1717,6 +1717,7 @@ td {
     width: 75px;
     text-align: right;
     margin-right: 8px;
+    color:#333;
 }
 .pos .clientlist-screen .client-details input,
 .pos .clientlist-screen .client-details select
@@ -1746,9 +1747,10 @@ td {
     margin-left: -90px;
     margin-top:8px;
     left: 50%;
+
 }
 .pos .clientlist-screen .searchbox input{
-    width: 120px;
+    width: 200px;
 }
 .pos .clientlist-screen .button.new-customer {
     left: 50%;

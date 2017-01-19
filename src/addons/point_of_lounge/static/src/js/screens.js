@@ -384,20 +384,44 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this._super();
 	        this.$('#from_date').datetimepicker({
 	            minView: 2,
+	            useCurrent: true,
+	            pickDate: false,
 	            format: 'HH:mm',
 	            use24hours: true
 	        });
 	        this.$('#to_date').datetimepicker({
 	            minView: 2,
+	            useCurrent: true,
+	            pickDate: false,
 	            format: 'HH:mm',
 	            use24hours: true
 	        });
 	        this.$('.pay').click(function(){
-	            self.gui.show_screen('payment');
+	            self.save_time_changes();
+	            //self.gui.show_screen('payment');
 	        });
 	        this.$('.set-customer').click(function(){
 	            self.gui.show_screen('clientlist');
 	        });
+	    },
+	    save_time_changes: function(){
+	        var self = this;
+	        var booking_from_date = this.$('input[name="booking_from_date"]').val();
+	        var booking_to_date = this.$('input[name="booking_to_date"]').val();
+
+	        if (!booking_from_date) {
+	            this.gui.show_popup('error',_t('A Time From Is Required'));
+	            return;
+	        }
+
+	        if (!booking_to_date) {
+	            this.gui.show_popup('error',_t('A Time To Is Required'));
+	            return;
+	        }
+
+			this.lounge.get_order().set_booking_from_date(booking_from_date);
+			//this.lounge.get_order().set_booking_booking_to_date(booking_to_date);
+	        self.gui.show_screen('payment');
 	    }
 	});
 
@@ -1082,7 +1106,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            return;
 	        } else if( this.new_client ){
 	            if( !this.old_client){
-	                $button.text(_t('Set Customer'));
+	                $button.text(_t('Set This Customer'));
 	            }else{
 	                $button.text(_t('Change Customer'));
 	            }
@@ -1102,6 +1126,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            this.toggle_save_button();
 	        }else{
 	            this.$('.client-list .highlight').removeClass('highlight');
+	            //$line.addClass('highlight');
 	            $line.addClass('highlight');
 	            var y = event.pageY - $line.parent().offset().top;
 	            this.display_client_details('show',partner,y);

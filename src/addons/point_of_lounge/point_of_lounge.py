@@ -656,6 +656,28 @@ class lounge_order(osv.osv):
     _description = "Lounge"
     _order = "id desc"
 
+    def _order_fields(self, cr, uid, ui_order, context=None):
+        process_line = partial(self.pool['lounge.order.line']._order_line_fields, cr, uid, context=context)
+        return {
+            'name': ui_order['name'],
+            'user_id': ui_order['user_id'] or False,
+            'session_id': ui_order['lounge_session_id'],
+            'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
+            'pos_reference': ui_order['name'],
+            'partner_id': ui_order['partner_id'] or False,
+            'date_order': ui_order['creation_date'],
+            'fiscal_position_id': ui_order['fiscal_position_id']
+        }
+
+    def _payment_fields(self, cr, uid, ui_paymentline, context=None):
+	    return {
+			'amount': ui_paymentline['amount'] or 0.0,
+		    'payment_date': ui_paymentline['name'],
+		    'statement_id': ui_paymentline['statement_id'],
+		    'payment_name': ui_paymentline.get('note', False),
+		    'journal': ui_paymentline['journal_id'],
+	    }
+
     def _process_order(self, cr, uid, order, context=None):
         prec_acc = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
         session = self.pool.get('lounge.session').browse(cr, uid, order['lounge_session_id'], context=context)
@@ -740,6 +762,8 @@ class lounge_order(osv.osv):
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=True, select=True),
+	    'booking_from_date' : fields.datetime('Booking From', readonly=True, select=True),
+	    'booking_to_date': fields.datetime('Booking To', readonly=True, select=True),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
                                       select=1,
@@ -1378,6 +1402,12 @@ class lounge_order_line(osv.osv):
     _rec_name = "product_id"
 
     """Function"""
+    def _order_line_fields(self, cr, uid, line, context=None):
+        if line and 'tax_ids' not in line[2]:
+            product = self.pool['product.product'].browse(cr, uid, line[2]['product_id'], context=context)
+            line[2]['tax_ids'] = [(6, 0, [x.id for x in product.taxes_id])]
+        return line
+
     def _get_tax_ids_after_fiscal_position(self, cr, uid, ids, field_name, args, context=None):
         res = dict.fromkeys(ids, False)
         for line in self.browse(cr, uid, ids, context=context):

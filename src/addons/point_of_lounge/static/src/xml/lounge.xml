@@ -106,13 +106,13 @@
     </t>
 
     <t t-name="LoungeActionpadWidget">
-	    <div class="actionTime">
+	    <div class="action-time">
             <div class="x-input-group">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class='input-group date' id='from_date'>
-                                <input type='text' class="form-control" id="ono" ></input>
+                                <input readonly="true" type='text' class="form-control" name="booking_from_date" ></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
                                 </span>
@@ -122,7 +122,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class='input-group date' id='from_date'>
-                                <input type='text' class="form-control" id="ono" ></input>
+                                <input readonly="true" type='text' class="form-control" name="booking_to_date" ></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
                                 </span>
@@ -475,7 +475,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
-                                                <th>Address</th>
+                                                <th>Full Address</th>
                                                 <th>Phone</th>
                                             </tr>
                                         </thead>
@@ -602,7 +602,6 @@
                 </div>
             </t>
         </div>
-
     </t>
 
     <t t-name="LoungePaymentScreenWidget">
@@ -645,6 +644,26 @@
                                 </t>
                             </span>
                         </div>
+
+                        <div t-attf-class='button js_time'>
+	                        <span t-attf-class="fa">
+                                In
+	                        </span>
+                            12:30
+                        </div>
+
+                        <div t-attf-class='button js_time'>
+                             <span t-attf-class="fa">
+                                Out
+	                        </span>
+	                        <t t-if="widget.lounge.get_booking_from_date()">
+                                    <t t-esc="widget.lounge.get_booking_from_date()" />
+                                </t>
+                                <t t-if="!widget.lounge.get_booking_from_date()">
+                                    None
+                                </t>
+                        </div>
+
                         <t t-if='widget.lounge.config.iface_invoicing'>
                             <t t-if='widget.lounge.get_order()'>
                                 <div t-attf-class='button js_invoice #{ widget.lounge.get_order().is_to_invoice() ? "highlight" : ""} '>

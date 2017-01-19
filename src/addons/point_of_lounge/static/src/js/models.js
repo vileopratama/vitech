@@ -55,6 +55,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.users = [];
 	        this.partners = [];
 	        this.cashier = null;
+	        this.booking_from_date = null;
 	        this.cashregisters = [];
 	        this.taxes = [];
 	        this.lounge_session = null;
@@ -644,6 +645,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return order.get_client();
 	        }
 	        return null;
+	    },
+		// returns the user who is currently the cashier for this point of sale
+	    get_booking_from_date: function(){
+	        return this.booking_from_date;
+	    },
+	    // changes the current cashier
+	    set_booking_from_date: function(date){
+	        this.booking_from_date = date;
 	    },
 
 	    // change the current order
@@ -2063,6 +2072,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var client = this.get('client');
 	        return client ? client.name : "";
 	    },
+	    /*set_booking_from_date: function(booking_from_date) {
+	        this.assert_editable();
+	        this.set('booking_from_date',booking_from_date);
+	    },
+
+	    get_booking_from_date: function() {
+	        this.assert_editable();
+	        this.get('booking_from_date');
+	    },*/
+
 	    /* ---- Screen Status --- */
 	    // the order also stores the screen status, as the Lounge supports
 	    // different active screens per order. This method is used to
