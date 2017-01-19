@@ -32,6 +32,9 @@
     'demo': [
         #'demo.xml'
     ],
+    'css' : [
+        'static/src/lib/bootstrap/css/bootstrap.min.css',
+    ],
     'installable': True,
     'application': True,
     'qweb': [

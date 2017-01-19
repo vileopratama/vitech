@@ -382,6 +382,16 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    renderElement: function() {
 	        var self = this;
 	        this._super();
+	        this.$('#from_date').datetimepicker({
+	            minView: 2,
+	            format: 'HH:mm',
+	            use24hours: true
+	        });
+	        this.$('#to_date').datetimepicker({
+	            minView: 2,
+	            format: 'HH:mm',
+	            use24hours: true
+	        });
 	        this.$('.pay').click(function(){
 	            self.gui.show_screen('payment');
 	        });

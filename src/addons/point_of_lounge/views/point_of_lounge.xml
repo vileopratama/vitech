@@ -2,22 +2,15 @@
 <openerp>
     <data>
         <template id="assets" name="point_of_lounge assets">
+	        <link rel="stylesheet" href="/web/static/lib/bootstrap/css/bootstrap.min.css" />
             <link rel="stylesheet" href="/web/static/src/fonts/lato/stylesheet.css" />
             <link rel="stylesheet" href="/web/static/lib/fontawesome/css/font-awesome.css" />
+	        <link rel="stylesheet" href="/web/static/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" />
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/lounge.css" id="lounge-stylesheet"/>
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/keyboard.css" />
-            <link rel="stylesheet" href="/point_of_lounge/static/src/css/wickedpicker.css" />
-            <link rel="stylesheet" href="/point_of_lounge/static/src/css/bootstrap.min.css" />
-            <link rel="stylesheet" href="/point_of_lounge/static/src/css/bootstrap-datetimepicker.min.css" />
-
-            <link rel="stylesheet" href="/point_of_lounge/static/src/lib/jquery.timepicker/jquery.timepicker.css"/>
-            <link rel="stylesheet" href="/point_of_lounge/static/src/css/web_widget_timepicker.css"/>
-
-            <script type="text/javascript" src="/point_of_lounge/static/src/js/bootstrap.min.js"></script>
-
-            <script type="text/javascript" src="/point_of_lounge/static/src/lib/jquery.timepicker/jquery.timepicker.js"></script>
-            <script type="text/javascript" src="/point_of_lounge/static/src/js/web_widget_timepicker.js"></script>
-
+            <!--<link rel="stylesheet" href="/point_of_lounge/static/src/lib/bootstrap/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="/point_of_lounge/static/src/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
+			-->
             <script type="text/javascript" src="/point_of_lounge/static/lib/fastclick.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/lib/waitfont.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/src/js/main.js"></script>
