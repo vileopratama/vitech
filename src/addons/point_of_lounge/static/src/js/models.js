@@ -55,7 +55,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.users = [];
 	        this.partners = [];
 	        this.cashier = null;
-	        this.booking_from_date = null;
 	        this.cashregisters = [];
 	        this.taxes = [];
 	        this.lounge_session = null;
@@ -64,6 +63,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.units_by_id = {};
 	        this.pricelist = null;
 	        this.order_sequence = 1;
+	        this.booking_from_date = null;
 	        window.loungemodel = this;
 
 	        // these dynamic attributes can be watched for change by other models or widgets
@@ -639,6 +639,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return this.get('selectedOrder');
 	    },
 
+	    // return the current order
+	    get_order_client : function(){
+	        return this.get('selectedClient');
+	    },
+
 	    get_client: function() {
 	        var order = this.get_order();
 	        if (order) {
@@ -646,15 +651,18 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        return null;
 	    },
-		// returns the user who is currently the cashier for this point of sale
-	    get_booking_from_date: function(){
-	        return this.booking_from_date;
-	    },
-	    // changes the current cashier
-	    set_booking_from_date: function(date){
-	        this.booking_from_date = date;
+
+	    get_booking_from_date: function() {
+	        var order = this.get_order_client();
+	        if (order) {
+	            return order.booking_from_date;
+	        }
+	        return "ba";
 	    },
 
+	    set_booking_from_date: function(booking_from_date) {
+	        return this.booking_from_date = booking_from_date;
+	    },
 	    // change the current order
 	    set_order: function(order){
 	        this.set({ selectedOrder: order });
@@ -1505,6 +1513,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.selected_orderline   = undefined;
 	        this.selected_paymentline = undefined;
 	        this.screen_data    = {};  // see Gui
+	        this.booking_from_date = null;
 	        this.temporary      = options.temporary || false;
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
@@ -2072,16 +2081,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var client = this.get('client');
 	        return client ? client.name : "";
 	    },
-	    /*set_booking_from_date: function(booking_from_date) {
+	    set_booking_from_date: function(booking_from_date) {
 	        this.assert_editable();
-	        this.set('booking_from_date',booking_from_date);
+	        this.booking_from_date = booking_from_date;
 	    },
-
 	    get_booking_from_date: function() {
-	        this.assert_editable();
-	        this.get('booking_from_date');
-	    },*/
-
+	        return this.booking_from_date;
+	    },
 	    /* ---- Screen Status --- */
 	    // the order also stores the screen status, as the Lounge supports
 	    // different active screens per order. This method is used to

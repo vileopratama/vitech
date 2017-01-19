@@ -646,22 +646,27 @@
                         </div>
 
                         <div t-attf-class='button js_time'>
-	                        <span t-attf-class="fa">
+                             <span t-attf-class="fa">
                                 In
 	                        </span>
-                            12:30
+	                        <t t-if="widget.lounge.get_cashier()">
+                                <t t-esc="widget.lounge.get_cashier().name" />
+                            </t>
+                            <t t-if="!widget.lounge.get_cashier()">
+                                None
+                            </t>
                         </div>
 
                         <div t-attf-class='button js_time'>
                              <span t-attf-class="fa">
                                 Out
 	                        </span>
-	                        <t t-if="widget.lounge.get_booking_from_date()">
-                                    <t t-esc="widget.lounge.get_booking_from_date()" />
-                                </t>
-                                <t t-if="!widget.lounge.get_booking_from_date()">
-                                    None
-                                </t>
+	                        <t t-if="widget.lounge.get_order_client().get_booking_from_date()">
+                                <t t-esc="widget.lounge.get_order_client().get_booking_from_date()" />
+                            </t>
+                            <t t-if="!widget.lounge.get_order_client().get_booking_from_date()">
+                                None
+                            </t>
                         </div>
 
                         <t t-if='widget.lounge.config.iface_invoicing'>

@@ -374,10 +374,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    init: function(parent, options) {
 	        var self = this;
 	        this._super(parent, options);
-
+            //this.lounge.set_booking_from_date("xxx");
 	        this.lounge.bind('change:selectedClient', function() {
 	            self.renderElement();
 	        });
+
 	    },
 	    renderElement: function() {
 	        var self = this;
@@ -419,8 +420,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            return;
 	        }
 
-			this.lounge.get_order().set_booking_from_date(booking_from_date);
-			//this.lounge.get_order().set_booking_booking_to_date(booking_to_date);
+            var order = this.lounge.get_order_client();
+	        order.set_booking_from_date("xxxx");
+
+			//var x = this.lounge.get_order().get_booking_from_date();
+			//alert(x);
 	        self.gui.show_screen('payment');
 	    }
 	});
