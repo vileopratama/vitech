@@ -639,11 +639,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return this.get('selectedOrder');
 	    },
 
-	    // return the current order
-	    get_order_client : function(){
-	        return this.get('selectedClient');
-	    },
-
 	    get_client: function() {
 	        var order = this.get_order();
 	        if (order) {
@@ -653,16 +648,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 
 	    get_booking_from_date: function() {
-	        var order = this.get_order_client();
+	        var order = this.get_order();
 	        if (order) {
 	            return order.booking_from_date;
 	        }
-	        return "ba";
+	        return null;
 	    },
 
-	    set_booking_from_date: function(booking_from_date) {
+	    /*set_booking_from_date: function(booking_from_date) {
 	        return this.booking_from_date = booking_from_date;
-	    },
+	    },*/
 	    // change the current order
 	    set_order: function(order){
 	        this.set({ selectedOrder: order });
@@ -1513,10 +1508,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.selected_orderline   = undefined;
 	        this.selected_paymentline = undefined;
 	        this.screen_data    = {};  // see Gui
-	        this.booking_from_date = null;
+
 	        this.temporary      = options.temporary || false;
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
+	        this.booking_from_date = null;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;
@@ -1584,6 +1580,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        this.temporary = false;     // FIXME
 	        this.to_invoice = false;    // FIXME
+	        this.booking_from_date = null;
 
 	        var orderlines = json.lines;
 	        for (var i = 0; i < orderlines.length; i++) {
