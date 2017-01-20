@@ -63,7 +63,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.units_by_id = {};
 	        this.pricelist = null;
 	        this.order_sequence = 1;
-	        this.booking_from_date = null;
 	        window.loungemodel = this;
 
 	        // these dynamic attributes can be watched for change by other models or widgets
@@ -650,14 +649,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_booking_from_date: function() {
 	        var order = this.get_order();
 	        if (order) {
-	            return order.booking_from_date;
+	            return order.get_booking_from_date();
 	        }
 	        return null;
 	    },
 
-	    /*set_booking_from_date: function(booking_from_date) {
-	        return this.booking_from_date = booking_from_date;
-	    },*/
 	    // change the current order
 	    set_order: function(order){
 	        this.set({ selectedOrder: order });
@@ -1512,7 +1508,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.temporary      = options.temporary || false;
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
-	        this.booking_from_date = null;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;
@@ -1580,7 +1575,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        this.temporary = false;     // FIXME
 	        this.to_invoice = false;    // FIXME
-	        this.booking_from_date = null;
+
 
 	        var orderlines = json.lines;
 	        for (var i = 0; i < orderlines.length; i++) {
@@ -2080,10 +2075,17 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    set_booking_from_date: function(booking_from_date) {
 	        this.assert_editable();
-	        this.booking_from_date = booking_from_date;
+            this.set('booking_from_date',booking_from_date);
 	    },
 	    get_booking_from_date: function() {
-	        return this.booking_from_date;
+	        return this.get('booking_from_date');
+	    },
+	    set_booking_to_date: function(booking_to_date) {
+	        this.assert_editable();
+            this.set('booking_to_date',booking_to_date);
+	    },
+	    get_booking_to_date: function() {
+	        return this.get('booking_to_date');
 	    },
 	    /* ---- Screen Status --- */
 	    // the order also stores the screen status, as the Lounge supports

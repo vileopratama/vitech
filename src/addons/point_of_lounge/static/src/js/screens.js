@@ -365,33 +365,77 @@ odoo.define('point_of_lounge.screens', function (require) {
 	});
 
 	/* ---------- The Action Time ---------- */
+	var ActiontimeWidget = PosBaseWidget.extend({
+	    template: "LoungeActiontimeWidget",
+	    events: {
+            'blur .booking_from_date': 'booking_from_date_changed',
+            'blur .booking_to_date': 'booking_to_date_changed'
+        },
+	    init: function(parent) {
+            this._super(parent);
+            this.time_changed();
+        },
+	    start: function() {
+            this.renderComponent();
+        },
+        renderComponent:function() {
+	        this.$('.timepicker').datetimepicker({
+	            minView: 2,
+	            useCurrent: true,
+	            pickDate: false,
+	            format: 'HH:mm',
+	            use24hours: true
+	        });
+		},
+        booking_from_date_changed: function() {
+            var val = this.$('.booking_from_date').val();
+            this.lounge.get_order().set_booking_from_date(val);
+        },
+        booking_to_date_changed: function() {
+            var val = this.$('.booking_to_date').val();
+            this.lounge.get_order().set_booking_to_date(val);
+        },
+
+        time_changed: function() {
+	        var booking_from_date = this.lounge.get_order().get_booking_from_date();
+	        var booking_to_date = this.lounge.get_order().get_booking_to_date();
+	        this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
+	        this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
+	    },
+	});
 
 	// The action pad contains the payment button and the
 	// customer selection button
 
-	var ActiontimeWidget = PosBaseWidget.extend({
+	/*var ActiontimeWidget = PosBaseWidget.extend({
 		template: 'LoungeActiontimeWidget',
-		init: function(parent) {
+		init: function(parent,options) {
 			var self = this;
-	        this._super(parent);
-	        //this.lounge.bind('change:selectedOrder', function() {
-			self.xrenderElement();
-	        //});
-	        //this.lounge.set_booking_from_date("xxxxx");
+	        this._super(parent,options);
+	        //this.lounge.bind('change:selectedClient',function(){
+	        this.renderElement();
+	        //},this);
 		},
 		start: function() {
 			var self = this;
 	        this._super();
-	        self.renderComponent();
-			//self.xrenderElement();
+	        this.booking_from();
+	        this.renderComponent();
 		},
-		xrenderElement:function() {
+		show:function(){
+		    var self = this;
+	        this._super();
+		},
+		renderElement:function() {
 			self = this;
+			this._super();
 			this.$el.find('.booking_from_date').on('focusout', function() {
-				//self.save_changes();
-				alert('pressed');
-				this.lounge.get_order().set_booking_from_date("12:03");
+				self.save_changes();
 	        });
+		},
+		booking_from:function() {
+           var booking_from_date = this.lounge.get_booking_from_date();
+		   this.$('.booking_from_date').val(booking_from_date);
 		},
 		renderComponent:function() {
 	        this.$('.booking_from_date').datetimepicker({
@@ -403,12 +447,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 		},
 		save_changes:function() {
-			//;
-			//this.lounge.get_order().set_to_invoice(true);
-			//alert(this.lounge.get_order().get_booking_from_date());
+		    var booking_from_date = this.$('.booking_from_date').val();
+			this.lounge.get_order().set_booking_from_date(booking_from_date);
+			self.gui.show_screen('payment');
 		},
-	});
-	/* ---------- The Action Pad ---------- */
+	});*/
+	/* ---------- The Action Time  ---------- */
 
 	// The action pad contains the payment button and the
 	// customer selection button
@@ -422,49 +466,18 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.renderElement();
 	        });
 	    },
+
 	    renderElement: function() {
 	        var self = this;
 	        this._super();
-	        this.$('#from_date').datetimepicker({
-	            minView: 2,
-	            useCurrent: true,
-	            pickDate: false,
-	            format: 'HH:mm',
-	            use24hours: true
-	        });
-	        this.$('#to_date').datetimepicker({
-	            minView: 2,
-	            useCurrent: true,
-	            pickDate: false,
-	            format: 'HH:mm',
-	            use24hours: true
-	        });
 
 	        this.$('.pay').click(function(){
-	            self.save_time_changes();
+	           self.gui.show_screen('payment');
 	        });
+
 	        this.$('.set-customer').click(function(){
 	            self.gui.show_screen('clientlist');
 	        });
-	    },
-	    save_time_changes: function(){
-	        var self = this;
-	        //var booking_from_date = this.$el.find('.booking_from_date').val();
-	        //var booking_from_date = this.$('input[name="booking_from_date"]').val();
-	        //var booking_to_date = this.$('input[name="booking_to_date"]').val();
-
-	        //if (!booking_from_date) {
-	            //this.gui.show_popup('error',_t('A Time From Is Required'));
-	            //return;
-	        //}
-
-	        /*if (!booking_to_date) {
-	            this.gui.show_popup('error',_t('A Time To Is Required'));
-	            return;
-	        }*/
-
-	        //this.lounge.set_booking_from_date(booking_from_date);
-	        self.gui.show_screen('payment');
 	    },
 	});
 
@@ -1544,6 +1557,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var self = this;
 	        this._super(parent, options);
 
+	        this.booking_from_date = this.lounge.get_order().get_booking_from_date();
+
 	        this.lounge.bind('change:selectedOrder',function(){
 	                this.renderElement();
 	                this.watch_order_changes();
@@ -1606,8 +1621,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        this.lounge.bind('change:selectedClient', function() {
 	            self.customer_changed();
-	            self.time_changed();
+
 	        }, this);
+
+	        //self.time_changed();
+
+
 	    },
 	    // resets the current input buffer
 	    reset_input: function(){
@@ -1779,12 +1798,14 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 	    },
 	    customer_changed: function() {
-	        var client = this.lounge.get_client();
-	        this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
+	       //var client = this.lounge.get_client();
+	        //this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
 	    },
 	    time_changed: function() {
-	        var booking_from_date = this.lounge.get_booking_from_date();
+	        var booking_from_date = this.lounge.get_order().get_booking_from_date();
+	        var booking_to_date = this.lounge.get_order().get_booking_to_date();
 	        this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
+	        this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
 	    },
 	    click_set_customer: function(){
 	        this.gui.show_screen('clientlist');
@@ -1829,6 +1850,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	    },
 	    show: function(){
+	        this.time_changed();
+	        //alert(this.lounge.get_order().get_booking_from_date());
+	        //this.booking_from_date = this.lounge.get_order().get_booking_from_date();
 	        this.lounge.get_order().clean_empty_paymentlines();
 	        this.reset_input();
 	        this.render_paymentlines();

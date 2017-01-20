@@ -112,7 +112,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class='input-group date' id='from_date'>
-                                <input  type='text' id="booking_from_date" class="booking_from_date form-control" name="booking_from_date" ></input>
+                                <input  type='text' t-att-value="widget.name" id="booking_from_date" class="booking_from_date timepicker form-control" name="booking_from_date" ></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
                                 </span>
@@ -122,7 +122,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class='input-group date' id='from_date'>
-                                <input readonly="true" type='text' class="form-control" name="booking_to_date" ></input>
+                                <input type='text' t-att-value="widget.name" class="booking_to_date timepicker form-control " id="booking_to_date" name="booking_to_date" ></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
                                 </span>
@@ -651,10 +651,10 @@
                         <div class='button js_booking'>
                              <i class="fa fa-clock-o"></i>
 	                        <span class='js_booking_from_date'>
-                                <t t-if="widget.lounge.get_booking_from_date()">
-                                    <t t-esc="widget.lounge.get_booking_from_date()" />
+                                <t t-if="widget.booking_from_date">
+                                    <t t-esc="widget.booking_from_date" />
                                 </t>
-                                <t t-if="!widget.lounge.get_booking_from_date()">
+                                <t t-if="!widget.booking_from_date">
                                     None
                                 </t>
                             </span>
