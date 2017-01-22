@@ -6,6 +6,11 @@ from datetime import datetime
 import uuid
 import sets
 from functools import partial
+
+
+from mock import self
+from pychart.doc_support import values
+
 import openerp
 import openerp.addons.decimal_precision as dp
 from openerp import tools, models, SUPERUSER_ID
@@ -14,6 +19,7 @@ from openerp.tools import float_is_zero
 from openerp.tools.translate import _
 from openerp.exceptions import UserError
 from openerp import api, fields as Fields
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 _logger = logging.getLogger(__name__)
 
@@ -765,9 +771,10 @@ class lounge_order(osv.osv):
 
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
-        'date_order': fields.datetime('Order Date', readonly=True, select=True),
-	    'booking_from_date' : fields.datetime('Booking From', readonly=True, select=True),
-	    'booking_to_date': fields.datetime('Booking To', readonly=True, select=True),
+        'date_order': fields.datetime('Order Date', readonly=False, select=True),
+	    'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
+	    'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
+        'booking_total': fields.float(string="Total Hours", type="float",readonly=True),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
                                       select=1,
@@ -808,6 +815,7 @@ class lounge_order(osv.osv):
     """
        Function
        """
+
     def _amount_line_tax(self, cr, uid, line, fiscal_position_id, context=None):
         taxes = line.tax_ids.filtered(lambda t: t.company_id.id == line.order_id.company_id.id)
         if fiscal_position_id:
@@ -879,36 +887,50 @@ class lounge_order(osv.osv):
     End of On Change Event
     """
 
+	"""def _calculate_date():
+        if self.booking_from_date and self.booking_to_date:
+			d1 = datetime.strptime(str(self.booking_from_date), DEFAULT_SERVER_DATETIME_FORMAT)
+			d2 = datetime.strptime(str(self.booking_to_date), DEFAULT_SERVER_DATETIME_FORMAT)
+			diff = d2 - d1
+			hours = (diff.seconds) / 3600
+			diff_days = diff.days
+			days_hours = diff_days * 24
+		    total_hours = days_hours + hours
+	        return total_hours
+		return null"""
+
     """ Start of Override Event """
     #@OVERRIDE CREATE
     def create(self, cr, uid, values, context=None):
         if values.get('session_id'):
-            #set name based on the sequence specified on the confi
+            #set name based on the sequence specified on the config
             session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
             # fallback on any pos.order sequence , change pos.order to lounge.order for future
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
+            self.calculate_date(self, cr, uid, values, context=None)  # data
         return super(lounge_order, self).create(cr, uid, values, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
-        res = super(lounge_order, self).write(cr, uid, ids, vals, context=context)
-        # If you change the partner of the PoS order, change also the partner of the associated bank statement lines
-        partner_obj = self.pool.get('res.partner')
-        bsl_obj = self.pool.get("account.bank.statement.line")
-        if 'partner_id' in vals:
-            for posorder in self.browse(cr, uid, ids, context=context):
-                if posorder.invoice_id:
-                    raise UserError(_("You cannot change the partner of a order for which an invoice has already been issued."))
-                if vals['partner_id']:
-                    p_id = partner_obj.browse(cr, uid, vals['partner_id'], context=context)
-                    part_id = partner_obj._find_accounting_partner(p_id).id
-                else:
-                    part_id = False
-                bsl_ids = [x.id for x in posorder.statement_ids]
-                bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
-        return res
+	    # If you change the partner of the PoS order, change also the partner of the associated bank statement lines
+	    partner_obj = self.pool.get('res.partner')
+	    bsl_obj = self.pool.get("account.bank.statement.line")
+	    if 'partner_id' in vals:
+		    for posorder in self.browse(cr, uid, ids, context=context):
+			    if posorder.invoice_id:
+				    raise UserError(
+					    _("You cannot change the partner of a POS order for which an invoice has already been issued."))
+			    if vals['partner_id']:
+				    p_id = partner_obj.browse(cr, uid, vals['partner_id'], context=context)
+				    part_id = partner_obj._find_accounting_partner(p_id).id
+			    else:
+				    part_id = False
+			    bsl_ids = [x.id for x in posorder.statement_ids]
+			    bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
+	    self.calculate_date(self, cr, uid, values, context=None)  # data
+	    return super(lounge_order, self).write(cr, uid, ids, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
         for rec in self.browse(cr, uid, ids, context=context):
@@ -1424,6 +1446,7 @@ class lounge_order_line(osv.osv):
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,change_default=True),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
+        'charge': fields.float('Charge', digits=0,readonly=True),
         'discount': fields.float('Discount (%)', digits=0),
         'price_unit': fields.float(string='Unit Price', digits=0),
         'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',relation='account.tax', string='Taxes'),
