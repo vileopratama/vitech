@@ -817,7 +817,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.renderElement();
 	    },
 	    get_product_image_url: function(product){
-	        return window.location.origin + '/web/image?model=product.product&field=image_big&id='+product.id;
+	        return window.location.origin + '/web/image?model=product.product&field=image&id='+product.id;
 	    },
 	    replace: function($target){
 	        this.renderElement();
