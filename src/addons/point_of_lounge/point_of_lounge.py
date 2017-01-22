@@ -4,11 +4,7 @@ import psycopg2
 import time
 from datetime import datetime
 import uuid
-import sets
 from functools import partial
-
-
-from mock import self
 from pychart.doc_support import values
 
 import openerp
@@ -886,9 +882,8 @@ class lounge_order(osv.osv):
     """
     End of On Change Event
     """
-    
-    @api.multi
-    def _calculate_date(self):
+
+    def _calculate_date(self,cr, uid,context=None):
         if self.booking_from_date and self.booking_to_date:
             d1 = datetime.strptime(str(self.booking_from_date), DEFAULT_SERVER_DATETIME_FORMAT)
             d2 = datetime.strptime(str(self.booking_to_date), DEFAULT_SERVER_DATETIME_FORMAT)
@@ -906,12 +901,12 @@ class lounge_order(osv.osv):
         if values.get('session_id'):
             #set name based on the sequence specified on the config
             session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
-            values['booking_total'] = self._calculate_date(cr,uid,values,context)
+            values['booking_total'] = self._calculate_date(cr,uid,context)
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
             # fallback on any pos.order sequence , change pos.order to lounge.order for future
-            values['booking_total'] = self._calculate_date(cr,uid,values,context)
+            values['booking_total'] = self._calculate_date(cr,uid,context)
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
         return super(lounge_order, self).create(cr, uid, values, context=context)
 
