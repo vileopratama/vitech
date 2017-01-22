@@ -1112,7 +1112,7 @@
         </div>
     </t>
 
-    <t t-name="Product">
+    <t t-name="LoungeProduct">
         <span class='product' t-att-data-product-id="product.id">
             <div class="product-img">
                 <img t-att-src='image_url' />
@@ -1183,8 +1183,9 @@
                             <div class="line">
                                 <div class='entry total'>
                                     <span class="label">Total: </span> <span class="value">0.00 €</span>
+                                    <div class='surcharge'>Surcharge: <span class="value">0.00€</span></div>
                                     <div class='subentry'>Tax: <span class="value">0.00€</span></div>
-	                                <div class='subentry'>Surcharge: <span class="value">0.00</span></div>
+
                                 </div>
                             </div>
                         </div>

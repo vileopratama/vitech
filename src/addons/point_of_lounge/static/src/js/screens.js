@@ -459,26 +459,43 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	var ActionpadWidget = PosBaseWidget.extend({
 	    template: 'LoungeActionpadWidget',
-	    init: function(parent, options) {
-	        var self = this;
-	        this._super(parent, options);
-	        this.lounge.bind('change:selectedClient', function() {
-	            self.renderElement();
-	        });
-	    },
+        init: function(parent, options) {
+            var self = this;
+            this._super(parent, options);
+            this.lounge.bind('change:selectedClient', function() {
+                self.renderElement();
+            });
+        },
+        renderElement: function() {
+            var self = this;
+            this._super();
 
-	    renderElement: function() {
-	        var self = this;
-	        this._super();
+            this.$('.pay').click(function(){
+                var booking_from_date = self.lounge.get_booking_from_date();
+                var booking_to_date = self.lounge.get_booking_to_date();
 
-	        this.$('.pay').click(function(){
-	           self.gui.show_screen('payment');
-	        });
+                if(!booking_from_date) {
+                     self.gui.show_popup('error',{
+	                    'title': _t('Error: Field'),
+	                    'body': _t('Time from is required.'),
+	                });
+	                return;
+                }
 
-	        this.$('.set-customer').click(function(){
-	            self.gui.show_screen('clientlist');
-	        });
-	    },
+                if(!booking_to_date) {
+                     self.gui.show_popup('error',{
+	                    'title': _t('Error: Field'),
+	                    'body': _t('Time To is required.'),
+	                });
+	                return;
+                }
+
+                self.gui.show_screen('payment');
+            });
+            this.$('.set-customer').click(function(){
+                self.gui.show_screen('clientlist');
+            });
+        }
 	});
 
 	/* --------- The Order Widget --------- */
@@ -625,9 +642,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        var total     = order ? order.get_total_with_tax() : 0;
 	        var taxes     = order ? total - order.get_total_without_tax() : 0;
+	        var surcharge = order ? total - order.get_total_surcharge() : 0;
 
 	        this.el.querySelector('.summary .total > .value').textContent = this.format_currency(total);
 	        this.el.querySelector('.summary .total .subentry .value').textContent = this.format_currency(taxes);
+	        this.el.querySelector('.summary .total .surcharge .value').textContent = this.format_currency(surcharge);
 	    },
 	});
 
@@ -859,7 +878,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var cached = this.product_cache.get_node(product.id);
 	        if(!cached){
 	            var image_url = this.get_product_image_url(product);
-	            var product_html = QWeb.render('Product',{
+	            var product_html = QWeb.render('LoungeProduct',{
 	                    widget:  this,
 	                    product: product,
 	                    image_url: this.get_product_image_url(product),
@@ -1851,8 +1870,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    show: function(){
 	        this.time_changed();
-	        //alert(this.lounge.get_order().get_booking_from_date());
-	        //this.booking_from_date = this.lounge.get_order().get_booking_from_date();
 	        this.lounge.get_order().clean_empty_paymentlines();
 	        this.reset_input();
 	        this.render_paymentlines();

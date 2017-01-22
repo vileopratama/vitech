@@ -276,6 +276,10 @@ class product_template(osv.osv):
                                     help="Check if the product should be weighted using the hardware scale integration"),
         'lounge_categ_id': fields.many2one('lounge.category', 'Lounge Service Category',
                                         help="Those categories are used to group similar products for lounge."),
+        'lounge_charge': fields.float('In Charge', digits_compute=dp.get_precision('In Charge'),
+                                   help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
+        'lounge_charge_every': fields.integer('In Charge Every',
+                                      help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
     }
     _defaults = {
         'lounge_to_weight': False,

@@ -315,7 +315,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },{
 	        model:  'product.product',
 	        fields: ['display_name', 'list_price','price','lounge_categ_id', 'taxes_id', 'barcode', 'default_code',
-	                 'to_weight', 'uom_id', 'description_sale', 'description',
+	                 'to_weight', 'uom_id', 'description_sale', 'description','lounge_charge','lounge_charge_every',
 	                 'product_tmpl_id'],
 	        order:  ['sequence','default_code','name'],
 	        domain: [['sale_ok','=',true],['available_in_lounge','=',true]],
@@ -650,6 +650,22 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var order = this.get_order();
 	        if (order) {
 	            return order.get_booking_from_date();
+	        }
+	        return null;
+	    },
+
+	    get_booking_to_date: function() {
+	        var order = this.get_order();
+	        if (order) {
+	            return order.get_booking_to_date();
+	        }
+	        return null;
+	    },
+
+	    get_booking_total: function() {
+	        var order = this.get_order();
+	        if (order) {
+	            return order.get_booking_total();
 	        }
 	        return null;
 	    },
@@ -1283,6 +1299,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_tax: function(){
 	        return this.get_all_prices().tax;
 	    },
+	    get_surcharge: function(){
+	        return this.get_all_prices().surcharge;
+	    },
 	    get_applicable_taxes: function(){
 	        var i;
 	        // Shenaningans because we need
@@ -1343,9 +1362,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        return false;
 	    },
-	    compute_all: function(taxes, price_unit, quantity, currency_rounding) {
+	    compute_all: function(taxes, price_unit,charge, quantity, currency_rounding) {
 	        var self = this;
-	        var total_excluded = round_pr(price_unit * quantity, currency_rounding);
+	        var total_excluded = round_pr((price_unit + charge) * quantity, currency_rounding);
+	        var total_included_without_charge = round_pr((price_unit) * quantity, currency_rounding);
 	        var total_included = total_excluded;
 	        var base = total_excluded;
 	        var list_taxes = [];
@@ -1355,10 +1375,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	        _(taxes).each(function(tax) {
 	            tax = self._map_tax_fiscal_position(tax);
 	            if (tax.amount_type === 'group'){
-	                var ret = self.compute_all(tax.children_tax_ids, price_unit, quantity, currency_rounding);
+	                var ret = self.compute_all(tax.children_tax_ids, price_unit,charge, quantity, currency_rounding);
 	                total_excluded = ret.total_excluded;
 	                base = ret.total_excluded;
 	                total_included = ret.total_included;
+	                total_included_without_charge = ret.total_included_without_charge;
 	                list_taxes = list_taxes.concat(ret.taxes);
 	            }
 	            else {
@@ -1372,6 +1393,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	                    }
 	                    else {
 	                        total_included += tax_amount;
+	                        total_included_without_charge += tax_amount;
 	                    }
 	                    if (tax.include_base_amount) {
 	                        base += tax_amount;
@@ -1385,17 +1407,41 @@ odoo.define('point_of_lounge.models', function (require) {
 	                }
 	            }
 	        });
-	        return {taxes: list_taxes, total_excluded: total_excluded, total_included: total_included};
+	        return {taxes: list_taxes, total_excluded: total_excluded,total_included_without_charge: total_included_without_charge, total_included: total_included};
+	    },
+	    get_booking_total: function() {
+	        self = this;
+            var booking_from_date = this.lounge.get_booking_from_date();
+            var booking_to_date = this.lounge.get_booking_to_date();
+            var time_total = 0;
+
+            if(booking_from_date && booking_from_date) {
+                var hour_booking_from_date = Number(substr(booking_from_date,0,2));
+                var minute_booking_from_date = Number(substr(booking_from_date,3,2));
+
+                var hour_booking_to_date = Number(substr(booking_to_date,0,2));
+                var minute_booking_to_date = Number(substr(booking_to_date,3,2));
+
+                var total_booking_from_date = (hour_booking_from_date * 360) + (minute_booking_from_date * 60);
+                var total_booking_to_date = (hour_booking_to_date * 360) + (minute_booking_to_date * 60);
+                var time_total = (total_booking_to_date/3600) - (total_booking_from_date/3600);
+            }
+
+            return time_total;
+
 	    },
 	    get_all_prices: function(){
+	        var self = this;
 	        var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
 	        var taxtotal = 0;
-
 	        var product =  this.get_product();
+	        var charge = product.lounge_charge;
 	        var taxes_ids = product.taxes_id;
 	        var taxes =  this.lounge.taxes;
 	        var taxdetail = {};
 	        var product_taxes = [];
+
+	        alert(self.get_booking_total());
 
 	        _(taxes_ids).each(function(el){
 	            product_taxes.push(_.detect(taxes, function(t){
@@ -1403,17 +1449,18 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }));
 	        });
 
-	        var all_taxes = this.compute_all(product_taxes, price_unit, this.get_quantity(), this.lounge.currency.rounding);
+	        var all_taxes = this.compute_all(product_taxes, price_unit, charge , this.get_quantity(), this.lounge.currency.rounding);
 	        _(all_taxes.taxes).each(function(tax) {
 	            taxtotal += tax.amount;
 	            taxdetail[tax.id] = tax.amount;
 	        });
 
 	        return {
-	            "priceWithTax": all_taxes.total_included,
-	            "priceWithoutTax": all_taxes.total_excluded,
+	            "priceWithTax": all_taxes.total_included, // 32.2
+	            "priceWithoutTax": all_taxes.total_excluded, //28
 	            "tax": taxtotal,
 	            "taxDetails": taxdetail,
+	            "surcharge": all_taxes.total_included_without_charge, // 18 +
 	        };
 	    },
 	});
@@ -1933,6 +1980,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_total_tax: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
 	            return sum + orderLine.get_tax();
+	        }), 0), this.lounge.currency.rounding);
+	    },
+	    get_total_surcharge: function() {
+	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
+	            return sum + orderLine.get_surcharge();
 	        }), 0), this.lounge.currency.rounding);
 	    },
 	    get_total_paid: function() {

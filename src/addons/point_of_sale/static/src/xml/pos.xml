@@ -1080,6 +1080,12 @@
         </span>
     </t>
 
+    <t t-name="Product2">
+        <span class='product' t-att-data-product-id="product.id">
+
+        </span>
+    </t>
+
     <t t-name="Orderline">
         <li t-attf-class="orderline #{ line.selected ? 'selected' : '' }">
             <span class="product-name">

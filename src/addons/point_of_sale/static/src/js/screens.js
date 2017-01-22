@@ -798,7 +798,7 @@ var ProductListWidget = PosBaseWidget.extend({
         var cached = this.product_cache.get_node(product.id);
         if(!cached){
             var image_url = this.get_product_image_url(product);
-            var product_html = QWeb.render('Product',{ 
+            var product_html = QWeb.render('Product',{
                     widget:  this, 
                     product: product, 
                     image_url: this.get_product_image_url(product),
