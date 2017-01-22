@@ -772,9 +772,9 @@ class lounge_order(osv.osv):
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
-	    'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
-	    'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
-        'booking_total': fields.float(string="Total Hours", type="float",readonly=True),
+	'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
+	'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
+        'booking_total': fields.float(string="Total Hours",readonly=True),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
                                       select=1,
@@ -886,31 +886,33 @@ class lounge_order(osv.osv):
     """
     End of On Change Event
     """
-
-	"""def _calculate_date():
+    
+    @api.multi
+    def _calculate_date(self):
         if self.booking_from_date and self.booking_to_date:
-			d1 = datetime.strptime(str(self.booking_from_date), DEFAULT_SERVER_DATETIME_FORMAT)
-			d2 = datetime.strptime(str(self.booking_to_date), DEFAULT_SERVER_DATETIME_FORMAT)
-			diff = d2 - d1
-			hours = (diff.seconds) / 3600
-			diff_days = diff.days
-			days_hours = diff_days * 24
-		    total_hours = days_hours + hours
-	        return total_hours
-		return null"""
-
+            d1 = datetime.strptime(str(self.booking_from_date), DEFAULT_SERVER_DATETIME_FORMAT)
+            d2 = datetime.strptime(str(self.booking_to_date), DEFAULT_SERVER_DATETIME_FORMAT)
+            diff = d2 - d1
+            hours = (diff.seconds) / 3600
+            diff_days = diff.days
+            days_hours = diff_days * 24
+            total_hours = days_hours + hours
+            return 3
+        return 3
+        
     """ Start of Override Event """
     #@OVERRIDE CREATE
     def create(self, cr, uid, values, context=None):
         if values.get('session_id'):
             #set name based on the sequence specified on the config
             session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
+            values['booking_total'] = self._calculate_date(cr,uid,values,context)
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
             # fallback on any pos.order sequence , change pos.order to lounge.order for future
+            values['booking_total'] = self._calculate_date(cr,uid,values,context)
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
-            self.calculate_date(self, cr, uid, values, context=None)  # data
         return super(lounge_order, self).create(cr, uid, values, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -929,7 +931,7 @@ class lounge_order(osv.osv):
 				    part_id = False
 			    bsl_ids = [x.id for x in posorder.statement_ids]
 			    bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
-	    self.calculate_date(self, cr, uid, values, context=None)  # data
+	    values['booking_total'] = self._calculate_date(cr,uid,vals,context)
 	    return super(lounge_order, self).write(cr, uid, ids, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
