@@ -1080,7 +1080,7 @@
         </span>
     </t>
 
-    <t t-name="Product2">
+    <t t-name="Product">
         <span class='product' t-att-data-product-id="product.id">
 
         </span>

@@ -20,6 +20,7 @@
         'point_of_lounge_view.xml',
         #'point_of_lounge_data.xml',
         'point_of_lounge_workflow.xml',
+        'account_statement_view.xml',
         'res_config_view.xml',
         'account_statement_view.xml',
         'views/report_receipt.xml',

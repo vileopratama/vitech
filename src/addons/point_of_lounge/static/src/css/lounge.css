@@ -113,9 +113,10 @@ td {
     padding: 0;
     margin: 0;
     background-color: #f0eeee;
-    font-family: "Lato","Lucida Grande", Helvetica, Verdana, Arial;
+    /*font-family: "Lato","Lucida Grande", Helvetica, Verdana, Arial;*/
+    font-family:Helvetica, Verdana;
     color: #555555;
-    font-size: 12px;
+    font-size: 10px;
     position: absolute;
     left: 0;
     top: 0;
@@ -131,7 +132,8 @@ td {
 /*  ********* The black loading screen ********* */
 
 .pos .loader{
-    background-color: #222;
+    /*background-color: #222;*/
+    background:##2AADE3;
     position:absolute;
     left:0px;
     top:0px;
@@ -140,7 +142,8 @@ td {
     z-index: 999;
     text-align: center;
     font-family: Lato;
-    color: #555555;
+    /*color: #555555;*/
+    color:#FFFFFF;
 }
 
 .pos .loader-feedback{
@@ -263,7 +266,8 @@ td {
     padding: 4px 10px;
     font-size: 11px;
     border: 1px solid #cacaca;
-    background: #e2e2e2;
+    /*background: #e2e2e2;*/
+    background:#2AADE3;
     border-radius: 3px;
 }
 .pos ul, .pos ol {
@@ -297,7 +301,8 @@ td {
     margin:0;
     padding:0;
     color: gray;
-    background: #393939;
+    /*background: #393939;*/
+    background:#2AADE3;
 }
 
 /*  a) The left part of the top-bar */
@@ -324,7 +329,7 @@ td {
 }
 .pos .pos-branding .username{
     float:right;
-    color:#DDD;
+    color:#FFFFFF;
     font-size:16px;
     margin-right:32px;
     line-height: 48px;
@@ -348,7 +353,7 @@ td {
 }
 
 .pos .order-button{
-    color: #f0f0f0;
+    color: #FFFFFF;
     display: inline-block;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -358,7 +363,7 @@ td {
     margin-bottom: 0px;
     margin-right: 2px;
     padding-top: 0px;
-    background: #8b8b8b;
+    background: #07b3f7;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     vertical-align: top;
@@ -375,8 +380,10 @@ td {
 
 .pos .order-button.selected{
     font-weight: 900;
-    background: #EEEEEE;
-    color: rgb(75,75,75);
+    /*background: #EEEEEE;*/
+    background:#12739b;
+    /*color: rgb(75,75,75);*/
+    color:#fff;
     height: 45px;
     border-bottom: solid 1px rgb(196, 196, 196);
     box-shadow: none;
@@ -402,8 +409,8 @@ td {
 
 .pos .order-button.square{
     margin-left:1px;
-    background: #5c5c5c;
-    color: rgb(160,160,160);
+    background: #07b3f7;
+    color: #FFFFFF;
     font-size: 18px;
     line-height: 45px;
 }
@@ -440,9 +447,10 @@ td {
     height: 48px;
     padding-left: 16px;
     padding-right: 16px;
-    border-right: 1px solid #292929;
-    border-left: 1px solid #292929;
-    color: #DDD;
+    /*border-right: 1px solid #292929;
+    border-left: 1px solid #292929;*/
+    /*color: #DDD;*/
+    color:#fff;
     line-height: 48px;
     text-align: center;
     cursor: pointer;
@@ -452,11 +460,13 @@ td {
     -webkit-transition-timing-function: ease-out;
 }
 .pos .pos-rightheader .header-button:last-child{
-    border-left:  1px solid #3a3a3a;
+    /*border-left:  1px solid #3a3a3a;*/
 }
 .pos .pos-rightheader .header-button:active{
-    background: rgba(0,0,0,0.2);
-    color:#EEE;
+    /*background: rgba(0,0,0,0.2);
+    color:#EEE;*/
+    background:#12739b;
+    color:#fff;
 }
 .pos .pos-rightheader .header-button.confirm {
     background: #359766;
@@ -487,7 +497,8 @@ td {
 }
 .pos .oe_status .oe_red,
 .pos .oe_icon.oe_red {
-    color: rgb(197, 52, 0);
+    /*color: rgb(197, 52, 0);*/
+    color:#fff;
 }
 .pos .oe_statu .oe_green,
 .pos .oe_icon.oe_green {
@@ -505,7 +516,7 @@ td {
     position: absolute;
     top: 48px;
     bottom: 0;
-    background: #F0EEEE;
+    background: #FFFFFF;
 }
 
 /*  ********* The leftpane contains the order, numpad and paypad ********* */
@@ -522,7 +533,8 @@ td {
     bottom:0;
     border-right: solid 1px #CECBCB;
     border-right: solid 3px #787878;
-    background: #e2e2e2;
+    /*background: #e2e2e2;*/
+    background:#ffffff;
 }
 
 .pos .leftpane .pads {
@@ -664,7 +676,8 @@ td {
     border-radius: 0;
     border-top: 1px solid;
     border-left: 1px solid;
-    border-color: #bfbfbf;
+    /*border-color: #bfbfbf;*/
+    border-color:#FFFFFF;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
@@ -675,17 +688,20 @@ td {
     width: 100%;
     font-weight: bold;
     vertical-align: middle;
-    color: #555555;
+    /*color: #555555;*/
+    color:#FFFFFF;
     font-size: 14px;
     border-radius: 0;
     border: none;
     border-right: 1px solid;
     border-bottom: 1px solid;
-    border-color: #bfbfbf;
+    /*border-color: #bfbfbf;*/
+    border-color:#FFFFFF;
     transition: all 150ms linear;
 }
 .pos .actionpad .button:hover {
-    background: #efefef;
+    /*background: #efefef;*/
+    background:#12739b;
 }
 .pos .actionpad .button:active {
     background: black;
@@ -706,7 +722,8 @@ td {
     font-size: 32px;
     line-height: 54px;
     padding-top: 6px;
-    background: rgb(86, 86, 86);
+    /*background: rgb(86, 86, 86);*/
+    background:#12739b;
     color: white;
     width: 60px;
     margin: auto;
@@ -760,16 +777,19 @@ td {
     width: 54px;
     font-weight: bold;
     vertical-align: middle;
-    color: #555555;
+    /*color: #555555;*/
+    color:#FFFFFF;
     border-radius: 0;
     border: none;
     border-right: 1px solid;
     border-bottom: 1px solid;
-    border-color: #bfbfbf;
+    /*border-color: #bfbfbf;*/
+    border-color:#FFFFFF;
     transition: all 150ms linear;
 }
 .pos .numpad button:hover {
-    background: #efefef;
+    /*background: #efefef;*/
+    background:#12739b;
 }
 .pos .numpad button:active {
     background: black;
@@ -790,7 +810,8 @@ td {
 }
 .pos .mode-button.selected-mode {
     color: white;
-    background: #6EC89B;
+    /*background: #6EC89B;*/
+    background:#12739b;
     border-color: transparent;
 }
 .pos .mode-button.selected-mode:hover {
@@ -815,7 +836,8 @@ td {
     padding: 0;
     height: 48px;
     border-bottom: 1px solid #c7c7c7;
-    background: #d3d3d3;
+    /*background: #d3d3d3;*/
+    background:#12739b;
     text-align: center;
 }
 
@@ -870,7 +892,8 @@ td {
     display: inline-block;
     padding: 0 9px;
     vertical-align: top;
-    color: #808080;
+    /*color: #808080;*/
+    color:#000;
     font-size: 14px;
     cursor: pointer;
 }
@@ -2443,4 +2466,8 @@ td {
 
 .x-input-group {
     margin: 16px 16px 16px 16px;
+}
+
+.breadcrumb {
+    background-color: #fff;
 }

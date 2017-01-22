@@ -403,55 +403,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
 	    },
 	});
-
-	// The action pad contains the payment button and the
-	// customer selection button
-
-	/*var ActiontimeWidget = PosBaseWidget.extend({
-		template: 'LoungeActiontimeWidget',
-		init: function(parent,options) {
-			var self = this;
-	        this._super(parent,options);
-	        //this.lounge.bind('change:selectedClient',function(){
-	        this.renderElement();
-	        //},this);
-		},
-		start: function() {
-			var self = this;
-	        this._super();
-	        this.booking_from();
-	        this.renderComponent();
-		},
-		show:function(){
-		    var self = this;
-	        this._super();
-		},
-		renderElement:function() {
-			self = this;
-			this._super();
-			this.$el.find('.booking_from_date').on('focusout', function() {
-				self.save_changes();
-	        });
-		},
-		booking_from:function() {
-           var booking_from_date = this.lounge.get_booking_from_date();
-		   this.$('.booking_from_date').val(booking_from_date);
-		},
-		renderComponent:function() {
-	        this.$('.booking_from_date').datetimepicker({
-	            minView: 2,
-	            useCurrent: true,
-	            pickDate: false,
-	            format: 'HH:mm',
-	            use24hours: true
-	        });
-		},
-		save_changes:function() {
-		    var booking_from_date = this.$('.booking_from_date').val();
-			this.lounge.get_order().set_booking_from_date(booking_from_date);
-			self.gui.show_screen('payment');
-		},
-	});*/
 	/* ---------- The Action Time  ---------- */
 
 	// The action pad contains the payment button and the
@@ -866,7 +817,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.renderElement();
 	    },
 	    get_product_image_url: function(product){
-	        return window.location.origin + '/web/image?model=product.product&field=image_medium&id='+product.id;
+	        return window.location.origin + '/web/image?model=product.product&field=image_big&id='+product.id;
 	    },
 	    replace: function($target){
 	        this.renderElement();
@@ -1642,8 +1593,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.customer_changed();
 
 	        }, this);
-
-	        //self.time_changed();
 
 
 	    },

@@ -2,7 +2,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	"use strict";
 
 	var BarcodeParser = require('barcodes.BarcodeParser');
-	var PosDB = require('point_of_lounge.DB');
+	var LoungeDB = require('point_of_lounge.DB');
 	var devices = require('point_of_lounge.devices');
 	var core = require('web.core');
 	var Model = require('web.DataModel');
@@ -42,7 +42,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.barcode_reader = new devices.BarcodeReader({'lounge': this, proxy:this.proxy});
 
 	        this.proxy_queue = new devices.JobQueue();           // used to prevent parallels communications to the proxy
-	        this.db = new PosDB();                       // a local database used to search trough products and categories & store pending orders
+	        this.db = new LoungeDB();                       // a local database used to search trough products and categories & store pending orders
 	        this.debug = core.debug; //debug mode
 
 	        // Business data; loaded from the server at launch
@@ -325,7 +325,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        },
 	    },{
 	        model:  'account.bank.statement',
-	        fields: ['account_id','currency_id','journal_id','state','name','user_id','lounge_session_id'],
+	        fields: ['lounge_account_id','currency_id','journal_id','state','name','user_id','lounge_session_id'],
 	        domain: function(self){ return [['state', '=', 'open'],['lounge_session_id', '=', self.lounge_session.id]]; },
 	        loaded: function(self, cashregisters, tmp){
 	            self.cashregisters = cashregisters;
@@ -711,7 +711,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 
 	    // saves the order locally and try to send it to the backend and make an invoice
-	    // returns a deferred that succeeds when the order has been posted and successfully generated
+	    // returns a deferred that succeeds when the order has been save and successfully generated
 	    // an invoice. This method can fail in various ways:
 	    // error-no-client: the order must have an associated partner_id. You can retry to make an invoice once
 	    //     this error is solved
@@ -1019,7 +1019,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	//   will be loaded, but the system can be used to preprocess
 	//   data before load.
 	// - loader arguments can be functions that return a dynamic
-	//   value. The function takes the PosModel as the first argument
+	//   value. The function takes the LoungeModel as the first argument
 	//   and a temporary object that is shared by all models, and can
 	//   be used to store transient information between model loads.
 	// - There is no dependency management. The models must be loaded
@@ -1409,21 +1409,35 @@ odoo.define('point_of_lounge.models', function (require) {
 	        });
 	        return {taxes: list_taxes, total_excluded: total_excluded,total_included_without_charge: total_included_without_charge, total_included: total_included};
 	    },
+	    get_all_replace: function(args,search_value,new_value) {
+	        var i = 0;
+	        var str = args;
+	        var strLength = str.length;
+            for(i; i < strLength; i++) {
+                str = str.replace(search_value, new_value);
+            }
+            return str;
+	    },
 	    get_booking_total: function() {
 	        self = this;
             var booking_from_date = this.lounge.get_booking_from_date();
             var booking_to_date = this.lounge.get_booking_to_date();
             var time_total = 0;
 
-            if(booking_from_date && booking_from_date) {
-                var hour_booking_from_date = Number(substr(booking_from_date,0,2));
-                var minute_booking_from_date = Number(substr(booking_from_date,3,2));
+            if(booking_from_date && booking_to_date) {
+                booking_from_date = this.get_all_replace(booking_from_date," ","");
+                booking_to_date = this.get_all_replace(booking_to_date," ","");
+                booking_from_date = this.get_all_replace(booking_from_date,":","");
+                booking_to_date = this.get_all_replace(booking_to_date,":","");
 
-                var hour_booking_to_date = Number(substr(booking_to_date,0,2));
-                var minute_booking_to_date = Number(substr(booking_to_date,3,2));
+                var hour_booking_from_date = !booking_from_date ?  0 : Number(parseInt(booking_from_date.substr(0,2)));
+                var minute_booking_from_date = !booking_from_date ?  0 : Number(parseInt(booking_from_date.substr(2,2)));
 
-                var total_booking_from_date = (hour_booking_from_date * 360) + (minute_booking_from_date * 60);
-                var total_booking_to_date = (hour_booking_to_date * 360) + (minute_booking_to_date * 60);
+                var hour_booking_to_date = !booking_to_date ?  0 : Number(parseInt(booking_to_date.substr(0,2)));
+                var minute_booking_to_date = !booking_to_date ?  0 : Number(parseInt(booking_to_date.substr(2,2)));
+
+                var total_booking_from_date = (hour_booking_from_date * 3600) + (minute_booking_from_date * 60);
+                var total_booking_to_date = (hour_booking_to_date * 3600) + (minute_booking_to_date * 60);
                 var time_total = (total_booking_to_date/3600) - (total_booking_from_date/3600);
             }
 
@@ -1435,13 +1449,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
 	        var taxtotal = 0;
 	        var product =  this.get_product();
-	        var charge = product.lounge_charge;
+	        var charge = !product.lounge_charge ? 0 : ((product.lounge_charge/100) * price_unit);
+	        var total_hour = this.get_booking_total();
+	        var hour_if_charge = !product.lounge_charge_every ? 0 : product.lounge_charge_every;
 	        var taxes_ids = product.taxes_id;
 	        var taxes =  this.lounge.taxes;
 	        var taxdetail = {};
 	        var product_taxes = [];
 
-	        alert(self.get_booking_total());
+            var total_hour_charge = !total_hour ? 0 : Math.round(total_hour / hour_if_charge);
+            charge = charge * total_hour_charge;
 
 	        _(taxes_ids).each(function(el){
 	            product_taxes.push(_.detect(taxes, function(t){
@@ -1519,7 +1536,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return {
 	            name: time.datetime_to_str(new Date()),
 	            statement_id: this.cashregister.id,
-	            account_id: this.cashregister.account_id[0],
+	            lounge_account_id: this.cashregister.lounge_account_id[0],
 	            journal_id: this.cashregister.journal_id[0],
 	            amount: this.get_amount()
 	        };
