@@ -5,7 +5,6 @@ import time
 from datetime import datetime
 import uuid
 from functools import partial
-from pychart.doc_support import values
 
 import openerp
 import openerp.addons.decimal_precision as dp
@@ -768,8 +767,8 @@ class lounge_order(osv.osv):
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
-	'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
-	'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
+        'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
+	    'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
         'booking_total': fields.float(string="Total Hours",readonly=True),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
@@ -845,6 +844,16 @@ class lounge_order(osv.osv):
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
 
+    @api.onchange('booking_from_date')
+    def _onchange_booking_from_date(self):
+        booking_total = self._get_booking_total(self.booking_from_date,self.booking_to_date)
+        self.update({'booking_total' : booking_total})
+
+    @api.onchange('booking_to_date')
+    def _onchange_booking_to_date(self):
+        booking_total = self._get_booking_total(self.booking_from_date, self.booking_to_date)
+        self.update({'booking_total': booking_total})
+
     """Function"""
     def _default_session(self, cr, uid, context=None):
         so = self.pool.get('lounge.session')
@@ -883,51 +892,68 @@ class lounge_order(osv.osv):
     End of On Change Event
     """
 
-    def _calculate_date(self,cr, uid,context=None):
-        if self.booking_from_date and self.booking_to_date:
-            d1 = datetime.strptime(str(self.booking_from_date), DEFAULT_SERVER_DATETIME_FORMAT)
-            d2 = datetime.strptime(str(self.booking_to_date), DEFAULT_SERVER_DATETIME_FORMAT)
-            diff = d2 - d1
+    def _get_booking_total(self,booking_from_date,booking_to_date):
+        if(booking_from_date and booking_to_date):
+            d_frm_obj = datetime.strptime(booking_from_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            d_to_obj = datetime.strptime(booking_to_date, DEFAULT_SERVER_DATETIME_FORMAT)
+            diff = d_to_obj - d_frm_obj
             hours = (diff.seconds) / 3600
             diff_days = diff.days
             days_hours = diff_days * 24
             total_hours = days_hours + hours
-            return 3
-        return 3
-        
-    """ Start of Override Event """
-    #@OVERRIDE CREATE
+            return total_hours
+        else:
+            return 0
+
+    def write(self, cr, uid, ids, vals, context=None):
+        booking_from_date = time.strftime('%Y-%m-%d %H:%M:%S')
+        booking_to_date = time.strftime('%Y-%m-%d %H:%M:%S')
+        if(vals.get('booking_from_date')):
+            for record in self.browse(cr, uid, ids, context=context):
+                booking_from_date = vals['booking_from_date']
+                booking_to_date = record.booking_to_date
+
+        if (vals.get('booking_to_date')):
+            for record in self.browse(cr, uid, ids, context=context):
+                booking_from_date = record.booking_from_date
+                booking_to_date = vals['booking_to_date']
+
+        if (vals.get('booking_from_date') and vals.get('booking_from_date')):
+            booking_from_date = vals['booking_from_date']
+            booking_to_date = vals['booking_to_date']
+
+        vals = {
+            'booking_total': self._get_booking_total(booking_from_date, booking_to_date),
+        }
+        res = super(lounge_order, self).write(cr, uid, ids, vals, context=context)
+        partner_obj = self.pool.get('res.partner')
+        bsl_obj = self.pool.get("account.bank.statement.line")
+        if 'partner_id' in vals:
+            for loungeorder in self.browse(cr, uid, ids, context=context):
+                if loungeorder.invoice_id:
+                    raise UserError(_("You cannot change the partner of a Lounge order for which an invoice has already been issued."))
+                if vals['partner_id']:
+                    p_id = partner_obj.browse(cr, uid, vals['partner_id'], context=context)
+                    part_id = partner_obj._find_accounting_partner(p_id).id
+                else:
+                    part_id = False
+                bsl_ids = [x.id for x in loungeorder.statement_ids]
+                bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
+        return res
+
     def create(self, cr, uid, values, context=None):
+        #raise Warning(values['booking_from_date']) //check data
         if values.get('session_id'):
-            #set name based on the sequence specified on the config
+            # set name based on the sequence specified on the config
             session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
-            values['booking_total'] = self._calculate_date(cr,uid,context)
+            values['booking_total'] = self._get_booking_total(values['booking_from_date'],values['booking_to_date'])
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
-            # fallback on any pos.order sequence , change pos.order to lounge.order for future
-            values['booking_total'] = self._calculate_date(cr,uid,context)
+            # fallback on any pos.order sequence
+            values['booking_total'] = self._get_booking_total(values['booking_from_date'], values['booking_to_date'])
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
         return super(lounge_order, self).create(cr, uid, values, context=context)
-
-    def write(self, cr, uid, ids, vals, context=None):
-	    # If you change the partner of the PoS order, change also the partner of the associated bank statement lines
-	    partner_obj = self.pool.get('res.partner')
-	    bsl_obj = self.pool.get("account.bank.statement.line")
-	    if 'partner_id' in vals:
-		    for posorder in self.browse(cr, uid, ids, context=context):
-			    if posorder.invoice_id:
-				    raise UserError(
-					    _("You cannot change the partner of a POS order for which an invoice has already been issued."))
-			    if vals['partner_id']:
-				    p_id = partner_obj.browse(cr, uid, vals['partner_id'], context=context)
-				    part_id = partner_obj._find_accounting_partner(p_id).id
-			    else:
-				    part_id = False
-			    bsl_ids = [x.id for x in posorder.statement_ids]
-			    bsl_obj.write(cr, uid, bsl_ids, {'partner_id': part_id}, context=context)
-	    values['booking_total'] = self._calculate_date(cr,uid,vals,context)
-	    return super(lounge_order, self).write(cr, uid, ids, vals, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
         for rec in self.browse(cr, uid, ids, context=context):
