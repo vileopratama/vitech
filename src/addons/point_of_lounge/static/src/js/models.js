@@ -1458,7 +1458,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var product_taxes = [];
 
             var total_hour_charge = !total_hour ? 0 : Math.round(total_hour / hour_if_charge);
-            charge = charge * total_hour_charge;
+            charge = charge * (total_hour_charge - 1);
 
 	        _(taxes_ids).each(function(el){
 	            product_taxes.push(_.detect(taxes, function(t){
