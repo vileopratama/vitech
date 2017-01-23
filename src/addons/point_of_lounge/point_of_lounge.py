@@ -1488,6 +1488,14 @@ class lounge_order_line(osv.osv):
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
     def _compute_amount_line_all(self):
         for line in self:
+            order = self.pool.get('lounge.order')
+            domain = [('order_id', 'in', line.order_id)]
+            order_id = order.search(domain)
+            if order_id:
+                first_ID = order_id[0]
+                raise UserError(_(first_ID))
+
+
             currency = line.order_id.pricelist_id.currency_id
             taxes = line.tax_ids.filtered(lambda tax: tax.company_id.id == line.order_id.company_id.id)
             fiscal_position_id = line.order_id.fiscal_position_id
@@ -1499,7 +1507,7 @@ class lounge_order_line(osv.osv):
                 taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
                 line.price_subtotal = taxes['total_excluded']
                 line.price_subtotal_incl = taxes['total_included']
-
+            line.charge = 20
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
     """SUM Function with compute """
