@@ -15,6 +15,7 @@ from openerp.tools.translate import _
 from openerp.exceptions import UserError
 from openerp import api, fields as Fields
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+import math
 
 _logger = logging.getLogger(__name__)
 
@@ -492,8 +493,6 @@ class lounge_session(osv.osv):
             'name': self.pool['ir.sequence'].next_by_code(cr, uid, 'lounge.session', context=context),
             'statement_ids': [(6, 0, statements)],
             'config_id': config_id,
-            #'start_at': time.strftime('%Y-%m-%d %H:%M:%S'),
-            #'state': 'opened',
         })
         return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
 
@@ -668,7 +667,7 @@ class lounge_order(osv.osv):
             'user_id': ui_order['user_id'] or False,
             'session_id': ui_order['lounge_session_id'],
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
-            'pos_reference': ui_order['name'],
+            'lounge_reference': ui_order['name'],
             'partner_id': ui_order['partner_id'] or False,
             'date_order': ui_order['creation_date'],
             'fiscal_position_id': ui_order['fiscal_position_id']
@@ -714,7 +713,7 @@ class lounge_order(osv.osv):
                     ('id', 'in', list(journal_ids)),
                 ], limit=1, context=context)
                 if not cash_journal_ids:
-                    # If none, select for change one of the cash journals of the POS
+                    # If none, select for change one of the cash journals of the Lounge
                     # This is used for example when a customer pays by credit card
                     # an amount higher than total amount of the order and gets cash back
                     cash_journal_ids = [statement.journal_id.id for statement in session.statement_ids
@@ -756,7 +755,7 @@ class lounge_order(osv.osv):
                 #do not hide transactional errors, the order(s) won't be saved!
                  raise
             except Exception as e:
-                _logger.error('Could not fully process the POS Order: %s', tools.ustr(e))
+                _logger.error('Could not fully process the Lounge Order: %s', tools.ustr(e))
 
             if to_invoice:
                 self.action_invoice(cr, uid, [order_id], context)
@@ -768,8 +767,8 @@ class lounge_order(osv.osv):
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
         'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
-	    'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
-        'booking_total': fields.float(string="Total Hours",readonly=True),
+        'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
+        'booking_total': fields.float(string="Total Hours"),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
                                       select=1,
@@ -824,6 +823,7 @@ class lounge_order(osv.osv):
         return val
 
     #summary
+    amount_surcharge = Fields.Float(compute='_compute_amount_all', string='Surcharge', digits=0)
     amount_tax = Fields.Float(compute='_compute_amount_all', string='Taxes', digits=0)
     amount_total = Fields.Float(compute='_compute_amount_all', string='Total', digits=0)
     amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},readonly=True, digits=0)
@@ -839,6 +839,7 @@ class lounge_order(osv.osv):
             currency = order.pricelist_id.currency_id
             order.amount_paid = sum(payment.amount for payment in order.statement_ids)
             order.amount_return = sum(payment.amount < 0 and payment.amount or 0 for payment in order.statement_ids)
+            order.amount_surcharge = currency.round(sum(line.price_charge for line in order.lines))
             order.amount_tax = currency.round(
                 sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
@@ -847,12 +848,12 @@ class lounge_order(osv.osv):
     @api.onchange('booking_from_date')
     def _onchange_booking_from_date(self):
         booking_total = self._get_booking_total(self.booking_from_date,self.booking_to_date)
-        self.update({'booking_total' : booking_total})
+        return self.update({'booking_total' : booking_total})
 
     @api.onchange('booking_to_date')
     def _onchange_booking_to_date(self):
         booking_total = self._get_booking_total(self.booking_from_date, self.booking_to_date)
-        self.update({'booking_total': booking_total})
+        return self.update({'booking_total': booking_total})
 
     """Function"""
     def _default_session(self, cr, uid, context=None):
@@ -906,6 +907,7 @@ class lounge_order(osv.osv):
             return 0
 
     def write(self, cr, uid, ids, vals, context=None):
+        """
         booking_from_date = time.strftime('%Y-%m-%d %H:%M:%S')
         booking_to_date = time.strftime('%Y-%m-%d %H:%M:%S')
         if(vals.get('booking_from_date')):
@@ -918,13 +920,14 @@ class lounge_order(osv.osv):
                 booking_from_date = record.booking_from_date
                 booking_to_date = vals['booking_to_date']
 
-        if (vals.get('booking_from_date') and vals.get('booking_from_date')):
+        if (vals.get('booking_from_date') and vals.get('booking_to_date')):
             booking_from_date = vals['booking_from_date']
             booking_to_date = vals['booking_to_date']
 
         vals = {
             'booking_total': self._get_booking_total(booking_from_date, booking_to_date),
         }
+        """
         res = super(lounge_order, self).write(cr, uid, ids, vals, context=context)
         partner_obj = self.pool.get('res.partner')
         bsl_obj = self.pool.get("account.bank.statement.line")
@@ -946,12 +949,12 @@ class lounge_order(osv.osv):
         if values.get('session_id'):
             # set name based on the sequence specified on the config
             session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
-            values['booking_total'] = self._get_booking_total(values['booking_from_date'],values['booking_to_date'])
+            #values['booking_total'] = self._get_booking_total(values['booking_from_date'],values['booking_to_date'])
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
             # fallback on any pos.order sequence
-            values['booking_total'] = self._get_booking_total(values['booking_from_date'], values['booking_to_date'])
+            #values['booking_total'] = self._get_booking_total(values['booking_from_date'], values['booking_to_date'])
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
         return super(lounge_order, self).create(cr, uid, values, context=context)
 
@@ -1469,7 +1472,7 @@ class lounge_order_line(osv.osv):
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,change_default=True),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
-        'charge': fields.float('Charge', digits=0,readonly=True),
+        'charge': fields.float('Charge', digits=0),
         'discount': fields.float('Discount (%)', digits=0),
         'price_unit': fields.float(string='Unit Price', digits=0),
         'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',relation='account.tax', string='Taxes'),
@@ -1481,6 +1484,7 @@ class lounge_order_line(osv.osv):
     }
 
     """SUM Function with compute """
+    price_charge = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Surcharge')
     price_subtotal = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal w/o Tax')
     price_subtotal_incl = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal')
 
@@ -1488,26 +1492,35 @@ class lounge_order_line(osv.osv):
     @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
     def _compute_amount_line_all(self):
         for line in self:
-            order = self.pool.get('lounge.order')
-            domain = [('order_id', 'in', line.order_id)]
-            order_id = order.search(domain)
-            if order_id:
-                first_ID = order_id[0]
-                raise UserError(_(first_ID))
-
-
             currency = line.order_id.pricelist_id.currency_id
             taxes = line.tax_ids.filtered(lambda tax: tax.company_id.id == line.order_id.company_id.id)
             fiscal_position_id = line.order_id.fiscal_position_id
             if fiscal_position_id:
                 taxes = fiscal_position_id.map_tax(taxes)
+
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            
+            if(line.product_id.lounge_charge_every >0 ):
+                total_charge = int(math.ceil(line.order_id.booking_total/line.product_id.lounge_charge_every))
+            else:
+                total_charge = 0
+                
+            product_charge = (line.product_id.lounge_charge /100) * line.price_unit
+            
+            if(total_charge > 1):
+                line.charge = (total_charge - 1) * product_charge
+            else:
+                line.charge = 0
+                
+            price = price + line.charge
+            
             line.price_subtotal = line.price_subtotal_incl = price * line.qty
             if taxes:
                 taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
                 line.price_subtotal = taxes['total_excluded']
                 line.price_subtotal_incl = taxes['total_included']
-            line.charge = 20
+
+            line.price_charge = line.charge * line.qty
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
     """SUM Function with compute """
@@ -1516,11 +1529,12 @@ class lounge_order_line(osv.osv):
         'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order.line',context=context),
         'qty': lambda *a: 1,
         'discount': lambda *a: 0.0,
+        'charge': lambda *a: 0.0,
         'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
     }
 
     """On Change Event"""
-    def onchange_product_id(self, cr, uid, ids, pricelist, product_id, qty=0, partner_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids, pricelist, product_id, charge=0,qty=0, partner_id=False, context=None):
         context = context or {}
         if not product_id:
             return {}
@@ -1531,14 +1545,14 @@ class lounge_order_line(osv.osv):
         price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
                                                              product_id, qty or 1.0, partner_id)[pricelist]
 
-        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0, qty, price, context=context)
+        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0, charge, qty, price, context=context)
         result['value']['price_unit'] = price
         prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
         result['value']['tax_ids'] = prod.taxes_id.ids
 
         return result
 
-    def onchange_qty(self, cr, uid, ids, pricelist, product, discount, qty, price_unit, context=None):
+    def onchange_qty(self, cr, uid, ids, pricelist, product, discount, charge, qty, price_unit, context=None):
         result = {}
         if not product:
             return result
@@ -1548,6 +1562,7 @@ class lounge_order_line(osv.osv):
         account_tax_obj = self.pool.get('account.tax')
         prod = self.pool.get('product.product').browse(cr, uid, product, context=context)
         price = price_unit * (1 - (discount or 0.0) / 100.0)
+        price = price + charge
         result['price_subtotal'] = result['price_subtotal_incl'] = price * qty
         cur = self.pool.get('product.pricelist').browse(cr, uid, [pricelist], context=context).currency_id
         if (prod.taxes_id):
