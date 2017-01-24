@@ -1305,7 +1305,8 @@ td {
     font-weight: bold;
 }
 .pos .paymentline .col-change.highlight {
-    background: rgb(184, 152, 204);
+    /*background: rgb(184, 152, 204);*/
+    background:#2AADE3;
 }
 .pos .paymentline .col-name {
     font-size: 16px;
@@ -1323,7 +1324,8 @@ td {
     float: right;
 }
 .payment-screen .payment-buttons .button {
-    background: #e2e2e2;
+    /*background: #e2e2e2;*/
+    background:#2AADE3;
     line-height: 73px;
     font-size: 16px;
     padding: 0px 8px;

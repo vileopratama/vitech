@@ -699,7 +699,7 @@
         <div class='receipt-screen screen'>
             <div class='screen-content'>
                 <div class='top-content'>
-                    <h1>Change: <span class='change-value'>0.00</span></h1>
+                    <h1>Change Money : <span class='change-value'>0.00</span></h1>
                     <span class='button next'>
                         Next Order
                         <i class='fa fa-angle-double-right'></i>
@@ -707,7 +707,7 @@
                 </div>
                 <div class="centered-content touch-scrollable">
                     <div class="button print">
-                        <i class='fa fa-print'></i> Print Receipt
+                        <i class='fa fa-print'></i> Print
                     </div>
                     <div class="pos-receipt-container">
                     </div>
@@ -776,6 +776,9 @@
                         <t t-if='line.discount !== 0'>
                             <line indent='1'><left>Discount: <t t-esc='line.discount' />%</left></line>
                         </t>
+                        <t t-if='line.surcharge !== 0'>
+                            <line indent='1'><left>Additional Charge: <t t-esc='line.surcharge' /></left></line>
+                        </t>
                         <line indent='1'>
                             <left>
                                 <value value-decimals='3' value-autoint='on'>
@@ -842,6 +845,12 @@
                 <line>
                     <left>Discounts</left>
                     <right><value><t t-esc='receipt.total_discount'/></value></right>
+                </line>
+            </t>
+            <t t-if='receipt.total_surcharge'>
+                <line>
+                    <left>Surcharge</left>
+                    <right><value><t t-esc='receipt.total_surcharge'/></value></right>
                 </line>
             </t>
             <t t-if='taxincluded'>
@@ -1314,8 +1323,9 @@
             <br />
             <t t-esc="widget.lounge.company.name"/><br />
             Phone: <t t-esc="widget.lounge.company.phone || ''"/><br />
-            User: <t t-esc="widget.lounge.cashier ? widget.lounge.cashier.name : widget.lounge.user.name"/><br />
-            Shop: <t t-esc="widget.lounge.shop.name"/><br />
+            Cashier : <t t-esc="widget.lounge.cashier ? widget.lounge.cashier.name : widget.lounge.user.name"/><br />
+            Time : <t t-esc="order.get_booking_from_date() ? order.get_booking_from_date() : ''"/> - <t t-esc="order.get_booking_to_date() ? order.get_booking_to_date() : ''"/><br />
+            <!--Shop: <t t-esc="widget.lounge.shop.name"/><br />-->
             <br />
             <t t-if="receipt.header">
                 <div style='text-align:center'>
@@ -1368,6 +1378,12 @@
                         <t t-esc="widget.format_currency(order.get_total_discount())"/>
                     </td>
                 </tr>
+                <tr>
+                    <td>Surcharge:</td>
+                    <td class="pos-right-align">
+                        <t t-esc="widget.format_currency(order.get_total_with_tax() - order.get_total_surcharge())"/>
+                    </td>
+                </tr>
                 <tr class="emph">
                     <td>Total:</td>
                     <td class="pos-right-align">
@@ -1390,9 +1406,25 @@
             </table>
             <br />
             <table class='receipt-change'>
-                <tr><td>Change:</td><td class="pos-right-align">
+                <tr>
+                    <td>Change:</td><td class="pos-right-align">
                     <t t-esc="widget.format_currency(order.get_change())"/>
-                    </td></tr>
+                    </td>
+                </tr>
+            </table>
+
+            <table class='receipt-footer'>
+                <tr>
+                    <td>
+                        <div style='text-align:center'>
+                            <div>
+                                <br/>
+                                <br/>
+                                More than 2 hours to booking time are subject to an additional charge Rp.100.000/2 hours
+                            </div>
+                        </div>
+                    </td>
+                </tr>
             </table>
             <t t-if="receipt.footer">
                 <br />

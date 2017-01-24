@@ -691,7 +691,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    // saves the order locally and try to send it to the backend.
 	    // it returns a deferred that succeeds after having tried to send the order and all the other pending orders.
 	    push_order: function(order, opts) {
-	            opts = opts || {};
+	        opts = opts || {};
 	        var self = this;
 
 	        if(order){
@@ -1094,6 +1094,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return;
 	        }
 	        this.product = options.product;
+	        this.charge = 0;
 	        this.price   = options.product.price;
 	        this.set_quantity(1);
 	        this.discount = 0;
@@ -1128,6 +1129,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        orderline.selected = false;
 	        return orderline;
 	    },
+
 	    // sets a discount [0,100]%
 	    set_discount: function(discount){
 	        var disc = Math.min(Math.max(parseFloat(discount) || 0, 0),100);
@@ -1139,8 +1141,20 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_discount: function(){
 	        return this.discount;
 	    },
+
 	    get_discount_str: function(){
 	        return this.discountStr;
+	    },
+
+	    get_charge: function() {
+			var total_hour = this.get_booking_total();
+	        var charge_percentage = this.get_product().lounge_charge;
+	        var charge_every = this.get_product().lounge_charge_every;
+	        var charge_value = ! charge_percentage ? 0 : (charge_percentage/100) * this.get_unit_price();
+			var total_hour_charge = Math.round(total_hour / charge_every);
+			total_hour_charge = total_hour_charge == 1 ? 0 : total_hour_charge - 1;
+			var total_charge = charge_value * total_hour_charge;
+			return Math.round(total_charge);
 	    },
 	    get_product_type: function(){
 	        return this.type;
@@ -1241,6 +1255,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            product_id: this.get_product().id,
 	            tax_ids: [[6, false, _.map(this.get_applicable_taxes(), function(tax){ return tax.id; })]],
 	            id: this.id,
+	            charge: this.get_charge(),
 	        };
 	    },
 	    //used to create a json of the ticket, to be sent to the printer
@@ -1255,6 +1270,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            price_with_tax :    this.get_price_with_tax(),
 	            price_without_tax:  this.get_price_without_tax(),
 	            tax:                this.get_tax(),
+				surcharge:          this.get_surcharge(),
 	            product_description:      this.get_product().description,
 	            product_description_sale: this.get_product().description_sale,
 	        };
@@ -1456,9 +1472,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var taxes =  this.lounge.taxes;
 	        var taxdetail = {};
 	        var product_taxes = [];
-
-            var total_hour_charge = !total_hour ? 0 : Math.round(total_hour / hour_if_charge);
-            charge = charge * (total_hour_charge - 1);
+            var total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
+            charge = (total_hour_charge == 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
 
 	        _(taxes_ids).each(function(el){
 	            product_taxes.push(_.detect(taxes, function(t){
@@ -1670,6 +1685,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }, this));
 	        return {
 	            name: this.get_name(),
+	            amount_surcharge : this.get_total_surcharge(), //add line for write surcharge
 	            amount_paid: this.get_total_paid(),
 	            amount_total: this.get_total_with_tax(),
 	            amount_tax: this.get_total_tax(),
@@ -1682,7 +1698,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	            uid: this.uid,
 	            sequence_number: this.sequence_number,
 	            creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
-	            fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false
+	            fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false,
+	            //extra line field
+	            booking_from_date : this.get_booking_from_date(),
+	            booking_to_date : this.get_booking_to_date(),
+	            booking_total : 20,
 	        };
 	    },
 	    export_for_printing: function(){
@@ -1727,6 +1747,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            subtotal: this.get_subtotal(),
 	            total_with_tax: this.get_total_with_tax(),
 	            total_without_tax: this.get_total_without_tax(),
+	            total_surcharge : this.get_total_surcharge(),
 	            total_tax: this.get_total_tax(),
 	            total_paid: this.get_total_paid(),
 	            total_discount: this.get_total_discount(),
@@ -2156,6 +2177,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_booking_to_date: function() {
 	        return this.get('booking_to_date');
 	    },
+
 	    /* ---- Screen Status --- */
 	    // the order also stores the screen status, as the Lounge supports
 	    // different active screens per order. This method is used to

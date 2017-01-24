@@ -1526,9 +1526,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    init: function(parent, options) {
 	        var self = this;
 	        this._super(parent, options);
-
-	        this.booking_from_date = this.lounge.get_order().get_booking_from_date();
-
+	        //this.booking_from_date = this.lounge.get_order().get_booking_from_date();
 	        this.lounge.bind('change:selectedOrder',function(){
 	                this.renderElement();
 	                this.watch_order_changes();
@@ -1591,7 +1589,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        this.lounge.bind('change:selectedClient', function() {
 	            self.customer_changed();
-
 	        }, this);
 
 
@@ -1766,8 +1763,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 	    },
 	    customer_changed: function() {
-	       //var client = this.lounge.get_client();
-	        //this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
+	        var client = this.lounge.get_client();
+	        this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
 	    },
 	    time_changed: function() {
 	        var booking_from_date = this.lounge.get_order().get_booking_from_date();
@@ -1864,7 +1861,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    // and complete the sale process
 	    validate_order: function(force_validation) {
 	        var self = this;
-
 	        var order = this.lounge.get_order();
 
 	        // FIXME: this check is there because the backend is unable to
@@ -1872,7 +1868,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        if (order.get_orderlines().length === 0) {
 	            this.gui.show_popup('error',{
 	                'title': _t('Empty Order'),
-	                'body':  _t('There must be at least one product in your order before it can be validated'),
+	                'body':  _t('There must be at least one product sale in your order before it can be validated'),
 	            });
 	            return;
 	        }

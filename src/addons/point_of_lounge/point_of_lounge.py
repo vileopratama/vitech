@@ -1480,11 +1480,10 @@ class lounge_order_line(osv.osv):
         'create_date': fields.datetime('Creation Date', readonly=True),
         'notice': fields.char('Discount Notice'),
         'company_id': fields.many2one('res.company', 'Company', required=True),
-
     }
 
     """SUM Function with compute """
-    price_charge = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Surcharge')
+    price_charge = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Total Charge')
     price_subtotal = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal w/o Tax')
     price_subtotal_incl = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal')
 
@@ -1505,22 +1504,22 @@ class lounge_order_line(osv.osv):
             else:
                 total_charge = 0
                 
-            product_charge = (line.product_id.lounge_charge /100) * line.price_unit
+            product_charge = int(round((line.product_id.lounge_charge /100) * line.price_unit))
             
             if(total_charge > 1):
                 line.charge = (total_charge - 1) * product_charge
             else:
                 line.charge = 0
-                
-            price = price + line.charge
-            
-            line.price_subtotal = line.price_subtotal_incl = price * line.qty
-            if taxes:
-                taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
-                line.price_subtotal = taxes['total_excluded']
-                line.price_subtotal_incl = taxes['total_included']
 
             line.price_charge = line.charge * line.qty
+            line.price_subtotal = line.price_subtotal_incl = (price * line.qty) + line.price_charge
+
+            if taxes:
+                taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
+                line.price_subtotal = taxes['total_excluded'] + (line.price_charge)
+                line.price_subtotal_incl = taxes['total_included'] + (line.price_charge)
+
+
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
     """SUM Function with compute """
@@ -1534,7 +1533,7 @@ class lounge_order_line(osv.osv):
     }
 
     """On Change Event"""
-    def onchange_product_id(self, cr, uid, ids, pricelist, product_id, charge=0,qty=0, partner_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids, pricelist, product_id,charge,qty=0, partner_id=False, context=None):
         context = context or {}
         if not product_id:
             return {}
@@ -1545,14 +1544,14 @@ class lounge_order_line(osv.osv):
         price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
                                                              product_id, qty or 1.0, partner_id)[pricelist]
 
-        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0, charge, qty, price, context=context)
+        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0,qty, price, context=context)
         result['value']['price_unit'] = price
         prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
         result['value']['tax_ids'] = prod.taxes_id.ids
 
         return result
 
-    def onchange_qty(self, cr, uid, ids, pricelist, product, discount, charge, qty, price_unit, context=None):
+    def onchange_qty(self, cr, uid, ids, pricelist, product, discount,charge,qty, price_unit, context=None):
         result = {}
         if not product:
             return result
@@ -1562,13 +1561,14 @@ class lounge_order_line(osv.osv):
         account_tax_obj = self.pool.get('account.tax')
         prod = self.pool.get('product.product').browse(cr, uid, product, context=context)
         price = price_unit * (1 - (discount or 0.0) / 100.0)
-        price = price + charge
-        result['price_subtotal'] = result['price_subtotal_incl'] = price * qty
+        price = price
+        result['price_charge'] = charge * qty
+        result['price_subtotal'] = result['price_subtotal_incl'] = (price * qty) + result['price_charge']
         cur = self.pool.get('product.pricelist').browse(cr, uid, [pricelist], context=context).currency_id
         if (prod.taxes_id):
             taxes = prod.taxes_id.compute_all(price, cur, qty, product=prod, partner=False)
-            result['price_subtotal'] = taxes['total_excluded']
-            result['price_subtotal_incl'] = taxes['total_included']
+            result['price_subtotal'] = taxes['total_excluded'] + result['price_charge']
+            result['price_subtotal_incl'] = taxes['total_included'] + result['price_charge']
         #return
         return {'value': result}
 
