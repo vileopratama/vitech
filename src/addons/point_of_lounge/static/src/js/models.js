@@ -2229,7 +2229,9 @@ odoo.define('point_of_lounge.models', function (require) {
 				var hour_to = date_to.substr(11,5);
 
 				var dt1 = new Date("" + mm_from + " " + dd_from + ", " + yy_from + " " + hour_from + ":00");
+				//dt1.setHours(dt1.getHours() - 7);
 				var dt2 = new Date("" + mm_to + " " + dd_to + ", " + yy_to + " " + hour_to + ":00");
+				//dt2.setHours(dt2.getHours() - 7);
 				var diff =(dt2.getTime() - dt1.getTime()) / 1000;
 	            diff /= (60 * 60);
 	            return Math.abs(Math.round(diff));
