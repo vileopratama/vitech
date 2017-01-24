@@ -380,10 +380,10 @@ odoo.define('point_of_lounge.screens', function (require) {
         },
         renderComponent:function() {
 	        this.$('.timepicker').datetimepicker({
-	            minView: 2,
+	            //minView: 2,
 	            useCurrent: true,
-	            pickDate: false,
-	            format: 'HH:mm',
+	            pickDate: true,
+	            format: 'DD/MM/YYYY HH:mm',
 	            use24hours: true
 	        });
 		},

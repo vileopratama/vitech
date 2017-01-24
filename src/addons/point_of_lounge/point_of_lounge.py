@@ -664,13 +664,16 @@ class lounge_order(osv.osv):
         process_line = partial(self.pool['lounge.order.line']._order_line_fields, cr, uid, context=context)
         return {
             'name': ui_order['name'],
+            'booking_from_date' : datetime.strptime(ui_order['booking_from_date'], DEFAULT_SERVER_DATETIME_FORMAT),
+            'booking_to_date' : datetime.strptime(ui_order['booking_to_date'], DEFAULT_SERVER_DATETIME_FORMAT),
+            'booking_total' : ui_order['booking_total'],
             'user_id': ui_order['user_id'] or False,
             'session_id': ui_order['lounge_session_id'],
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
             'lounge_reference': ui_order['name'],
             'partner_id': ui_order['partner_id'] or False,
             'date_order': ui_order['creation_date'],
-            'fiscal_position_id': ui_order['fiscal_position_id']
+            'fiscal_position_id': ui_order['fiscal_position_id'],
         }
 
     def _payment_fields(self, cr, uid, ui_paymentline, context=None):

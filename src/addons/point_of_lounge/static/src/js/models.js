@@ -662,6 +662,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return null;
 	    },
 
+	    get_diff_hours: function(date_from,date_to) {
+	        var order = this.get_order();
+	        if (order) {
+	            return order.get_diff_hours(date_from,date_to);
+	        }
+	        return null;
+	    },
+
 	    get_booking_total: function() {
 	        var order = this.get_order();
 	        if (order) {
@@ -1094,10 +1102,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return;
 	        }
 	        this.product = options.product;
-	        this.charge = 0;
 	        this.price   = options.product.price;
 	        this.set_quantity(1);
 	        this.discount = 0;
+	        this.charge = 0;
 	        this.discountStr = '0';
 	        this.type = 'unit';
 	        this.selected = false;
@@ -1435,7 +1443,14 @@ odoo.define('point_of_lounge.models', function (require) {
             return str;
 	    },
 	    get_booking_total: function() {
-	        self = this;
+	        var time_total = this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date());
+
+	        if(!time_total) {
+	            return 0;
+	        }
+
+	        return time_total;
+	        /*self = this;
             var booking_from_date = this.lounge.get_booking_from_date();
             var booking_to_date = this.lounge.get_booking_to_date();
             var time_total = 0;
@@ -1457,7 +1472,7 @@ odoo.define('point_of_lounge.models', function (require) {
                 var time_total = (total_booking_to_date/3600) - (total_booking_from_date/3600);
             }
 
-            return time_total;
+            return time_total;*/
 
 	    },
 	    get_all_prices: function(){
@@ -1683,8 +1698,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.paymentlines.each(_.bind( function(item) {
 	            return paymentLines.push([0, 0, item.export_as_JSON()]);
 	        }, this));
+
 	        return {
-	            name: this.get_name(),
+	            name : this.get_name(),
+	            booking_from_date : this.get_booking_from_date_local(),
+	            booking_to_date :  this.get_booking_from_date_local(),
+	            booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),
 	            amount_surcharge : this.get_total_surcharge(), //add line for write surcharge
 	            amount_paid: this.get_total_paid(),
 	            amount_total: this.get_total_with_tax(),
@@ -1698,11 +1717,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	            uid: this.uid,
 	            sequence_number: this.sequence_number,
 	            creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
-	            fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false,
-	            //extra line field
-	            booking_from_date : this.get_booking_from_date(),
-	            booking_to_date : this.get_booking_to_date(),
-	            booking_total : 20,
+	            fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false
+
 	        };
 	    },
 	    export_for_printing: function(){
@@ -1825,6 +1841,28 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_name: function() {
 	        return this.name;
+	    },
+	    get_booking_from_date_local: function() {
+			if(this.lounge.get_booking_from_date()) {
+				var date_from = this.lounge.get_booking_from_date();
+				var dd_from = date_from.substr(0,2);
+				var mm_from = date_from.substr(3,2);
+				var yy_from = date_from.substr(6,4);
+				var hour_from = date_from.substr(11,5);
+				return yy_from + '-' + mm_from + '-' + dd_from + ' ' + hour_from + ':00';
+			}
+			return this.creation_date;
+	    },
+	    get_booking_to_date_local: function() {
+			if(this.lounge.get_booking_to_date()) {
+				var date_to = this.lounge.get_booking_to_date();
+				var dd_to = date_to.substr(0,2);
+				var mm_to = date_to.substr(3,2);
+				var yy_to = date_to.substr(6,4);
+				var hour_to= date_to.substr(11,5);
+				return yy_to + '-' + mm_to + '-' + dd_to + ' ' + hour_to + ':00';
+			}
+			return this.creation_date;
 	    },
 	    assert_editable: function() {
 	        if (this.finalized) {
@@ -2177,7 +2215,28 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_booking_to_date: function() {
 	        return this.get('booking_to_date');
 	    },
+	    get_diff_hours: function(date_from , date_to) {
+	        if(date_from && date_to) {
+				//date 01/02/2017 22:00
+				var dd_from = date_from.substr(0,2);
+				var mm_from = date_from.substr(3,2);
+				var yy_from = date_from.substr(6,4);
+				var hour_from = date_from.substr(11,5);
 
+				var dd_to = date_to.substr(0,2);
+				var mm_to = date_to.substr(3,2);
+				var yy_to = date_to.substr(6,4);
+				var hour_to = date_to.substr(11,5);
+
+				var dt1 = new Date("" + mm_from + " " + dd_from + ", " + yy_from + " " + hour_from + ":00");
+				var dt2 = new Date("" + mm_to + " " + dd_to + ", " + yy_to + " " + hour_to + ":00");
+				var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+	            diff /= (60 * 60);
+	            return Math.abs(Math.round(diff));
+            } else {
+                return 0;
+            }
+	    },
 	    /* ---- Screen Status --- */
 	    // the order also stores the screen status, as the Lounge supports
 	    // different active screens per order. This method is used to
