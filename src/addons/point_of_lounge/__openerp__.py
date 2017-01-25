@@ -8,7 +8,7 @@
     'website': "http://www.example.com",
     'category': 'Sales',
     'version': '9.0.1.0.0',
-    'depends': ['sale_stock', 'barcodes'],
+    'depends': ['sale_stock', 'barcodes','account','account_accountant'],
     'data': [
         'data/report_paperformat.xml',
         'module/module_data.xml',
@@ -18,7 +18,7 @@
         'wizard/lounge_payment.xml',
         'point_of_lounge_report.xml',
         'point_of_lounge_view.xml',
-        #'point_of_lounge_data.xml',
+        'point_of_lounge_data.xml',
         'point_of_lounge_workflow.xml',
         'account_statement_view.xml',
         'res_config_view.xml',

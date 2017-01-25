@@ -1160,7 +1160,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var charge_every = this.get_product().lounge_charge_every;
 	        var charge_value = ! charge_percentage ? 0 : (charge_percentage/100) * this.get_unit_price();
 			var total_hour_charge = Math.round(total_hour / charge_every);
-			total_hour_charge = total_hour_charge == 1 ? 0 : total_hour_charge - 1;
+			total_hour_charge = total_hour_charge > 1  ? total_hour_charge - 1 : 0;
 			var total_charge = charge_value * total_hour_charge;
 			return Math.round(total_charge);
 	    },
@@ -1702,7 +1702,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return {
 	            name : this.get_name(),
 	            booking_from_date : this.get_booking_from_date_local(),
-	            booking_to_date :  this.get_booking_from_date_local(),
+	            booking_to_date :  this.get_booking_to_date_local(),
 	            booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),
 	            amount_surcharge : this.get_total_surcharge(), //add line for write surcharge
 	            amount_paid: this.get_total_paid(),
@@ -1849,7 +1849,9 @@ odoo.define('point_of_lounge.models', function (require) {
 				var mm_from = date_from.substr(3,2);
 				var yy_from = date_from.substr(6,4);
 				var hour_from = date_from.substr(11,5);
-				return yy_from + '-' + mm_from + '-' + dd_from + ' ' + hour_from + ':00';
+				var date = new Date(mm_from + '/' + dd_from + '/' + yy_from + ' ' + hour_from+':00').toUTCString();
+				return date;
+				//return yy_from + '-' + mm_from + '-' + dd_from + ' ' + hour_from + ':00';
 			}
 			return this.creation_date;
 	    },
@@ -1860,7 +1862,10 @@ odoo.define('point_of_lounge.models', function (require) {
 				var mm_to = date_to.substr(3,2);
 				var yy_to = date_to.substr(6,4);
 				var hour_to= date_to.substr(11,5);
-				return yy_to + '-' + mm_to + '-' + dd_to + ' ' + hour_to + ':00';
+				//return yy_to + '-' + mm_to + '-' + dd_to + ' ' + hour_to + ':00';
+				var date = new Date(mm_to + '/' + dd_to + '/' + yy_to + ' ' + hour_to+':00').toUTCString();
+				return date;
+				//return date.toString();
 			}
 			return this.creation_date;
 	    },

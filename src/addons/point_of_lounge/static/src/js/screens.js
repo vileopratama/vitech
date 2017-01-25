@@ -378,6 +378,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    start: function() {
             this.renderComponent();
         },
+        show:function() {
+			this._super(parent);
+
+			this.time_changed();
+        },
         renderComponent:function() {
 	        this.$('.timepicker').datetimepicker({
 	            //minView: 2,
@@ -395,13 +400,15 @@ odoo.define('point_of_lounge.screens', function (require) {
             var val = this.$('.booking_to_date').val();
             this.lounge.get_order().set_booking_to_date(val);
         },
-
         time_changed: function() {
-	        var booking_from_date = this.lounge.get_order().get_booking_from_date();
-	        var booking_to_date = this.lounge.get_order().get_booking_to_date();
-	        this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
-	        this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
+	        var booking_from_date = this.lounge.get_booking_from_date();
+	        var booking_to_date = this.lounge.get_booking_to_date();
+	        this.$('.booking_from_date').val(booking_from_date ? booking_from_date : _t('') );
+	        this.$('.booking_to_date').val(booking_to_date ? booking_to_date : _t('') );
+	        //this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
+	        //this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
 	    },
+
 	});
 	/* ---------- The Action Time  ---------- */
 
@@ -413,6 +420,8 @@ odoo.define('point_of_lounge.screens', function (require) {
         init: function(parent, options) {
             var self = this;
             this._super(parent, options);
+
+
             this.lounge.bind('change:selectedClient', function() {
                 self.renderElement();
             });
@@ -441,7 +450,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                return;
                 }
 
-                self.gui.show_screen('payment');
+				if(booking_from_date && booking_to_date) {
+                    self.gui.show_screen('payment');
+                }
             });
             this.$('.set-customer').click(function(){
                 self.gui.show_screen('clientlist');
@@ -1795,6 +1806,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
+	            jQuery(".booking_from_date").val("");
+				jQuery(".booking_to_date").val("");
 	            self.validate_order();
 	        });
 

@@ -16,6 +16,7 @@ from openerp.exceptions import UserError
 from openerp import api, fields as Fields
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import math
+import pytz
 
 _logger = logging.getLogger(__name__)
 
@@ -538,9 +539,9 @@ class lounge_session(osv.osv):
             company_id = record.config_id.company_id.id
             local_context.update({'force_company': company_id, 'company_id': company_id})
             for st in record.statement_ids:
-                if abs(st.difference) > st.journal_id.amount_authorized_diff:
+                if abs(st.difference) > st.journal_id.amount_authorized_diff_lounge:
                     # The pos manager can close statements with maximums.
-                    if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_sale.group_pos_manager"):
+                    if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_lounge.group_pos_manager"):
                         raise UserError(_("Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (st.difference, st.journal_id.amount_authorized_diff))
                 if (st.journal_id.type not in ['bank', 'cash']):
                     raise UserError(_("The type of the journal for your payment method should be bank or cash "))
@@ -662,10 +663,15 @@ class lounge_order(osv.osv):
 
     def _order_fields(self, cr, uid, ui_order, context=None):
         process_line = partial(self.pool['lounge.order.line']._order_line_fields, cr, uid, context=context)
+        # get user's timezone
+        #user_pool = self.pool.get('res.users')
+        #user = user_pool.browse(cr, SUPERUSER_ID, uid)
+        #tz = pytz.timezone(user.partner_id.tz) or pytz.utc
+
         return {
             'name': ui_order['name'],
-            'booking_from_date' : datetime.strptime(ui_order['booking_from_date'], DEFAULT_SERVER_DATETIME_FORMAT),
-            'booking_to_date' : datetime.strptime(ui_order['booking_to_date'], DEFAULT_SERVER_DATETIME_FORMAT),
+            'booking_from_date' : ui_order['booking_from_date'],
+            'booking_to_date' :ui_order['booking_to_date'],
             'booking_total' : ui_order['booking_total'],
             'user_id': ui_order['user_id'] or False,
             'session_id': ui_order['lounge_session_id'],
@@ -818,6 +824,7 @@ class lounge_order(osv.osv):
         if fiscal_position_id:
             taxes = fiscal_position_id.map_tax(taxes)
         price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+        price = price + line.charge
         cur = line.order_id.pricelist_id.currency_id
         taxes = taxes.compute_all(price, cur, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)['taxes']
         val = 0.0
@@ -1499,29 +1506,28 @@ class lounge_order_line(osv.osv):
             fiscal_position_id = line.order_id.fiscal_position_id
             if fiscal_position_id:
                 taxes = fiscal_position_id.map_tax(taxes)
-
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             
-            if(line.product_id.lounge_charge_every >0 ):
-                total_charge = int(math.ceil(line.order_id.booking_total/line.product_id.lounge_charge_every))
-            else:
-                total_charge = 0
+            #if(line.product_id.lounge_charge_every >0 ):
+             #   total_charge = int(math.ceil(line.order_id.booking_total/line.product_id.lounge_charge_every))
+            #else:
+             #   total_charge = 0
                 
-            product_charge = int(round((line.product_id.lounge_charge /100) * line.price_unit))
+            #product_charge = int(round((line.product_id.lounge_charge /100) * line.price_unit))
             
-            if(total_charge > 1):
-                line.charge = (total_charge - 1) * product_charge
-            else:
-                line.charge = 0
+            #if(total_charge > 1):
+            #    line.charge = (total_charge - 1) * product_charge
+            #else:
+            #    line.charge = 0
 
             line.price_charge = line.charge * line.qty
-            line.price_subtotal = line.price_subtotal_incl = (price * line.qty) + line.price_charge
+            line.price_subtotal = line.price_subtotal_incl = (price * line.qty) + (line.charge * line.qty)
 
             if taxes:
+                price = price + line.charge
                 taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
-                line.price_subtotal = taxes['total_excluded'] + (line.price_charge)
-                line.price_subtotal_incl = taxes['total_included'] + (line.price_charge)
-
+                line.price_subtotal = taxes['total_excluded']
+                line.price_subtotal_incl = taxes['total_included']
 
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
