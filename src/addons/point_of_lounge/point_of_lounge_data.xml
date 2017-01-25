@@ -3,7 +3,6 @@
     <data noupdate="0">
         <record id="seq_picking_type_loungeout" model="ir.sequence">
             <field name="name">Picking Lounge</field>
-            <field name="code">lounge.order</field>
             <field name="prefix">Lounge</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>

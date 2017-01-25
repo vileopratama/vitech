@@ -230,20 +230,20 @@ class lounge_config(osv.osv):
     def create(self, cr, uid, values, context=None):
         ir_sequence = self.pool.get('ir.sequence')
         values['sequence_id'] = ir_sequence.create(cr, SUPERUSER_ID, {
-            'name': 'POS Order %s' % values['name'],
+            'name': 'Lounge Order %s' % values['name'],
             'padding': 4,
             'prefix': "%s/" % values['name'],
-            'code': "pos.order",
+            'code': "lounge.order",
             'company_id': values.get('company_id', False),
         }, context=context)
 
         # TODO master: add field sequence_line_id on model
         # this make sure we always have one available per company
         ir_sequence.create(cr, SUPERUSER_ID, {
-            'name': 'POS order line %s' % values['name'],
+            'name': 'Lounge order line %s' % values['name'],
             'padding': 4,
             'prefix': "%s/" % values['name'],
-            'code': "pos.order.line",
+            'code': "lounge.order.line",
             'company_id': values.get('company_id', False),
         }, context=context)
         return super(lounge_config, self).create(cr, uid, values, context=context)
@@ -963,9 +963,9 @@ class lounge_order(osv.osv):
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
-            # fallback on any pos.order sequence
+            # fallback on any lounge.order sequence
             #values['booking_total'] = self._get_booking_total(values['booking_from_date'], values['booking_to_date'])
-            values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order', context=context)
+            values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'lounge.order', context=context)
         return super(lounge_order, self).create(cr, uid, values, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
@@ -1534,7 +1534,7 @@ class lounge_order_line(osv.osv):
     """SUM Function with compute """
 
     _defaults = {
-        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'pos.order.line',context=context),
+        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'lounge.order.line',context=context),
         'qty': lambda *a: 1,
         'discount': lambda *a: 0.0,
         'charge': lambda *a: 0.0,
