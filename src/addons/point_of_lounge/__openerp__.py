@@ -8,7 +8,7 @@
     'website': "http://www.vileo.co.id",
     'category': 'Sales',
     'version': '9.0.1.0.0',
-    'depends': ['sale_stock', 'barcodes','account','account_accountant'],
+    'depends': ['sale_stock', 'barcodes'],
     'data': [
         'data/report_paperformat.xml',
         'module/module_data.xml',

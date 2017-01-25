@@ -884,6 +884,9 @@ class lounge_order(osv.osv):
         'state': 'draft',
         'name': '/',
         'date_order': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'booking_from_date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'booking_to_date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'booking_total': 0,
         'nb_print': 0,
         'sequence_number': 1,
         'session_id': _default_session,
@@ -1498,7 +1501,7 @@ class lounge_order_line(osv.osv):
     price_subtotal_incl = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal')
 
     #defination api
-    @api.depends('price_unit', 'tax_ids', 'qty', 'discount', 'product_id')
+    @api.depends('price_unit','tax_ids','charge','qty','discount','product_id')
     def _compute_amount_line_all(self):
         for line in self:
             currency = line.order_id.pricelist_id.currency_id
@@ -1508,18 +1511,6 @@ class lounge_order_line(osv.osv):
                 taxes = fiscal_position_id.map_tax(taxes)
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             
-            #if(line.product_id.lounge_charge_every >0 ):
-             #   total_charge = int(math.ceil(line.order_id.booking_total/line.product_id.lounge_charge_every))
-            #else:
-             #   total_charge = 0
-                
-            #product_charge = int(round((line.product_id.lounge_charge /100) * line.price_unit))
-            
-            #if(total_charge > 1):
-            #    line.charge = (total_charge - 1) * product_charge
-            #else:
-            #    line.charge = 0
-
             line.price_charge = line.charge * line.qty
             line.price_subtotal = line.price_subtotal_incl = (price * line.qty) + (line.charge * line.qty)
 
@@ -1542,22 +1533,40 @@ class lounge_order_line(osv.osv):
     }
 
     """On Change Event"""
-    def onchange_product_id(self, cr, uid, ids, pricelist, product_id,charge,qty=0, partner_id=False, context=None):
+    def onchange_product_id(self, cr, uid, ids,booking_total,pricelist, product_id,charge,qty=0, partner_id=False, context=None):
         context = context or {}
         if not product_id:
             return {}
 
         if not pricelist:
             raise UserError(_('You have to select a pricelist in the sale form , Please set one before choosing a product.'))
-
-        price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
-                                                             product_id, qty or 1.0, partner_id)[pricelist]
-
-        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0,qty, price, context=context)
+        
+        price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],product_id, qty or 1.0, partner_id)[pricelist]
+        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0,charge,qty, price, context=context)
         result['value']['price_unit'] = price
+       
+        
         prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
-        result['value']['tax_ids'] = prod.taxes_id.ids
+        
+        if(booking_total):
+            booking_total = booking_total
+        else:
+            booking_total = 0
+        
+        if(prod.lounge_charge_every > 0 ):
+            total_charge = int(math.ceil(booking_total/prod.lounge_charge_every))
+        else:
+            total_charge = 0
 
+        product_charge = int(round((prod.lounge_charge /100) * price))
+
+        if(total_charge > 1):
+            surcharge = (total_charge - 1) * product_charge
+        else:
+            surcharge = 0
+        
+        result['value']['charge'] = surcharge
+        result['value']['tax_ids'] = prod.taxes_id.ids
         return result
 
     def onchange_qty(self, cr, uid, ids, pricelist, product, discount,charge,qty, price_unit, context=None):
@@ -1578,7 +1587,7 @@ class lounge_order_line(osv.osv):
             taxes = prod.taxes_id.compute_all(price, cur, qty, product=prod, partner=False)
             result['price_subtotal'] = taxes['total_excluded'] + result['price_charge']
             result['price_subtotal_incl'] = taxes['total_included'] + result['price_charge']
-        #return
+        
         return {'value': result}
 
     """On Change Event"""

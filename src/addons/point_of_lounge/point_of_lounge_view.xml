@@ -458,7 +458,7 @@
                              <page string="Products">
                                  <field name="lines" colspan="4" nolabel="1">
                                      <tree string="Order lines" editable="bottom">
-                                         <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,charge,qty,parent.partner_id)"/>
+                                         <field name="product_id" on_change="onchange_product_id(parent.booking_total,parent.pricelist_id,product_id,charge,qty,parent.partner_id)"/>
                                          <field name="price_unit" on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge, qty, price_unit, context)" widget="monetary"/>
                                          <field name="discount"  on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge, qty, price_unit, context)" widget="monetary"/>
 	                                     <field name="charge" widget="monetary" />
@@ -471,7 +471,7 @@
                                      </tree>
                                      <form string="Order lines">
                                         <group col="4">
-                                            <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,charge,qty,parent.partner_id)"/>
+                                            <field name="product_id" on_change="onchange_product_id(parent.booking_total,parent.pricelist_id,product_id,charge,qty,parent.partner_id)"/>
                                             <field name="qty" on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge, price_unit, context)"/>
                                             <field name="discount"  on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge,qty, price_unit, context)" widget="monetary"/>
                                             <field name="charge" on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge, qty, price_unit, context)" widget="monetary" />
