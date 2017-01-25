@@ -3,6 +3,7 @@
     <data noupdate="0">
         <record id="seq_picking_type_loungeout" model="ir.sequence">
             <field name="name">Picking Lounge</field>
+            <field name="code">lounge.order</field>
             <field name="prefix">Lounge</field>
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
@@ -18,6 +19,17 @@
     </data>
 
     <data noupdate="1">
+        <!-- After installation of the module, open the related menu -->
+        <record id="action_client_lounge_menu" model="ir.actions.client">
+            <field name="name">Open Lounge Menu</field>
+            <field name="tag">reload</field>
+            <field name="params" eval="{'menu_id': ref('menu_lounge_root')}"/>
+        </record>
+        <record id="base.open_menu" model="ir.actions.todo">
+            <field name="action_id" ref="action_client_lounge_menu"/>
+            <field name="state">open</field>
+        </record>
+
         <record model="lounge.config" id="lounge_config_soeta">
             <field name="name">Soeta I</field>
             <field name="picking_type_id" ref="picking_type_loungeout"/>
@@ -43,8 +55,9 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">LNG</field>
-            <field name="image" type="base64" file="point_of_lounge/static/img/product_product_49-image.jpg"/>
-        </record>
+            <field name="image" type="base64" file="point_of_lounge/static/src/img/lounge.jpg"/>
+
+         </record>
 
     </data>
 </odoo>
