@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_report_lounge_order_search" model="ir.ui.view">
+			<field name="name">report.lounge.order.search</field>
+			<field name="model">report.lounge.order</field>
+			<field name="arch" type="xml">
+				<search string="Lounge Analysis">
+				</search>
+			</field>
+		</record>
+	</data>
+</odoo>

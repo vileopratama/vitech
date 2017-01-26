@@ -103,18 +103,38 @@ class lounge_config(osv.osv):
                 return False
         return True
 
+    def _get_last_session(self, cr, uid, ids, fieldnames, args, context=None):
+        result = dict()
+
+        for record in self.browse(cr, uid, ids, context=context):
+            session_ids = self.pool['lounge.session'].search_read(cr, uid,
+                [('config_id', '=', record.id), ('state', '=', 'closed')],
+                ['cash_register_balance_end_real', 'stop_at'],
+                order="stop_at desc", limit=1, context=context)
+            if session_ids:
+                result[record.id] = {
+                    'last_session_closing_cash': session_ids[0]['cash_register_balance_end_real'],
+                    'last_session_closing_date': session_ids[0]['stop_at'],
+                }
+            else:
+                result[record.id] = {
+                    'last_session_closing_cash': 0,
+                    'last_session_closing_date': None,
+                }
+        return result
+
     def _get_group_lounge_manager(self, cr, uid, context=None):
-        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
-        #if group:
-         #   return group[1]
-        #else:
+        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
+        if group:
+            return group[1]
+        else:
             return False
 
     def _get_group_lounge_user(self, cr, uid, context=None):
-        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
-        #if group:
-        #    return group[1]
-        #else:
+        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
+        if group:
+            return group[1]
+        else:
             return False
 
     _columns = {
@@ -180,6 +200,10 @@ class lounge_config(osv.osv):
                                                 help='This field is there to pass the id of the pos manager group to the point of sale client'),
         'group_lounge_user_id': fields.many2one('res.groups', 'Point of Lounge User Group',
                                              help='This field is there to pass the id of the pos user group to the point of sale client'),
+        'last_session_closing_date': fields.function(_get_last_session, multi="last_session", type='date'),
+        'last_session_closing_cash': fields.function(_get_last_session, multi="last_session", type='float'),
+        'current_session_state': fields.function(_get_current_session, multi="session", type='char'),
+
     }
 
     _constraints = [
@@ -540,7 +564,7 @@ class lounge_session(osv.osv):
             local_context.update({'force_company': company_id, 'company_id': company_id})
             for st in record.statement_ids:
                 if abs(st.difference) > st.journal_id.amount_authorized_diff_lounge:
-                    # The pos manager can close statements with maximums.
+                    # The lounge manager can close statements with maximums.
                     if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_lounge.group_pos_manager"):
                         raise UserError(_("Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (st.difference, st.journal_id.amount_authorized_diff))
                 if (st.journal_id.type not in ['bank', 'cash']):
@@ -549,6 +573,7 @@ class lounge_session(osv.osv):
 
         #function _confirm order
         self._confirm_orders(cr, uid, ids, context=local_context)
+        #close status
         self.write(cr, uid, ids, {'state': 'closed'}, context=local_context)
 
         obj = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_lounge', 'menu_lounge_root')[1]
@@ -813,6 +838,8 @@ class lounge_order(osv.osv):
         'account_move': fields.many2one('account.move', 'Journal Entry', readonly=True, copy=False),
         'picking_type_id': fields.related('session_id', 'config_id', 'picking_type_id', string="Picking Type",
                                           type='many2one', relation='stock.picking.type'),
+        'config_id': fields.related('session_id', 'config_id', string="Lounge", type='many2one',
+                                    relation='lounge.config'),
     }
 
     """
@@ -838,7 +865,6 @@ class lounge_order(osv.osv):
     amount_total = Fields.Float(compute='_compute_amount_all', string='Total', digits=0)
     amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},readonly=True, digits=0)
     amount_return = Fields.Float(compute='_compute_amount_all', string='Returned', digits=0)
-
     """
         Function
         """
@@ -850,8 +876,7 @@ class lounge_order(osv.osv):
             order.amount_paid = sum(payment.amount for payment in order.statement_ids)
             order.amount_return = sum(payment.amount < 0 and payment.amount or 0 for payment in order.statement_ids)
             order.amount_surcharge = currency.round(sum(line.price_charge for line in order.lines))
-            order.amount_tax = currency.round(
-                sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
+            order.amount_tax = currency.round(sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
 
@@ -883,9 +908,9 @@ class lounge_order(osv.osv):
         'user_id': lambda self, cr, uid, context: uid,
         'state': 'draft',
         'name': '/',
-        'date_order': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
-        'booking_from_date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
-        'booking_to_date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'date_order': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'booking_from_date':lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'booking_to_date': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'booking_total': 0,
         'nb_print': 0,
         'sequence_number': 1,
@@ -1396,7 +1421,7 @@ class lounge_order(osv.osv):
                         taxes.append(t.id)
                 if not taxes:
                     continue
-                for tax in account_tax_obj.browse(cr,uid, taxes, context=context).compute_all(line.price_unit * (100.0-line.discount) / 100.0, cur, line.qty)['taxes']:
+                for tax in account_tax_obj.browse(cr,uid, taxes, context=context).compute_all((line.price_unit * (100.0-line.discount) / 100.0) + line.charge, cur, line.qty)['taxes']:
                     insert_data('tax', {
                         'name': _('Tax') + ' ' + tax['name'],
                         'product_id': line.product_id.id,
@@ -1510,16 +1535,18 @@ class lounge_order_line(osv.osv):
             if fiscal_position_id:
                 taxes = fiscal_position_id.map_tax(taxes)
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            
+            price = price + line.charge
+
             line.price_charge = line.charge * line.qty
-            line.price_subtotal = line.price_subtotal_incl = (price * line.qty) + (line.charge * line.qty)
+            line.price_subtotal = line.price_subtotal_incl = price * line.qty
 
             if taxes:
-                price = price + line.charge
                 taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
+                #line.price_charge = taxes['total_charge']
                 line.price_subtotal = taxes['total_excluded']
                 line.price_subtotal_incl = taxes['total_included']
 
+            line.price_charge = currency.round(line.price_charge)
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
     """SUM Function with compute """
@@ -1544,8 +1571,7 @@ class lounge_order_line(osv.osv):
         price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],product_id, qty or 1.0, partner_id)[pricelist]
         result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0,charge,qty, price, context=context)
         result['value']['price_unit'] = price
-       
-        
+
         prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
         
         if(booking_total):
@@ -1579,14 +1605,15 @@ class lounge_order_line(osv.osv):
         account_tax_obj = self.pool.get('account.tax')
         prod = self.pool.get('product.product').browse(cr, uid, product, context=context)
         price = price_unit * (1 - (discount or 0.0) / 100.0)
-        price = price
+        price = price + charge
         result['price_charge'] = charge * qty
-        result['price_subtotal'] = result['price_subtotal_incl'] = (price * qty) + result['price_charge']
+        result['price_subtotal'] = result['price_subtotal_incl'] = price * qty
         cur = self.pool.get('product.pricelist').browse(cr, uid, [pricelist], context=context).currency_id
         if (prod.taxes_id):
             taxes = prod.taxes_id.compute_all(price, cur, qty, product=prod, partner=False)
-            result['price_subtotal'] = taxes['total_excluded'] + result['price_charge']
-            result['price_subtotal_incl'] = taxes['total_included'] + result['price_charge']
+            #result['price_charge'] = taxes['total_charge']
+            result['price_subtotal'] = taxes['total_excluded']
+            result['price_subtotal_incl'] = taxes['total_included']
         
         return {'value': result}
 

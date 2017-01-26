@@ -198,7 +198,8 @@ class AccountMove(models.Model):
             HAVING      abs(sum(debit) - sum(credit)) > %s
             """, (tuple(self.ids), 10 ** (-max(5, prec))))
         if len(self._cr.fetchall()) != 0:
-            raise UserError(_("Cannot create unbalanced journal entry."))
+            #raise UserError(_("Cannot create unbalanced journal entry."))
+            raise UserError(_("Cannot create unbalanced posted journal entry."))
         return True
 
     @api.multi

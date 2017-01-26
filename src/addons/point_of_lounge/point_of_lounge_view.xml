@@ -35,7 +35,7 @@
                             <field name="currency_id" invisible="1"/>
                         </group>
                         <separator string="Available Payment Methods" colspan="4"/>
-                        <field name="journal_ids" colspan="4" nolabel="1" context="{'default_journal_user': 1}">
+                        <field name="journal_ids" colspan="4" nolabel="1" context="{'default_journal_user_lounge': 1}">
                             <tree string="Journals">
                                 <field name="code" />
                                 <field name="name" />
@@ -412,6 +412,8 @@
             </field>
          </record>
 
+
+
         <record id="action_account_lounge_journal_form" model="ir.actions.act_window">
             <field name="name">Payment Methods</field>
             <field name="res_model">account.journal</field>
@@ -430,6 +432,9 @@
               </p>
             </field>
         </record>
+
+
+
 
         <record model="ir.ui.view" id="view_lounge_lounge_form">
              <field name="name">lounge.order</field>
@@ -555,6 +560,17 @@
              </field>
          </record>
 
+        <record model="ir.ui.view" id="view_lounge_order_search">
+            <field name="name">lounge.order.search.view</field>
+            <field name="model">lounge.order</field>
+            <field name="arch" type="xml">
+                <search string="Lounge Orders">
+                    <field name="name"/>
+                    <field name="config_id"/>
+                </search>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="action_lounge_lounge_form">
             <field name="name">Orders</field>
             <field name="type">ir.actions.act_window</field>
@@ -574,6 +590,8 @@
               </p>
             </field>
         </record>
+
+
 
         <menuitem parent="menu_lounge_of_sale"
                   id="menu_point_of_sale"

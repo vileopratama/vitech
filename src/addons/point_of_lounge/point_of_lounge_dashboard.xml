@@ -1,33 +1,103 @@
 <?xml version="1.0"?>
 <odoo>
+    <record id="action_lounge_session_filtered" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lounge.session</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_lounge_session_search" />
+        <field name="context">{
+            'search_default_config_id': [active_id],
+            'default_config_id': active_id}
+        </field>
+    </record>
+
+    <record id="action_lounge_order_filtered" model="ir.actions.act_window">
+        <field name="name">Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lounge.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_lounge_order_search"/>
+        <field name="context">{
+            'search_default_config_id': [active_id],
+            'default_config_id': active_id}
+        </field>
+    </record>
+
+    <record id="action_report_lounge_order_all_filtered" model="ir.actions.act_window">
+        <field name="name">Orders Analysis</field>
+        <field name="res_model">report.lounge.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_report_lounge_order_search"/>
+        <field name="context">{
+            'search_default_config_id': [active_id],
+            'default_config_id': active_id}
+        </field>
+    </record>
+
+    <!-- Dashboard -->
     <record id="view_lounge_config_kanban" model="ir.ui.view">
         <field name="name">lounge.config.kanban.view</field>
         <field name="model">lounge.config</field>
         <field name="arch" type="xml">
             <kanban create="false" class="o_kanban_dashboard o_pos_kanban">
+                <field name="state"/>
                 <field name="name"/>
-                <field name="lounge_session_username"/>
+                <field name="session_ids"/>
                 <field name="current_session_id"/>
+                <field name="current_session_state"/>
+                <field name="last_session_closing_date"/>
+                <field name="lounge_session_username"/>
+                <field name="currency_id"/>
                 <templates>
-                     <t t-name="kanban-box">
-                         <div>
-                             <div class="o_kanban_card_header">
+                    <t t-name="kanban-box">
+                        <div>
+                            <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary"><t t-esc="record.name.value"/></div>
-                                    <div class="o_secondary"><t t-esc="record.lounge_session_username.value || 'No Session' "/></div>
+                                    <div class="o_secondary"><t t-esc="record.lounge_session_username.value || 'Unused'"/></div>
                                 </div>
-                                 <div class="o_kanban_manage_button_section">
+                                <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#">More <i class="fa fa-caret-down"/></a>
                                 </div>
-                             </div>
-                             <div class="container o_kanban_card_content o_visible">
-                                 <div class="row">
-                                     <div class="col-xs-6 o_kanban_primary_left">
-                                         <button t-if="!record.current_session_id.raw_value" class="btn btn-primary" name="open_session_cb" type="object">New Session</button>
-                                     </div>
-                                 </div>
-                             </div>
-                             <div class="container o_kanban_card_manage_pane o_invisible">
+                            </div>
+                            <div class="container o_kanban_card_content o_visible">
+                                <div class="row">
+                                    <div class="col-xs-6 o_kanban_primary_left">
+                                        <button t-if="record.current_session_state.raw_value === 'opened'" class="btn btn-primary" name="open_ui" type="object">Resume</button>
+
+                                        <button t-if="record.current_session_state.raw_value === 'opening_control'" class="btn btn-primary" name="open_existing_session_cb" type="object">Open Session</button>
+
+                                        <button t-if="record.current_session_state.raw_value === 'opened'" class="btn btn-default" name="open_existing_session_cb_close" type="object">Close</button>
+
+                                        <button t-if="record.current_session_state.raw_value === 'closing_control'" class="btn btn-default" name="open_existing_session_cb" type="object">Close</button>
+                                        <button t-if="!record.current_session_id.raw_value" class="btn btn-primary" name="open_session_cb" type="object">New Session</button>
+                                    </div>
+                                    <div class="col-xs-6 o_kanban_primary_right">
+
+                                        <div t-if="record.last_session_closing_date.value" class="row">
+                                            <div class="col-xs-6">
+                                                <span>Last Closing Date</span>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <span><t t-esc="record.last_session_closing_date.value"/></span>
+                                            </div>
+                                        </div>
+
+                                        <div t-if="record.last_session_closing_date.value" class="row">
+                                            <div class="col-xs-6">
+                                                <span>Cash Balance</span>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <span><field name="last_session_closing_cash" widget="monetary"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="container o_kanban_card_manage_pane o_invisible">
                                 <div class="row">
                                     <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view">
                                         <div class="o_kanban_card_manage_title">
@@ -35,10 +105,10 @@
                                         </div>
 
                                         <div>
-                                            <a name="" type="action">Sessions</a>
+                                            <a name="%(action_lounge_session_filtered)d" type="action">Sessions</a>
                                         </div>
                                         <div>
-                                            <a name="" type="action">Sales Orders</a>
+                                            <a name="%(action_lounge_order_filtered)d" type="action">Sales Orders</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_new">
@@ -47,7 +117,7 @@
                                         </div>
 
                                         <div>
-                                            <a name="" type="action">Orders</a>
+                                            <a name="%(action_report_lounge_order_all_filtered)d" type="action">Orders</a>
                                         </div>
                                     </div>
                                 </div>
@@ -57,11 +127,12 @@
                                         <a type="edit">Settings</a>
                                     </div>
                                 </div>
-                             </div>
-                         </div>
-                     </t>
+                            </div>
+                        </div>
+                    </t>
                 </templates>
             </kanban>
         </field>
     </record>
+
 </odoo>

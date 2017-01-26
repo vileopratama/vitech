@@ -88,7 +88,7 @@ class lounge_make_payment(osv.osv_memory):
         return False
 
     _columns = {
-        'journal_id': fields.many2one('account.journal', 'Payment Mode', required=True),
+        'journal_id': fields.many2one('account.journal', 'Payment Mode', required=True,domain=[('journal_user_lounge', '=', 1)]),
         'amount': fields.float('Amount', digits=(16, 2), required=True),
         'payment_name': fields.char('Payment Reference'),
         'payment_date': fields.date('Payment Date', required=True),
