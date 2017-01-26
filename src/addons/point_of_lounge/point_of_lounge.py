@@ -292,7 +292,63 @@ class lounge_config(osv.osv):
 
     """ Onchange Event """
 
+    # Methods to open the POS
+    def open_ui(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, "you can open only one session at a time"
+        record = self.browse(cr, uid, ids[0], context=context)
+        context = dict(context or {})
+        context['active_id'] = record.current_session_id.id
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/lounge/cashier/',
+            'target': 'self',
+        }
+    
+    def open_existing_session_cb_close(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, "you can open only one session at a time"
+        record = self.browse(cr, uid, ids[0], context=context)
+        record.current_session_id.signal_workflow('cashbox_control')
+        return self.open_session_cb(cr, uid, ids, context)
 
+    def open_session_cb(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, "you can open only one session at a time"
+        proxy = self.pool.get('lounge.session')
+        record = self.browse(cr, uid, ids[0], context=context)
+        current_session_id = record.current_session_id
+        if not current_session_id:
+            values = {
+                'user_id': uid,
+                'config_id': record.id,
+            }
+            session_id = proxy.create(cr, uid, values, context=context)
+            self.write(cr, SUPERUSER_ID, record.id, {'current_session_id': session_id}, context=context)
+            if record.current_session_id.state == 'opened':
+                return self.open_ui(cr, uid, ids, context=context)
+            return self._open_session(session_id)
+        return self._open_session(current_session_id.id)
+    
+    def _open_session(self, session_id):
+        return {
+            'name': _('Session'),
+            'view_type': 'form',
+            'view_mode': 'form,tree',
+            'res_model': 'lounge.session',
+            'res_id': session_id,
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+        }
+    
+    def open_existing_session_cb_close(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, "you can open only one session at a time"
+        record = self.browse(cr, uid, ids[0], context=context)
+        record.current_session_id.signal_workflow('cashbox_control')
+        return self.open_session_cb(cr, uid, ids, context)
+    
+    def open_existing_session_cb(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, "you can open only one session at a time"
+        record = self.browse(cr, uid, ids[0], context=context)
+        return self._open_session(record.current_session_id.id)
+    
 #menu products
 class product_template(osv.osv):
     _inherit = 'product.template'
