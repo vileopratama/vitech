@@ -124,18 +124,18 @@ class lounge_config(osv.osv):
         return result
 
     def _get_group_lounge_manager(self, cr, uid, context=None):
-        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
-        if group:
-            return group[1]
-        else:
-            return False
+        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
+        #if group:
+        #    return group[1]
+        #else:
+        return False
 
     def _get_group_lounge_user(self, cr, uid, context=None):
-        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
-        if group:
-            return group[1]
-        else:
-            return False
+        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
+        #if group:
+            #return group[1]
+        #else:
+        return False
 
     _columns = {
         'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
