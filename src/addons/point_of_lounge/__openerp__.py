@@ -28,15 +28,16 @@
         'views/templates.xml',
         'views/point_of_lounge.xml',
         'res_users_view.xml',
+        'res_partner_view.xml',
         'point_of_lounge.xml',
         'report/lounge_order_report_view.xml',
         'point_of_lounge_dashboard.xml',
     ],
     'demo': [
-        #'demo.xml'
+        'point_of_lounge_demo.xml',
     ],
     'css' : [
-        #'static/src/lib/bootstrap/css/bootstrap.min.css',
+        
     ],
     'installable': True,
     'application': True,

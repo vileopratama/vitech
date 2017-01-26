@@ -947,7 +947,7 @@
                     <span class='barcode'><t t-esc="widget.options.barcode" /></span>
                 </p>
                 <p class="body">
-                    The Point of Sale could not find any product, client, employee
+                    The Lounge could not find any product, client, employee
                     or action associated with the scanned barcode.
                 </p>
                 <div class="footer">

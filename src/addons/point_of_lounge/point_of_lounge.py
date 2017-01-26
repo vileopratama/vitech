@@ -166,11 +166,11 @@ class lounge_config(osv.osv):
         'current_session_id': fields.function(_get_current_session, multi="session", type="many2one",
                                               relation="lounge.session", string="Current Session"),
         'iface_vkeyboard': fields.boolean('Virtual KeyBoard', help="Enables an integrated Virtual Keyboard"),
-        'iface_invoicing': fields.boolean('Invoicing', help='Enables invoice generation from the Point of Sale'),
+        'iface_invoicing': fields.boolean('Invoicing', help='Enables invoice generation from the Lounge'),
         'iface_precompute_cash': fields.boolean('Prefill Cash Payment',
                                                 help='The payment input will behave similarily to bank payment input, and will be prefilled with the exact due amount'),
         'iface_start_categ_id': fields.many2one('lounge.category', 'Start Service Category',
-                                                help='The point of sale will display this product category by default. If no category is specified, all available products will be shown'),
+                                                help='The lounge will display this product category by default. If no category is specified, all available products will be shown'),
         'tip_product_id': fields.many2one('product.product', 'Tip Product',
                                           help="The product used to encode the customer tip. Leave empty if you do not accept tips."),
         'iface_tax_included': fields.boolean('Include Taxes in Prices',
@@ -374,7 +374,7 @@ class product_template(osv.osv):
         if self.search_count(cr, uid, [('id', 'in', ids), ('available_in_lounge', '=', True)], context=product_ctx):
             if self.pool['lounge.session'].search_count(cr, uid, [('state', '!=', 'closed')], context=context):
                 raise UserError(
-                    _('You cannot delete a product saleable in point of sale while a session is still opened.'))
+                    _('You cannot delete a product saleable in lounge while a session is still opened.'))
         return super(product_template, self).unlink(cr, uid, ids, context=context)
 
 #menu lounge session
@@ -461,7 +461,7 @@ class lounge_session(osv.osv):
         'cash_register_total_entry_encoding': fields.related('cash_register_id', 'total_entry_encoding',
                                                              string='Total Cash Transaction',
                                                              readonly=True,
-                                                             help="Total of all paid sale orders"),
+                                                             help="Total of all paid of lounge"),
         'cash_register_balance_end': fields.related('cash_register_id', 'balance_end',
                                                     type='float',
                                                     digits=0,
@@ -521,7 +521,7 @@ class lounge_session(osv.osv):
 
     _constraints = [
         (_check_unicity, "You cannot create two active sessions with the same responsible!", ['user_id', 'state']),
-        (_check_lounge_config, "You cannot create two active sessions related to the same point of sale!", ['config_id']),
+        (_check_lounge_config, "You cannot create two active sessions related to the same lounge!", ['config_id']),
     ]
 
     def create(self, cr, uid, values, context=None):
@@ -537,13 +537,13 @@ class lounge_session(osv.osv):
         jobj = self.pool.get('lounge.config')
         lounge_config = jobj.browse(cr, uid, config_id, context=context)
         context.update({'company_id': lounge_config.company_id.id})
-        # is_pos_user = self.pool['res.users'].has_group(cr, uid, 'point_of_sale.group_pos_user')
+        # is_pos_user = self.pool['res.users'].has_group(cr, uid, 'point_of_lounge.group_pos_user')
         if not lounge_config.journal_id:
             jid = jobj.default_get(cr, uid, ['journal_id'], context=context)['journal_id']
             if jid:
                  jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_id': jid}, context=context)
             else:
-                raise UserError(_("Unable to open the session. You have to assign a sale journal to your lounge."))
+                raise UserError(_("Unable to open the session. You have to assign a journal to your lounge."))
 
         # define some cash journal if no payment method exists
         if not lounge_config.journal_ids:
@@ -667,7 +667,7 @@ class lounge_session(osv.osv):
             return {}
         for session in self.browse(cr, uid, ids, context=context):
             if session.user_id.id != uid:
-                raise UserError(_("You cannot use the session of another users. This session is owned by %s. ""Please first close this one to use this point of sale.") % session.user_id.name)
+                raise UserError(_("You cannot use the session of another users. This session is owned by %s. ""Please first close this one to use this lounge.") % session.user_id.name)
         context.update({'active_id': ids[0]})
         return {
             'type' : 'ir.actions.act_url',
@@ -1196,7 +1196,7 @@ class lounge_order(osv.osv):
         return False
 
     def test_paid(self, cr, uid, ids, context=None):
-        """A Point of Sale is paid when the sum
+        """A Lounge is paid when the sum
         @return: True
         """
         for order in self.browse(cr, uid, ids, context=context):
