@@ -1,2 +1,3 @@
 import lounge_receipt
 import lounge_invoice
+import lounge_order_report
