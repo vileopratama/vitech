@@ -5,7 +5,7 @@ from openerp.osv import fields,osv
 class lounge_order_report(osv.osv):
 	_name = "report.lounge.order"
 	_description = "Lounge Orders Statistics"
-	#_auto = False
+	_auto = False
 	_order = 'date desc'
 
 	_columns = {

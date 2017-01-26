@@ -29,7 +29,7 @@
         'views/point_of_lounge.xml',
         'res_users_view.xml',
         'point_of_lounge.xml',
-        'report/lounge_order_report_view.xml',
+        
         'point_of_lounge_dashboard.xml',
     ],
     'demo': [
