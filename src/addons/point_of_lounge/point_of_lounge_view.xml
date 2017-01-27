@@ -627,5 +627,8 @@
         <!--  Miscellaneous Operations/Reporting -->
         <menuitem name="Reports" parent="menu_lounge_root" id="menu_lounge_report" sequence="99" />
 
+         <menuitem action="action_report_lounge_details"
+                id="menu_lounge_details" parent="menu_lounge_report" sequence="6" />
+
     </data>
 </openerp>
