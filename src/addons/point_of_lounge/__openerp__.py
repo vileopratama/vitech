@@ -15,6 +15,7 @@
         'security/point_of_lounge_security.xml',
         'security/ir.model.access.csv',
         'wizard/lounge_box.xml',
+        'wizard/lounge_details.xml',
         'wizard/lounge_payment.xml',
         'point_of_lounge_report.xml',
         'point_of_lounge_view.xml',

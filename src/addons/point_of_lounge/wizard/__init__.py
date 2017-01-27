@@ -1,2 +1,3 @@
 import lounge_box
 import lounge_payment
+import lounge_details
