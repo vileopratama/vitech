@@ -27,6 +27,7 @@
         'res_config_view.xml',
         'account_statement_view.xml',
         'views/report_receipt.xml',
+        'views/report_details_of_sales.xml',
         'views/templates.xml',
         'views/point_of_lounge.xml',
         'res_users_view.xml',

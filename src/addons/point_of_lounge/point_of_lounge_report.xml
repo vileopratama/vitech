@@ -17,5 +17,15 @@
             report_type="qweb-pdf"
             name="point_of_lounge.report_invoice"
             file="point_of_lounge.report_invoice"/>
+        
+        <report
+            id="lounge_lines_detail"
+            string="Details of Sales"
+            model="lounge.order"
+            report_type="qweb-pdf"
+            name="point_of_lounge.report_details_of_sales"
+            file="point_of_lounge.report_details_of_sales"
+            menu="False"
+         />
     </data>
 </odoo>

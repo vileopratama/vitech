@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="view_lounge_details" model="ir.ui.view">
+            <field name="name">Lounge Details</field>
+            <field name="model">lounge.details</field>
+            <field name="arch" type="xml">
+                <form string="Lounge Details">
+                    <group col="4" string="Dates">
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                    </group>
+                    <field name="user_ids" widget="many2many_tags"/>
+                    <footer>
+                        <button name="print_report" type="object" string="Print Report" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
 	    <record id="action_report_lounge_details" model="ir.actions.act_window">
             <field name="name">Lounge Details</field>
             <field name="type">ir.actions.act_window</field>
