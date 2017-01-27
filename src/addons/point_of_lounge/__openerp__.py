@@ -19,6 +19,7 @@
         'point_of_lounge_report.xml',
         'point_of_lounge_view.xml',
         'point_of_lounge_data.xml',
+        'report/lounge_order_report_view.xml',
         'point_of_lounge_sequence.xml',
         'point_of_lounge_workflow.xml',
         'account_statement_view.xml',
@@ -30,7 +31,6 @@
         'res_users_view.xml',
         'res_partner_view.xml',
         'point_of_lounge.xml',
-        'report/lounge_order_report_view.xml',
         'point_of_lounge_dashboard.xml',
     ],
     'demo': [

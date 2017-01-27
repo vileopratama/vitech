@@ -359,7 +359,7 @@ class product_template(osv.osv):
                                     help="Check if the product should be weighted using the hardware scale integration"),
         'lounge_categ_id': fields.many2one('lounge.category', 'Lounge Service Category',
                                         help="Those categories are used to group similar products for lounge."),
-        'lounge_charge': fields.float('In Charge', digits_compute=dp.get_precision('In Charge'),
+        'lounge_charge': fields.float('In Charge',digits=(16,7),
                                    help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
         'lounge_charge_every': fields.integer('In Charge Every',
                                       help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
@@ -622,7 +622,7 @@ class lounge_session(osv.osv):
                 if abs(st.difference) > st.journal_id.amount_authorized_diff_lounge:
                     # The lounge manager can close statements with maximums.
                     if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_lounge.group_pos_manager"):
-                        raise UserError(_("Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (st.difference, st.journal_id.amount_authorized_diff))
+                        raise UserError(_("Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (st.difference, st.journal_id.amount_authorized_diff_lounge))
                 if (st.journal_id.type not in ['bank', 'cash']):
                     raise UserError(_("The type of the journal for your payment method should be bank or cash "))
                 self.pool['account.bank.statement'].button_confirm_bank(cr, SUPERUSER_ID, [st.id],context=local_context)

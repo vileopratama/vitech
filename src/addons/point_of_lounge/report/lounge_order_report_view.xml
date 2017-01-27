@@ -9,6 +9,7 @@
                     <field name="product_categ_id" type="row"/>
                     <field name="date" interval="month" type="col"/>
                     <field name="product_qty" type="measure"/>
+	                <field name="total_charge" type="measure"/>
                     <field name="price_total" type="measure"/>
                 </pivot>
             </field>

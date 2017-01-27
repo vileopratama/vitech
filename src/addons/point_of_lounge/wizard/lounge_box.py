@@ -1,5 +1,6 @@
 from openerp.addons.account.wizard.pos_box import CashBox
 from openerp.exceptions import UserError
+from openerp.tools.translate import _
 
 #main class
 class LoungeBox(CashBox):

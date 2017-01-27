@@ -1,10 +1,10 @@
 odoo.define('point_of_lounge.gui', function (require) {
 "use strict";
-// this file contains the Gui, which is the pos 'controller'.
+// this file contains the Gui, which is the lounge 'controller'.
 // It contains high level methods to manipulate the interface
 // such as changing between screens, creating popups, etc.
 //
-// it is available to all pos objects trough the '.gui' field.
+// it is available to all lounge objects trough the '.gui' field.
 
 var core = require('web.core');
 var Model = require('web.DataModel');
@@ -199,7 +199,7 @@ var Gui = core.Class.extend({
                 if ( msg.message  === 'close_tabs' &&
                      msg.session  ==  self.lounge.lounge_session.id ) {
 
-                    console.info('Lounge / Session opened in another window. EXITING POS')
+                    console.info('Lounge / Session opened in another window. EXITING LOUNGE')
                     self._close();
                 }
             }
@@ -305,7 +305,7 @@ var Gui = core.Class.extend({
             this._close();
         } else {
             this.lounge.push_order().always(function() {
-                var pending = self.pos.db.get_orders().length;
+                var pending = self.lounge.db.get_orders().length;
                 if (!pending) {
                     self._close();
                 } else {
@@ -335,7 +335,7 @@ var Gui = core.Class.extend({
         this.chrome.loading_message(_t('Closing ...'));
 
         this.lounge.push_order().then(function(){
-            window.location = '/web' + ((session.debug)? '?debug' : '') + '#action=point_of_sale.action_client_lounge_menu';
+            window.location = '/web' + ((session.debug)? '?debug' : '') + '#action=point_of_lounge.action_client_lounge_menu';
         });
     },
 
