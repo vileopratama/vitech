@@ -1081,7 +1081,8 @@ exports.Orderline = Backbone.Model.extend({
     init_from_JSON: function(json) {
         this.product = this.pos.db.get_product_by_id(json.product_id);
         if (!this.product) {
-            console.error('ERROR: attempting to recover product not available in the point of sale');
+            console.error('ERROR: attempting to recover product ID', json.product_id,
+                'not available in the point of sale. Correct the product or clean the browser cache.');
         }
         this.price = json.price_unit;
         this.set_discount(json.discount);
@@ -1337,13 +1338,14 @@ exports.Orderline = Backbone.Model.extend({
     },
     compute_all: function(taxes, price_unit, quantity, currency_rounding) {
         var self = this;
-        var total_excluded = round_pr(price_unit * quantity, currency_rounding);
-        var total_included = total_excluded;
-        var base = total_excluded;
         var list_taxes = [];
+        var currency_rounding_bak = currency_rounding;
         if (this.pos.company.tax_calculation_rounding_method == "round_globally"){
            currency_rounding = currency_rounding * 0.00001;
         }
+        var total_excluded = round_pr(price_unit * quantity, currency_rounding);
+        var total_included = total_excluded;
+        var base = total_excluded;
         _(taxes).each(function(tax) {
             tax = self._map_tax_fiscal_position(tax);
             if (tax.amount_type === 'group'){
@@ -1377,7 +1379,11 @@ exports.Orderline = Backbone.Model.extend({
                 }
             }
         });
-        return {taxes: list_taxes, total_excluded: total_excluded, total_included: total_included};
+        return {
+            taxes: list_taxes,
+            total_excluded: round_pr(total_excluded, currency_rounding_bak),
+            total_included: round_pr(total_included, currency_rounding_bak)
+        };
     },
     get_all_prices: function(){
         var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
@@ -1777,7 +1783,7 @@ exports.Order = Backbone.Model.extend({
     },
 
     initialize_validation_date: function () {
-        this.validation_date = this.validation_date || new Date();
+        this.validation_date = new Date();
     },
 
     set_tip: function(tip) {

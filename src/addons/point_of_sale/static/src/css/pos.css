@@ -189,6 +189,7 @@ td {
     height: 100%;
     display: table;
     border: none;
+    overflow: hidden;
 }
 .pos .window .subwindow{
     display: table-row;
@@ -211,6 +212,19 @@ td {
 .pos .subwindow .subwindow-container-fix{
     height: 100%;
     position: relative;
+}
+
+.pos .clientlist-screen .window,
+.pos .clientlist-screen .full-content .subwindow{
+    display: block;
+}
+.pos .clientlist-screen .full-content .subwindow-container{
+    display: block;
+    height: 100%;
+}
+.pos .clientlist-screen .full-content .subwindow.collapsed,
+.pos .clientlist-screen .full-content .subwindow-container.collapsed{
+    height: auto;
 }
 
 /* ---- Scrollers ----- */
@@ -701,6 +715,7 @@ td {
     display: inline-block;
     float: right;
     text-align: center;
+    width: 216px;
     margin: 16px;
     margin-top: 8px;
     margin-left: 0px;
@@ -1305,8 +1320,7 @@ td {
     font-weight: bold;
 }
 .pos .paymentline .col-change.highlight {
-    /*background: rgb(184, 152, 204);*/
-    background:#2AADE3;
+    background: rgb(184, 152, 204);
 }
 .pos .paymentline .col-name {
     font-size: 16px;
@@ -1324,8 +1338,7 @@ td {
     float: right;
 }
 .payment-screen .payment-buttons .button {
-    /*background: #e2e2e2;*/
-    background:#2AADE3;
+    background: #e2e2e2;
     line-height: 73px;
     font-size: 16px;
     padding: 0px 8px;

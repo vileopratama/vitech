@@ -3,8 +3,11 @@
     <data>
        <!-- Top menu item -->
         <menuitem name="Lounge"
-            id="menu_lounge_root"
-            sequence="23"/>
+                  id="menu_lounge_root"
+                  groups="group_lounge_user"
+                  web_icon="point_of_lounge,static/description/icon.png"
+                  icon="fa-suitcase"
+                  sequence="23"/>
 
         <record model="ir.ui.view" id="view_lounge_config_form">
             <field name="name">lounge.config.form.view</field>
@@ -130,6 +133,16 @@
             <field name="model">lounge.session</field>
             <field name="arch" type="xml">
                 <search string="Lounge Session">
+                    <field name="name" />
+                    <filter string="Open" domain="[('state', '=', 'opened')]" />
+                    <separator/>
+                    <filter string="Today" domain="[('start_at', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]" />
+                    <field name="config_id" />
+                    <field name="user_id" />
+                    <group expand="0" string="Group By">
+                        <filter string="User" domain="[]" context="{'group_by' : 'user_id'}" />
+                        <filter string="Lounge" domain="[]" context="{'group_by': 'user_id'}" />
+                    </group>
                 </search>
             </field>
         </record>

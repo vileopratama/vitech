@@ -49,9 +49,9 @@ Main Features
         'report/pos_order_report_view.xml',
         'point_of_sale_workflow.xml',
         'account_statement_view.xml',
-        'account_statement_report.xml'
-        'res_partner_view.xml',
+        'account_statement_report.xml',
         'res_users_view.xml',
+        'res_partner_view.xml',
         'res_config_view.xml',
         'views/report_statement.xml',
         'views/report_usersproduct.xml',
