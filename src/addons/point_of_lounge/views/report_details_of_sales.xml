@@ -73,6 +73,70 @@
 		                        </tr>
 	                        </tbody>
 						 </table>
+
+						<table class="table table-condensed">
+							<tr t-if="gettaxamount(data['form'])"><td colspan="2"><strong>Taxes</strong></td></tr>
+							<tr t-foreach="gettaxamount(data['form'])" t-as="tax">
+								<td><span t-esc="tax['name']"/></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(tax['amount'], currency_obj = res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><strong>Payment</strong></td>
+							</tr>
+							<tr t-foreach="getpayments(data['form'])" t-as="payment">
+								<td><span t-esc="payment['name']"/></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(payment['sum'], dp='Account', currency_obj=res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><strong>Summary</strong></td>
+							</tr>
+							<tr>
+								<td><strong>Sales total(Revenue)</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(getsalestotal2(), dp='Sale Price', currency_obj=res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Qty of product</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(getqtytotal2())"/>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Total invoiced</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(getsuminvoice2(data['form']), dp='Sale Price', currency_obj=res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Total discount</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(getsumdisc(data['form']), dp='Sale Price', currency_obj=res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Total charge</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(getsumcharge(data['form']), dp='Surcharge', currency_obj=res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Total paid</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(getpaidtotal2(), dp='Sale Price', currency_obj=res_company.currency_id)"/>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Total of the day</strong></td>
+								<td class="text-right">
+									<strong t-esc="formatLang(gettotaloftheday(data['form']), dp='Sale Price', currency_obj = res_company.currency_id)"/>
+								</td>
+							</tr>
+						</table>
 						
 					</div>
 				</t>
