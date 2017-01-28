@@ -4,10 +4,10 @@
        <!-- Top menu item -->
         <menuitem name="Lounge"
                   id="menu_lounge_root"
-                  groups="group_lounge_user"
+                  groups="group_lounge_user,group_lounge_manager"
                   web_icon="point_of_lounge,static/description/icon.png"
                   icon="fa-suitcase"
-                  sequence="23"/>
+                  sequence="20"/>
 
         <record model="ir.ui.view" id="view_lounge_config_form">
             <field name="name">lounge.config.form.view</field>
@@ -359,8 +359,12 @@
                 id="menu_lounge_product"
                 sequence="5"/>
 
-        <menuitem name="Configuration" parent="menu_lounge_root"
-            id="menu_lounge_config" sequence="100"/>
+        <menuitem name="Configuration" 
+				parent="menu_lounge_root"
+				id="menu_lounge_config" 
+				sequence="100"
+				groups="group_lounge_manager,base.group_configuration"
+		/>
 
         <record model="ir.actions.act_window" id="action_lounge_config_pos">
             <field name="name">Lounge</field>
@@ -605,9 +609,10 @@
         </record>
         
         <menuitem parent="menu_lounge_of_sale"
-                  id="menu_point_of_sale"
+                  id="menu_point_of_lounge"
                   action="action_lounge_lounge_form"
                   sequence="1"
+				  groups="group_lounge_manager,group_lounge_user"
                   />
 
         <menuitem name="Payment Method"
@@ -623,9 +628,11 @@
                    sequence="20" />
 
         <menuitem
+			name="Lounge"
             parent="menu_lounge_config"
             action="action_lounge_config_pos"
             id="menu_pos_config_pos"
+			groups="group_lounge_manager"
             />
 
         <menuitem
@@ -633,15 +640,24 @@
             parent="menu_lounge_of_sale"
             action="action_lounge_session"
             id="menu_lounge_session_all"
-            sequence="1"
+            sequence="2"
+			groups="group_lounge_manager"
             />
         
         
         <!--  Miscellaneous Operations/Reporting -->
-        <menuitem name="Reports" parent="menu_lounge_root" id="menu_lounge_report" sequence="99" />
+        <menuitem name="Reports" 
+			parent="menu_lounge_root" 
+			id="menu_lounge_report" 
+			sequence="99"
+			groups="group_lounge_manager"
+			/>
 
-         <menuitem action="action_report_lounge_details"
-                id="menu_lounge_details" parent="menu_lounge_report" sequence="6" />
+         <menuitem 
+				action="action_report_lounge_details"
+                id="menu_lounge_details"
+				parent="menu_lounge_report" 
+				sequence="6" />
 
     </data>
 </openerp>
