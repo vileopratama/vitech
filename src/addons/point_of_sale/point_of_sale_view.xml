@@ -5,7 +5,7 @@
         <!-- Top menu item -->
         <menuitem name="Point of Sale"
             id="menu_point_root"
-            groups="group_pos_user,group_lounge_manager"
+            groups="group_pos_user,group_pos_manager"
             icon="fa-suitcase"
             web_icon="point_of_sale,static/description/icon.png"
             sequence="20"/>
@@ -992,8 +992,10 @@
         </record>
 
         <menuitem action="action_pos_config_kanban"
-            parent="menu_point_root" name="Dashboard"
-            id="menu_pos_dashboard" sequence="1"/>
+                    parent="menu_point_root"
+                    name="Dashboard"
+                    id="menu_pos_dashboard"
+                  sequence="1"/>
 
         <!-- Barcode Nomenclatures -->
         <menuitem parent="menu_point_config_product" action="barcodes.action_barcode_nomenclature_form" id="menu_pos_barcode_nomenclature_all"

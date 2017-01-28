@@ -1,4 +1,39 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_lounge_order,lounge.order,model_lounge_order,group_lounge_user,1,1,1,1
 access_lounge_order_line,lounge.order.line,model_lounge_order_line,group_lounge_user,1,1,1,1
+
+access_stock_picking_lounge_user,stock.picking lounge_user,stock.model_stock_picking,group_lounge_user,1,1,1,1
+access_stock_warehouse_lounge_user,stock.warehouse lounge_user,stock.model_stock_warehouse,group_lounge_user,1,0,0,0
+access_lounge_order_stock_worker,lounge.order stock_worker,model_lounge_order,stock.group_stock_user,1,0,0,0
+access_stock_move_lounge_user,stock.move lounge_user,stock.model_stock_move,group_lounge_user,1,1,1,1
+
+
+access_report_lounge_order,report.lounge.order,model_report_lounge_order,group_lounge_user,1,1,1,1
+access_account_journal_lounge_user,account.journal lounge_user,account.model_account_journal,group_lounge_user,1,0,0,0
+access_account_payment_method_lounge_user,account.payment.method lounge_user,account.model_account_payment_method,group_lounge_manager,1,0,0,0
+access_account_bank_statement,account.bank.statement,account.model_account_bank_statement,group_lounge_user,1,1,1,0
+access_account_bank_statement_manager,account.bank.statement manager,account.model_account_bank_statement,group_lounge_manager,1,1,1,1
+access_account_bank_statement_line,account.bank.statement.line,account.model_account_bank_statement_line,group_lounge_user,1,1,1,0
+access_product_product,product.product,product.model_product_product,group_lounge_user,1,0,0,0
+access_product_template_lounge_user,product.template lounge user,product.model_product_template,group_lounge_user,1,0,0,0
+access_product_product_lounge_manager,product.product.lounge manager,product.model_product_product,group_lounge_manager,1,1,1,1
+access_product_template_lounge_manager,product.template lounge manager,product.model_product_template,group_lounge_manager,1,1,1,1
+access_account_bank_statement_line_manager,account.bank.statement.line manager,account.model_account_bank_statement_line,group_lounge_manager,1,1,1,1
+access_product_product_supplierinfo_user,product.supplierinfo user,product.model_product_supplierinfo,group_lounge_user,1,0,0,0
+access_product_product_packaging_user,product.packaging user,product.model_product_packaging,group_lounge_user,1,0,0,0
+access_stock_warehouse_manager,stock.warehouse manager,stock.model_stock_warehouse,group_lounge_manager,1,0,0,0
+access_stock_location_manager,stock.location manager,stock.model_stock_location,group_lounge_manager,1,0,0,0
+access_product_uom_manager,product.uom manager,product.model_product_uom,group_lounge_manager,1,1,1,1
+access_product_category_manager,product.category manager,product.model_product_category,group_lounge_manager,1,1,1,1
+access_product_pricelist_manager,product.pricelist manager,product.model_product_pricelist,group_lounge_manager,1,0,0,0
 access_lounge_session_user,lounge.session user,model_lounge_session,group_lounge_user,1,1,1,0
+access_lounge_config_user,lounge.config user,model_lounge_config,group_lounge_user,1,0,0,0
+access_lounge_config_manager,lounge.config user,model_lounge_config,group_lounge_manager,1,1,1,0
+access_product_category_lounge_manager,lounge.category manager,model_lounge_category,group_lounge_manager,1,1,1,1
+access_product_category_lounge_user,lounge.category user,model_lounge_category,group_lounge_user,1,0,0,0
+access_barcode_nomenclature_lounge_user,barcode.nomenclature.lounge.user,barcodes.model_barcode_nomenclature,group_lounge_user,1,0,0,0
+access_barcode_nomenclature_lounge_manager,barcode.nomenclature.lounge.manager,barcodes.model_barcode_nomenclature,group_lounge_manager,1,1,1,1
+access_barcode_rule_lounge_user,barcode.rule.lounge.user,barcodes.model_barcode_rule,group_lounge_user,1,0,0,0
+access_barcode_rule_lounge_manager,barcode.rule.lounge.manager,barcodes.model_barcode_rule,group_lounge_manager,1,1,1,1
+access_bank_statement_cashbox_user,account.bank.statement.cashbox user,account.model_account_bank_statement_cashbox,group_lounge_user,1,1,1,0
+access_account_cashbox_line_user,account.cashbox.line user,account.model_account_cashbox_line,group_lounge_user,1,1,1,0

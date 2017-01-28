@@ -124,18 +124,18 @@ class lounge_config(osv.osv):
         return result
 
     def _get_group_lounge_manager(self, cr, uid, context=None):
-        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
-        #if group:
-        #    return group[1]
-        #else:
-        return False
+        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
+        if group:
+           return group[1]
+        else:
+            return False
 
     def _get_group_lounge_user(self, cr, uid, context=None):
-        #group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
-        #if group:
-            #return group[1]
-        #else:
-        return False
+        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
+        if group:
+            return group[1]
+        else:
+            return False
 
     _columns = {
         'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
@@ -537,7 +537,7 @@ class lounge_session(osv.osv):
         jobj = self.pool.get('lounge.config')
         lounge_config = jobj.browse(cr, uid, config_id, context=context)
         context.update({'company_id': lounge_config.company_id.id})
-        # is_pos_user = self.pool['res.users'].has_group(cr, uid, 'point_of_lounge.group_pos_user')
+        is_lounge_user = self.pool['res.users'].has_group(cr, uid, 'point_of_lounge.group_lounge_user')
         if not lounge_config.journal_id:
             jid = jobj.default_get(cr, uid, ['journal_id'], context=context)['journal_id']
             if jid:
@@ -558,7 +558,7 @@ class lounge_session(osv.osv):
                 jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_ids': [(6, 0, cashids)]})
 
         statements = []
-        create_statement = partial(self.pool['account.bank.statement'].create, cr,SUPERUSER_ID or uid)
+        create_statement = partial(self.pool['account.bank.statement'].create, cr,is_lounge_user and SUPERUSER_ID or uid)
         for journal in lounge_config.journal_ids:
             # set the journal_id which should be used by
             # account.bank.statement to set the opening balance of the
@@ -575,7 +575,7 @@ class lounge_session(osv.osv):
             'statement_ids': [(6, 0, statements)],
             'config_id': config_id,
         })
-        return super(lounge_session, self).create(cr, SUPERUSER_ID or uid, values, context=context)
+        return super(lounge_session, self).create(cr,is_lounge_user and SUPERUSER_ID or uid, values, context=context)
 
     #@override delete data
     def unlink(self, cr, uid, ids, context=None):
@@ -621,7 +621,7 @@ class lounge_session(osv.osv):
             for st in record.statement_ids:
                 if abs(st.difference) > st.journal_id.amount_authorized_diff_lounge:
                     # The lounge manager can close statements with maximums.
-                    if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_lounge.group_pos_manager"):
+                    if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_lounge.group_lounge_manager"):
                         raise UserError(_("Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (st.difference, st.journal_id.amount_authorized_diff_lounge))
                 if (st.journal_id.type not in ['bank', 'cash']):
                     raise UserError(_("The type of the journal for your payment method should be bank or cash "))
