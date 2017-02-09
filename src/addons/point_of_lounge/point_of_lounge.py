@@ -377,6 +377,38 @@ class product_template(osv.osv):
                     _('You cannot delete a product saleable in lounge while a session is still opened.'))
         return super(product_template, self).unlink(cr, uid, ids, context=context)
 
+class res_partner(osv.osv):
+	_inherit = 'res.partner'
+	
+	def create_from_ui(self, cr, uid, partner, context=None):
+		#image is a dataurl, get the data after the comma
+		if partner.get('image',False):
+			img =  partner['image'].split(',')[1]
+			partner['image'] = img
+		
+		if partner.get('id',False):  # Modifying existing partner
+			partner_id = partner['id']
+			del partner['id']
+			self.write(cr, uid, [partner_id], partner, context=context)
+		else:
+			partner_id = self.create(cr, uid, partner, context=context)
+		
+		return partner_id
+		
+class barcode_rule(models.Model):
+    _inherit = 'barcode.rule'
+
+    def _get_type_selection(self):
+        types = sets.Set(super(barcode_rule,self)._get_type_selection())
+        types.update([
+            ('weight', _('Weighted Product')),
+            ('price', _('Priced Product')),
+            ('discount', _('Discounted Product')),
+            ('client', _('Client')),
+            ('cashier', _('Cashier'))
+        ])
+        return list(types)		
+
 #menu lounge session
 class lounge_session(osv.osv):
     _name = 'lounge.session'
