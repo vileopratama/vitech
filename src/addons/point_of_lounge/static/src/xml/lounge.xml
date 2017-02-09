@@ -378,7 +378,7 @@
                     </div>
                     <div class='client-detail'>
                         <span class='label'>Barcode</span>
-                        <input class='detail barcode'       name='barcode'    t-att-value='partner.barcode || ""'></input>
+                        <input class='detail barcode'       name='lounge_barcode'    t-att-value='partner.lounge_barcode || ""'></input>
                     </div>
                     <div class='client-detail'>
                         <span class='label'>Tax ID</span>
@@ -420,10 +420,10 @@
                 <div class='client-details-right'>
                     <div class='client-detail'>
                         <span class='label'>Barcode</span>
-                        <t t-if='partner.barcode'>
-                            <span class='detail client-id'><t t-esc='partner.barcode'/></span>
+                        <t t-if='partner.lounge_barcode'>
+                            <span class='detail client-id'><t t-esc='partner.lounge_barcode'/></span>
                         </t>
-                        <t t-if='!partner.barcode'>
+                        <t t-if='!partner.lounge_barcode'>
                             <span class='detail client-id empty'>N/A</span>
                         </t>
                     </div>

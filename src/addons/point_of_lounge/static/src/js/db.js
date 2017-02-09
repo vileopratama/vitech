@@ -226,8 +226,8 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    },
 	    _partner_search_string: function(partner){
 	        var str =  partner.name;
-	        if(partner.barcode){
-	            str += '|' + partner.barcode;
+	        if(partner.lounge_barcode){
+	            str += '|' + partner.lounge_barcode;
 	        }
 	        if(partner.address){
 	            str += '|' + partner.address;
@@ -283,7 +283,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            for (var id in this.partner_by_id) {
 	                partner = this.partner_by_id[id];
 
-	                if(partner.barcode){
+	                if(partner.lounge_barcode){
 	                    this.partner_by_barcode[partner.lounge_barcode] = partner;
 	                }
 	                partner.address = (partner.street || '') +', '+
@@ -301,8 +301,8 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    get_partner_by_id: function(id){
 	        return this.partner_by_id[id];
 	    },
-	    get_partner_by_barcode: function(barcode){
-	        return this.partner_by_barcode[barcode];
+	    get_partner_by_barcode: function(lounge_barcode){
+	        return this.partner_by_barcode[lounge_barcode];
 	    },
 	    get_partners_sorted: function(max_count){
 	        max_count = max_count ? Math.min(this.partner_sorted.length, max_count) : this.partner_sorted.length;
