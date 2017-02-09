@@ -284,7 +284,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	                partner = this.partner_by_id[id];
 
 	                if(partner.barcode){
-	                    this.partner_by_barcode[partner.barcode] = partner;
+	                    this.partner_by_barcode[partner.lounge_barcode] = partner;
 	                }
 	                partner.address = (partner.street || '') +', '+
 	                                  (partner.zip || '')    +' '+
