@@ -121,7 +121,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <div class='input-group date' id='from_date'>
+                            <div class='input-group date' id='to_date'>
                                 <input type='text' t-att-value="widget.name" class="booking_to_date timepicker form-control " id="booking_to_date" name="booking_to_date" ></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
@@ -142,7 +142,7 @@
                     <t t-esc="widget.lounge.get_client().name" />
                 </t>
                 <t t-if="!widget.lounge.get_client()">
-                    Customer
+                    Guest
                 </t>
             </button>
             <button class='button pay'>

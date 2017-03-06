@@ -11,6 +11,16 @@
             paperformat="point_of_lounge.paperformat_posreceipt"/>
 
         <report
+            id="lounge_order_xlsx"
+            model="lounge.order"
+            string="Export Excel"
+            report_type="xlsx"
+            name="lounge.order.xlsx"
+            file="lounge.order.xlsx"
+            attachment_use="False"
+        />
+
+        <report
             id="lounge_invoice_report"
             string="Invoice"
             model="lounge.order"
