@@ -55,8 +55,9 @@
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">LNG</field>
             <field name="image" type="base64" file="point_of_lounge/static/src/img/lounge.jpg"/>
-
          </record>
+
+
 
     </data>
 </odoo>

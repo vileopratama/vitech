@@ -11,8 +11,10 @@
                         <field name="lounge_barcode" />
                     </group>
                 </xpath>
+                 <field name="website" position="after">
+                     <field name="pic"  attrs="{'invisible': [('is_company','=', False)]}"/>
+                 </field>
             </field>
         </record>
-
     </data>
 </odoo>

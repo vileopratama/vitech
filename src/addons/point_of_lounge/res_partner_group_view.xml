@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_lounge_partner_group_tree">
+            <field name="name">Customer Groups</field>
+            <field name="model">res.partner.group</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="description" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_lounge_partner_group_form">
+            <field name="name">Customer Groups</field>
+            <field name="model">res.partner.group</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                         <button name="action_active" string="Set Active" type="object" states="inactive"/>
+                         <button name="action_inactive" string="Set Inactive" type="object" states="active"/>
+                         <field name="state" widget="statusbar" statusbar_visible="active,inactive" statusbar_colors='{"cancel":"red"}'/>
+                     </header>
+                     <sheet>
+                         <div class="oe_title">
+                             <h1><field name="name" default_focus="1" placeholder="Group Name" /></h1>
+                         </div>
+                         <group col="4" colspan="4" name="order_fields">
+                             <field name="description"/>
+                         </group>
+                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_partner_group_form" model="ir.actions.act_window">
+            <field name="name">Customer Groups</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a customer group .
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_partner_group_form" parent="base.menu_sales" action="action_partner_group_form" sequence="10"/>
+    </data>
+</odoo>

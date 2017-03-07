@@ -20,6 +20,7 @@ import pytz
 
 _logger = logging.getLogger(__name__)
 
+
 class lounge_config(osv.osv):
     _name = 'lounge.config'
     LOUNGE_CONFIG_STATE = [
@@ -41,7 +42,8 @@ class lounge_config(osv.osv):
     def _get_current_session(self, cr, uid, ids, fieldnames, args, context=None):
         result = dict()
         for record in self.browse(cr, uid, ids, context=context):
-            session_id = record.session_ids.filtered(lambda r: r.user_id.id == uid and not r.state == 'closed' and not r.rescue)
+            session_id = record.session_ids.filtered(
+                lambda r: r.user_id.id == uid and not r.state == 'closed' and not r.rescue)
             result[record.id] = {
                 'current_session_id': session_id,
                 'current_session_state': session_id.state,
@@ -108,9 +110,10 @@ class lounge_config(osv.osv):
 
         for record in self.browse(cr, uid, ids, context=context):
             session_ids = self.pool['lounge.session'].search_read(cr, uid,
-                [('config_id', '=', record.id), ('state', '=', 'closed')],
-                ['cash_register_balance_end_real', 'stop_at'],
-                order="stop_at desc", limit=1, context=context)
+                                                                  [('config_id', '=', record.id),
+                                                                   ('state', '=', 'closed')],
+                                                                  ['cash_register_balance_end_real', 'stop_at'],
+                                                                  order="stop_at desc", limit=1, context=context)
             if session_ids:
                 result[record.id] = {
                     'last_session_closing_cash': session_ids[0]['cash_register_balance_end_real'],
@@ -124,21 +127,22 @@ class lounge_config(osv.osv):
         return result
 
     def _get_group_lounge_manager(self, cr, uid, context=None):
-        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_manager')
+        group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_lounge', 'group_lounge_manager')
         if group:
-           return group[1]
+            return group[1]
         else:
             return False
 
     def _get_group_lounge_user(self, cr, uid, context=None):
-        group = self.pool.get('ir.model.data').get_object_reference(cr,uid,'point_of_lounge','group_lounge_user')
+        group = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_lounge', 'group_lounge_user')
         if group:
             return group[1]
         else:
             return False
 
     _columns = {
-        'name': fields.char('Lounge Name', select=1,required=True, help="An internal identification of the point of lounge"),
+        'name': fields.char('Lounge Name', select=1, required=True,
+                            help="An internal identification of the point of lounge"),
         'picking_type_id': fields.many2one('stock.picking.type', 'Picking Type'),
         'stock_location_id': fields.many2one('stock.location', 'Stock Location', domain=[('usage', '=', 'internal')],
                                              required=True),
@@ -197,9 +201,9 @@ class lounge_config(osv.osv):
         'receipt_footer': fields.text('Receipt Footer',
                                       help="A short text that will be inserted as a footer in the printed receipt"),
         'group_lounge_manager_id': fields.many2one('res.groups', 'Point of Lounge Manager Group',
-                                                help='This field is there to pass the id of the pos manager group to the point of sale client'),
+                                                   help='This field is there to pass the id of the pos manager group to the point of sale client'),
         'group_lounge_user_id': fields.many2one('res.groups', 'Point of Lounge User Group',
-                                             help='This field is there to pass the id of the pos user group to the point of sale client'),
+                                                help='This field is there to pass the id of the pos user group to the point of sale client'),
         'last_session_closing_date': fields.function(_get_last_session, multi="last_session", type='date'),
         'last_session_closing_cash': fields.function(_get_last_session, multi="last_session", type='float'),
         'current_session_state': fields.function(_get_current_session, multi="session", type='char'),
@@ -232,7 +236,7 @@ class lounge_config(osv.osv):
     }
 
     def set_active(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {'state' : 'active'}, context=context)
+        return self.write(cr, uid, ids, {'state': 'active'}, context=context)
 
     def name_get(self, cr, uid, ids, context=None):
         result = []
@@ -243,14 +247,15 @@ class lounge_config(osv.osv):
             'closed': _('Closed & Posted'),
         }
         for record in self.browse(cr, uid, ids, context=context):
-            if (not record.session_ids) or (record.session_ids[0].state=='closed'):
-                result.append((record.id, record.name+' ('+_('not used')+')'))
+            if (not record.session_ids) or (record.session_ids[0].state == 'closed'):
+                result.append((record.id, record.name + ' (' + _('not used') + ')'))
                 continue
             session = record.session_ids[0]
-            result.append((record.id, record.name + ' ('+session.user_id.name+')')) #, '+states[session.state]+')'))
+            result.append(
+                (record.id, record.name + ' (' + session.user_id.name + ')'))  # , '+states[session.state]+')'))
         return result
 
-    #@override on create
+    # @override on create
     def create(self, cr, uid, values, context=None):
         ir_sequence = self.pool.get('ir.sequence')
         values['sequence_id'] = ir_sequence.create(cr, SUPERUSER_ID, {
@@ -272,7 +277,7 @@ class lounge_config(osv.osv):
         }, context=context)
         return super(lounge_config, self).create(cr, uid, values, context=context)
 
-    #@override unlink / remove
+    # @override unlink / remove
     def unlink(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.sequence_id:
@@ -280,6 +285,7 @@ class lounge_config(osv.osv):
         return super(lounge_config, self).unlink(cr, uid, ids, context=context)
 
     """ Onchange Event """
+
     def onchange_picking_type_id(self, cr, uid, ids, picking_type_id, context=None):
         p_type_obj = self.pool.get("stock.picking.type")
         p_type = p_type_obj.browse(cr, uid, picking_type_id, context=context)
@@ -303,7 +309,7 @@ class lounge_config(osv.osv):
             'url': '/lounge/cashier/',
             'target': 'self',
         }
-    
+
     def open_existing_session_cb_close(self, cr, uid, ids, context=None):
         assert len(ids) == 1, "you can open only one session at a time"
         record = self.browse(cr, uid, ids[0], context=context)
@@ -326,7 +332,7 @@ class lounge_config(osv.osv):
                 return self.open_ui(cr, uid, ids, context=context)
             return self._open_session(session_id)
         return self._open_session(current_session_id.id)
-    
+
     def _open_session(self, session_id):
         return {
             'name': _('Session'),
@@ -337,32 +343,33 @@ class lounge_config(osv.osv):
             'view_id': False,
             'type': 'ir.actions.act_window',
         }
-    
+
     def open_existing_session_cb_close(self, cr, uid, ids, context=None):
         assert len(ids) == 1, "you can open only one session at a time"
         record = self.browse(cr, uid, ids[0], context=context)
         record.current_session_id.signal_workflow('cashbox_control')
         return self.open_session_cb(cr, uid, ids, context)
-    
+
     def open_existing_session_cb(self, cr, uid, ids, context=None):
         assert len(ids) == 1, "you can open only one session at a time"
         record = self.browse(cr, uid, ids[0], context=context)
         return self._open_session(record.current_session_id.id)
-    
-#menu products
+
+
+# menu products
 class product_template(osv.osv):
     _inherit = 'product.template'
     _columns = {
         'available_in_lounge': fields.boolean('Available in the Lounge',
-                                           help='Check if you want this product to appear in the Lounge Session'),
+                                              help='Check if you want this product to appear in the Lounge Session'),
         'lounge_to_weight': fields.boolean('To Weigh With Scale',
-                                    help="Check if the product should be weighted using the hardware scale integration"),
+                                           help="Check if the product should be weighted using the hardware scale integration"),
         'lounge_categ_id': fields.many2one('lounge.category', 'Lounge Service Category',
-                                        help="Those categories are used to group similar products for lounge."),
-        'lounge_charge': fields.float('In Charge',digits=(16,7),
-                                   help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
+                                           help="Those categories are used to group similar products for lounge."),
+        'lounge_charge': fields.float('In Charge', digits=(16, 7),
+                                      help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
         'lounge_charge_every': fields.integer('In Charge Every',
-                                      help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
+                                              help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
     }
     _defaults = {
         'lounge_to_weight': False,
@@ -377,29 +384,31 @@ class product_template(osv.osv):
                     _('You cannot delete a product saleable in lounge while a session is still opened.'))
         return super(product_template, self).unlink(cr, uid, ids, context=context)
 
+
 class res_partner(osv.osv):
-	_inherit = 'res.partner'
-	
-	def create_from_ui(self, cr, uid, partner, context=None):
-		#image is a dataurl, get the data after the comma
-		if partner.get('image',False):
-			img =  partner['image'].split(',')[1]
-			partner['image'] = img
-		
-		if partner.get('id',False):  # Modifying existing partner
-			partner_id = partner['id']
-			del partner['id']
-			self.write(cr, uid, [partner_id], partner, context=context)
-		else:
-			partner_id = self.create(cr, uid, partner, context=context)
-		
-		return partner_id
-		
+    _inherit = 'res.partner'
+
+    def create_from_ui(self, cr, uid, partner, context=None):
+        # image is a dataurl, get the data after the comma
+        if partner.get('image', False):
+            img = partner['image'].split(',')[1]
+            partner['image'] = img
+
+        if partner.get('id', False):  # Modifying existing partner
+            partner_id = partner['id']
+            del partner['id']
+            self.write(cr, uid, [partner_id], partner, context=context)
+        else:
+            partner_id = self.create(cr, uid, partner, context=context)
+
+        return partner_id
+
+
 class barcode_rule(models.Model):
     _inherit = 'barcode.rule'
 
     def _get_type_selection(self):
-        types = sets.Set(super(barcode_rule,self)._get_type_selection())
+        types = sets.Set(super(barcode_rule, self)._get_type_selection())
         types.update([
             ('weight', _('Weighted Product')),
             ('price', _('Priced Product')),
@@ -407,9 +416,10 @@ class barcode_rule(models.Model):
             ('client', _('Client')),
             ('cashier', _('Cashier'))
         ])
-        return list(types)		
+        return list(types)
 
-#menu lounge session
+
+# menu lounge session
 class lounge_session(osv.osv):
     _name = 'lounge.session'
     _order = 'id desc'
@@ -426,9 +436,9 @@ class lounge_session(osv.osv):
 
         for record in self.browse(cr, uid, ids, context=context):
             result[record.id] = {
-                'cash_journal_id' : False,
-                'cash_register_id' : False,
-                'cash_control' : False,
+                'cash_journal_id': False,
+                'cash_register_id': False,
+                'cash_control': False,
             }
 
             if record.config_id.cash_control:
@@ -468,7 +478,7 @@ class lounge_session(osv.osv):
                                       string="Currency"),
         'rescue': fields.boolean('Rescue session', readonly=True,
                                  help="Auto-generated session for orphan orders, ignored in constraints"),
-        'start_at': fields.datetime('Opening Date',readonly=True),
+        'start_at': fields.datetime('Opening Date', readonly=True),
         'stop_at': fields.datetime('Closing Date', readonly=True, copy=False),
         'sequence_number': fields.integer('Order Sequence Number',
                                           help='A sequence number that is incremented with each order'),
@@ -479,7 +489,8 @@ class lounge_session(osv.osv):
                                       readonly=True,
                                       relation='account.journal',
                                       string='Available Payment Methods'),
-        'statement_ids': fields.one2many('account.bank.statement', 'lounge_session_id', 'Bank Statement', readonly=True),
+        'statement_ids': fields.one2many('account.bank.statement', 'lounge_session_id', 'Bank Statement',
+                                         readonly=True),
         'cash_register_id': fields.function(_compute_cash_all,
                                             multi='cash',
                                             type='many2one', relation='account.bank.statement',
@@ -517,7 +528,7 @@ class lounge_session(osv.osv):
     _defaults = {
         'name': '/',
         'user_id': lambda obj, cr, uid, context: uid,
-        'state' : 'opening_control',
+        'state': 'opening_control',
         'sequence_number': 1,
         'login_number': 0,
     }
@@ -530,12 +541,12 @@ class lounge_session(osv.osv):
         for session in self.browse(cr, uid, ids, context=None):
             # open if there is no session in 'opening_control', 'opened', 'closing_control' for one user
             domain = [
-                ('state', 'not in', ('closed','closing_control')),
+                ('state', 'not in', ('closed', 'closing_control')),
                 ('user_id', '=', session.user_id.id),
                 ('rescue', '=', False)
             ]
             count = self.search_count(cr, uid, domain, context=context)
-            if count>1:
+            if count > 1:
                 return False
         return True
 
@@ -547,7 +558,7 @@ class lounge_session(osv.osv):
                 ('rescue', '=', False)
             ]
             count = self.search_count(cr, uid, domain, context=context)
-            if count>1:
+            if count > 1:
                 return False
         return True
 
@@ -573,14 +584,15 @@ class lounge_session(osv.osv):
         if not lounge_config.journal_id:
             jid = jobj.default_get(cr, uid, ['journal_id'], context=context)['journal_id']
             if jid:
-                 jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_id': jid}, context=context)
+                jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_id': jid}, context=context)
             else:
                 raise UserError(_("Unable to open the session. You have to assign a journal to your lounge."))
 
         # define some cash journal if no payment method exists
         if not lounge_config.journal_ids:
             journal_proxy = self.pool.get('account.journal')
-            cashids = journal_proxy.search(cr, uid, [('journal_user_lounge', '=', True), ('type', '=', 'cash')],context=context)
+            cashids = journal_proxy.search(cr, uid, [('journal_user_lounge', '=', True), ('type', '=', 'cash')],
+                                           context=context)
             if not cashids:
                 cashids = journal_proxy.search(cr, uid, [('type', '=', 'cash')], context=context)
                 if not cashids:
@@ -590,7 +602,8 @@ class lounge_session(osv.osv):
                 jobj.write(cr, SUPERUSER_ID, [lounge_config.id], {'journal_ids': [(6, 0, cashids)]})
 
         statements = []
-        create_statement = partial(self.pool['account.bank.statement'].create, cr,is_lounge_user and SUPERUSER_ID or uid)
+        create_statement = partial(self.pool['account.bank.statement'].create, cr,
+                                   is_lounge_user and SUPERUSER_ID or uid)
         for journal in lounge_config.journal_ids:
             # set the journal_id which should be used by
             # account.bank.statement to set the opening balance of the
@@ -607,9 +620,9 @@ class lounge_session(osv.osv):
             'statement_ids': [(6, 0, statements)],
             'config_id': config_id,
         })
-        return super(lounge_session, self).create(cr,is_lounge_user and SUPERUSER_ID or uid, values, context=context)
+        return super(lounge_session, self).create(cr, is_lounge_user and SUPERUSER_ID or uid, values, context=context)
 
-    #@override delete data
+    # @override delete data
     def unlink(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, context=context):
             self.pool.get('account.bank.statement').unlink(cr, uid, obj.statement_ids.ids, context=context)
@@ -621,7 +634,7 @@ class lounge_session(osv.osv):
             'login_number': this_record.login_number + 1,
         })
 
-    #Workflow Action
+    # Workflow Action
     def wkf_action_opening_control(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'opening_control'}, context=context)
 
@@ -641,8 +654,10 @@ class lounge_session(osv.osv):
         for session in self.browse(cr, uid, ids, context=context):
             for statement in session.statement_ids:
                 if (statement != session.cash_register_id) and (statement.balance_end != statement.balance_end_real):
-                    self.pool.get('account.bank.statement').write(cr, uid, [statement.id],{'balance_end_real': statement.balance_end})
-        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')},context=context)
+                    self.pool.get('account.bank.statement').write(cr, uid, [statement.id],
+                                                                  {'balance_end_real': statement.balance_end})
+        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')},
+                          context=context)
 
     def wkf_action_close(self, cr, uid, ids, context=None):
         # Close CashBox
@@ -653,15 +668,19 @@ class lounge_session(osv.osv):
             for st in record.statement_ids:
                 if abs(st.difference) > st.journal_id.amount_authorized_diff_lounge:
                     # The lounge manager can close statements with maximums.
-                    if not self.pool.get('ir.model.access').check_groups(cr, uid, "point_of_lounge.group_lounge_manager"):
-                        raise UserError(_("Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (st.difference, st.journal_id.amount_authorized_diff_lounge))
+                    if not self.pool.get('ir.model.access').check_groups(cr, uid,
+                                                                         "point_of_lounge.group_lounge_manager"):
+                        raise UserError(_(
+                            "Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (
+                                        st.difference, st.journal_id.amount_authorized_diff_lounge))
                 if (st.journal_id.type not in ['bank', 'cash']):
                     raise UserError(_("The type of the journal for your payment method should be bank or cash "))
-                self.pool['account.bank.statement'].button_confirm_bank(cr, SUPERUSER_ID, [st.id],context=local_context)
+                self.pool['account.bank.statement'].button_confirm_bank(cr, SUPERUSER_ID, [st.id],
+                                                                        context=local_context)
 
-        #function _confirm order
+        # function _confirm order
         self._confirm_orders(cr, uid, ids, context=local_context)
-        #close status
+        # close status
         self.write(cr, uid, ids, {'state': 'closed'}, context=local_context)
 
         obj = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_lounge', 'menu_lounge_root')[1]
@@ -680,14 +699,17 @@ class lounge_session(osv.osv):
             local_context = dict(context or {}, force_company=company_id)
             order_ids = [order.id for order in session.order_ids if order.state == 'paid']
 
-            move_id = lounge_order_obj._create_account_move(cr, uid, session.start_at, session.name, session.config_id.journal_id.id, company_id, context=context)
+            move_id = lounge_order_obj._create_account_move(cr, uid, session.start_at, session.name,
+                                                            session.config_id.journal_id.id, company_id,
+                                                            context=context)
             lounge_order_obj._create_account_move_line(cr, uid, order_ids, session, move_id, context=local_context)
 
             for order in session.order_ids:
                 if order.state == 'done':
                     continue
                 if order.state not in ('paid', 'invoiced'):
-                    raise UserError(_("You cannot confirm all orders of this session, because they have not the 'paid' status"))
+                    raise UserError(
+                        _("You cannot confirm all orders of this session, because they have not the 'paid' status"))
                 else:
                     lounge_order_obj.signal_workflow(cr, uid, [order.id], 'done')
         return True
@@ -699,15 +721,17 @@ class lounge_session(osv.osv):
             return {}
         for session in self.browse(cr, uid, ids, context=context):
             if session.user_id.id != uid:
-                raise UserError(_("You cannot use the session of another users. This session is owned by %s. ""Please first close this one to use this lounge.") % session.user_id.name)
+                raise UserError(_(
+                    "You cannot use the session of another users. This session is owned by %s. ""Please first close this one to use this lounge.") % session.user_id.name)
         context.update({'active_id': ids[0]})
         return {
-            'type' : 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
             'target': 'self',
-            'url':   '/lounge/cashier/',
+            'url': '/lounge/cashier/',
         }
 
-#lounge category
+
+# lounge category
 class lounge_category(osv.osv):
     _name = "lounge.category"
     _description = "Public Service Category"
@@ -717,7 +741,7 @@ class lounge_category(osv.osv):
         (osv.osv._check_recursion, 'Error ! You cannot create recursive categories.', ['parent_id'])
     ]
 
-    #@overide from function name
+    # @overide from function name
     def name_get(self, cr, uid, ids, context=None):
         res = []
         for cat in self.browse(cr, uid, ids, context=context):
@@ -777,15 +801,15 @@ class lounge_order(osv.osv):
     def _order_fields(self, cr, uid, ui_order, context=None):
         process_line = partial(self.pool['lounge.order.line']._order_line_fields, cr, uid, context=context)
         # get user's timezone
-        #user_pool = self.pool.get('res.users')
-        #user = user_pool.browse(cr, SUPERUSER_ID, uid)
-        #tz = pytz.timezone(user.partner_id.tz) or pytz.utc
+        # user_pool = self.pool.get('res.users')
+        # user = user_pool.browse(cr, SUPERUSER_ID, uid)
+        # tz = pytz.timezone(user.partner_id.tz) or pytz.utc
 
         return {
             'name': ui_order['name'],
-            'booking_from_date' : ui_order['booking_from_date'],
-            'booking_to_date' :ui_order['booking_to_date'],
-            'booking_total' : ui_order['booking_total'],
+            'booking_from_date': ui_order['booking_from_date'],
+            'booking_to_date': ui_order['booking_to_date'],
+            'booking_total': ui_order['booking_total'],
             'user_id': ui_order['user_id'] or False,
             'session_id': ui_order['lounge_session_id'],
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
@@ -796,13 +820,13 @@ class lounge_order(osv.osv):
         }
 
     def _payment_fields(self, cr, uid, ui_paymentline, context=None):
-	    return {
-			'amount': ui_paymentline['amount'] or 0.0,
-		    'payment_date': ui_paymentline['name'],
-		    'statement_id': ui_paymentline['statement_id'],
-		    'payment_name': ui_paymentline.get('note', False),
-		    'journal': ui_paymentline['journal_id'],
-	    }
+        return {
+            'amount': ui_paymentline['amount'] or 0.0,
+            'payment_date': ui_paymentline['name'],
+            'statement_id': ui_paymentline['statement_id'],
+            'payment_name': ui_paymentline.get('note', False),
+            'journal': ui_paymentline['journal_id'],
+        }
 
     def _process_order(self, cr, uid, order, context=None):
         prec_acc = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
@@ -856,7 +880,7 @@ class lounge_order(osv.osv):
     def create_from_ui(self, cr, uid, orders, context=None):
         submitted_references = [o['data']['name'] for o in orders]
         existing_order_ids = self.search(cr, uid, [('lounge_reference', 'in', submitted_references)],
-                                             context=context)
+                                         context=context)
         existing_orders = self.read(cr, uid, existing_order_ids, ['lounge_reference'], context=context)
         existing_references = set([o['lounge_reference'] for o in existing_orders])
         orders_to_save = [o for o in orders if o['data']['name'] not in existing_references]
@@ -874,21 +898,22 @@ class lounge_order(osv.osv):
             try:
                 self.signal_workflow(cr, uid, [order_id], 'paid')
             except psycopg2.OperationalError:
-                #do not hide transactional errors, the order(s) won't be saved!
-                 raise
+                # do not hide transactional errors, the order(s) won't be saved!
+                raise
             except Exception as e:
                 _logger.error('Could not fully process the Lounge Order: %s', tools.ustr(e))
 
             if to_invoice:
                 self.action_invoice(cr, uid, [order_id], context)
                 order_obj = self.browse(cr, uid, order_id, context)
-                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [order_obj.invoice_id.id],'invoice_open')
+                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [order_obj.invoice_id.id],
+                                                             'invoice_open')
         return order_ids
 
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
-        'booking_from_date' : fields.datetime('Booking From', readonly=False, select=True),
+        'booking_from_date': fields.datetime('Booking From', readonly=False, select=True),
         'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
         'booking_total': fields.float(string="Total Hours"),
         'session_id': fields.many2one('lounge.session', 'Session',
@@ -906,7 +931,8 @@ class lounge_order(osv.osv):
         'partner_id': fields.many2one('res.partner', 'Customer', change_default=True, select=1,
                                       states={'draft': [('readonly', False)], 'paid': [('readonly', False)]}),
         'fiscal_position_id': fields.many2one('account.fiscal.position', 'Fiscal Position'),
-        'lines': fields.one2many('lounge.order.line', 'order_id', 'Order Lines', states={'draft': [('readonly', False)]},
+        'lines': fields.one2many('lounge.order.line', 'order_id', 'Order Lines',
+                                 states={'draft': [('readonly', False)]},
                                  readonly=True, copy=True),
         'pricelist_id': fields.many2one('product.pricelist', 'Pricelist', required=True,
                                         states={'draft': [('readonly', False)]}, readonly=True),
@@ -915,8 +941,7 @@ class lounge_order(osv.osv):
         'company_id': fields.many2one('res.company', 'Company', required=True, readonly=True),
         'location_id': fields.related('session_id', 'config_id', 'stock_location_id', string="Location",
                                       type='many2one', store=True, relation='stock.location'),
-        'user_id': fields.many2one('res.users', 'Salesman',
-                                   help="Person who uses the cash register. It can be a reliever, a student or an interim employee."),
+        'user_id': fields.many2one('res.users', 'Salesman'),
         'picking_id': fields.many2one('stock.picking', 'Picking', readonly=True, copy=False),
         'lounge_reference': fields.char('Receipt Ref', readonly=True, copy=False),
         'note': fields.text('Internal Notes'),
@@ -941,21 +966,25 @@ class lounge_order(osv.osv):
         price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
         price = price + line.charge
         cur = line.order_id.pricelist_id.currency_id
-        taxes = taxes.compute_all(price, cur, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)['taxes']
+        taxes = \
+        taxes.compute_all(price, cur, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)[
+            'taxes']
         val = 0.0
         for c in taxes:
             val += c.get('amount', 0.0)
         return val
 
-    #summary
+    # summary
     amount_surcharge = Fields.Float(compute='_compute_amount_all', string='Surcharge', digits=0)
     amount_tax = Fields.Float(compute='_compute_amount_all', string='Taxes', digits=0)
     amount_total = Fields.Float(compute='_compute_amount_all', string='Total', digits=0)
-    amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},readonly=True, digits=0)
+    amount_paid = Fields.Float(compute='_compute_amount_all', string='Paid', states={'draft': [('readonly', False)]},
+                               readonly=True, digits=0)
     amount_return = Fields.Float(compute='_compute_amount_all', string='Returned', digits=0)
     """
         Function
         """
+
     @api.depends('statement_ids', 'lines.price_subtotal_incl', 'lines.discount')
     def _compute_amount_all(self):
         for order in self:
@@ -964,14 +993,15 @@ class lounge_order(osv.osv):
             order.amount_paid = sum(payment.amount for payment in order.statement_ids)
             order.amount_return = sum(payment.amount < 0 and payment.amount or 0 for payment in order.statement_ids)
             order.amount_surcharge = currency.round(sum(line.price_charge for line in order.lines))
-            order.amount_tax = currency.round(sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
+            order.amount_tax = currency.round(
+                sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
 
     @api.onchange('booking_from_date')
     def _onchange_booking_from_date(self):
-        booking_total = self._get_booking_total(self.booking_from_date,self.booking_to_date)
-        return self.update({'booking_total' : booking_total})
+        booking_total = self._get_booking_total(self.booking_from_date, self.booking_to_date)
+        return self.update({'booking_total': booking_total})
 
     @api.onchange('booking_to_date')
     def _onchange_booking_to_date(self):
@@ -979,9 +1009,10 @@ class lounge_order(osv.osv):
         return self.update({'booking_total': booking_total})
 
     """Function"""
+
     def _default_session(self, cr, uid, context=None):
         so = self.pool.get('lounge.session')
-        session_ids = so.search(cr, uid, [('state','=', 'opened'), ('user_id','=',uid)], context=context)
+        session_ids = so.search(cr, uid, [('state', '=', 'opened'), ('user_id', '=', uid)], context=context)
         return session_ids and session_ids[0] or False
 
     def _default_pricelist(self, cr, uid, context=None):
@@ -990,6 +1021,7 @@ class lounge_order(osv.osv):
             session_record = self.pool.get('lounge.session').browse(cr, uid, session_ids, context=context)
             return session_record.config_id.pricelist_id and session_record.config_id.pricelist_id.id or False
         return False
+
     """Function """
 
     _defaults = {
@@ -997,30 +1029,32 @@ class lounge_order(osv.osv):
         'state': 'draft',
         'name': '/',
         'date_order': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'booking_from_date':lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'booking_from_date': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'booking_to_date': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'booking_total': 0,
         'nb_print': 0,
         'sequence_number': 1,
         'session_id': _default_session,
-        'company_id': lambda self,cr,uid,c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
         'pricelist_id': _default_pricelist,
     }
 
     """
     Start of On Change Event
     """
+
     def onchange_partner_id(self, cr, uid, ids, part=False, context=None):
         if not part:
             return {'value': {}}
         pricelist = self.pool.get('res.partner').browse(cr, uid, part, context=context).property_product_pricelist.id
         return {'value': {'pricelist_id': pricelist}}
+
     """
     End of On Change Event
     """
 
-    def _get_booking_total(self,booking_from_date,booking_to_date):
-        if(booking_from_date and booking_to_date):
+    def _get_booking_total(self, booking_from_date, booking_to_date):
+        if (booking_from_date and booking_to_date):
             d_frm_obj = datetime.strptime(booking_from_date, DEFAULT_SERVER_DATETIME_FORMAT)
             d_to_obj = datetime.strptime(booking_to_date, DEFAULT_SERVER_DATETIME_FORMAT)
             diff = d_to_obj - d_frm_obj
@@ -1060,7 +1094,8 @@ class lounge_order(osv.osv):
         if 'partner_id' in vals:
             for loungeorder in self.browse(cr, uid, ids, context=context):
                 if loungeorder.invoice_id:
-                    raise UserError(_("You cannot change the partner of a Lounge order for which an invoice has already been issued."))
+                    raise UserError(_(
+                        "You cannot change the partner of a Lounge order for which an invoice has already been issued."))
                 if vals['partner_id']:
                     p_id = partner_obj.browse(cr, uid, vals['partner_id'], context=context)
                     part_id = partner_obj._find_accounting_partner(p_id).id
@@ -1071,27 +1106,29 @@ class lounge_order(osv.osv):
         return res
 
     def create(self, cr, uid, values, context=None):
-        #raise Warning(values['booking_from_date']) //check data
+        # raise Warning(values['booking_from_date']) //check data
         if values.get('session_id'):
             # set name based on the sequence specified on the config
             session = self.pool['lounge.session'].browse(cr, uid, values['session_id'], context=context)
-            #values['booking_total'] = self._get_booking_total(values['booking_from_date'],values['booking_to_date'])
+            # values['booking_total'] = self._get_booking_total(values['booking_from_date'],values['booking_to_date'])
             values['name'] = session.config_id.sequence_id._next()
             values.setdefault('session_id', session.config_id.pricelist_id.id)
         else:
             # fallback on any lounge.order sequence
-            #values['booking_total'] = self._get_booking_total(values['booking_from_date'], values['booking_to_date'])
+            # values['booking_total'] = self._get_booking_total(values['booking_from_date'], values['booking_to_date'])
             values['name'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'lounge.order', context=context)
         return super(lounge_order, self).create(cr, uid, values, context=context)
 
     def unlink(self, cr, uid, ids, context=None):
         for rec in self.browse(cr, uid, ids, context=context):
-            if rec.state not in ('draft','cancel'):
+            if rec.state not in ('draft', 'cancel'):
                 raise UserError(_('In order to delete a lounge order, it must be new or cancelled.'))
         return super(lounge_order, self).unlink(cr, uid, ids, context=context)
+
     """ End of Override Event """
 
     """ Parsing Data From Payment View """
+
     def add_payment(self, cr, uid, order_id, data, context=None):
         """Create a new payment for the order"""
         context = dict(context or {})
@@ -1107,7 +1144,8 @@ class lounge_order(osv.osv):
             'amount': data['amount'],
             'date': date,
             'name': order.name + ': ' + (data.get('payment_name', '') or ''),
-            'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False,
+            'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(
+                order.partner_id).id or False,
         }
         journal_id = data.get('journal', False)
         statement_id = data.get('statement_id', False)
@@ -1118,13 +1156,14 @@ class lounge_order(osv.osv):
         account_def = property_obj.get(cr, uid, 'property_account_receivable_id', 'res.partner', context=company_cxt)
         args['account_id'] = (order.partner_id and order.partner_id.property_account_receivable_id \
                               and order.partner_id.property_account_receivable_id.id) or (
-                             account_def and account_def.id) or False
+                                 account_def and account_def.id) or False
 
         if not args['account_id']:
             if not args['partner_id']:
                 msg = _('There is no receivable account defined to make payment.')
             else:
-                msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (order.partner_id.name, order.partner_id.id,)
+                msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (
+                order.partner_id.name, order.partner_id.id,)
             raise UserError(msg)
 
         context.pop('lounge_session_id', False)
@@ -1150,7 +1189,7 @@ class lounge_order(osv.osv):
         statement_line_obj.create(cr, uid, args, context=context)
         return statement_id
 
-    #function update stock
+    # function update stock
     def create_picking(self, cr, uid, ids, context=None):
         """Create a picking for each order and validate it."""
         picking_obj = self.pool.get('stock.picking')
@@ -1167,7 +1206,8 @@ class lounge_order(osv.osv):
                 destination_id = order.partner_id.property_stock_customer.id
             else:
                 if (not picking_type) or (not picking_type.default_location_dest_id):
-                    customerloc, supplierloc = self.pool['stock.warehouse']._get_partner_locations(cr, uid, [], context=context)
+                    customerloc, supplierloc = self.pool['stock.warehouse']._get_partner_locations(cr, uid, [],
+                                                                                                   context=context)
                     destination_id = customerloc.id
                 else:
                     destination_id = picking_type.default_location_dest_id.id
@@ -1213,7 +1253,7 @@ class lounge_order(osv.osv):
                 pick = picking_obj.browse(cr, uid, picking_id, context=context)
                 for pack in pick.pack_operation_ids:
                     self.pool['stock.pack.operation'].write(cr, uid, [pack.id], {'qty_done': pack.product_qty},
-                                                                context=context)
+                                                            context=context)
                 picking_obj.action_done(cr, uid, [picking_id], context=context)
             elif move_list:
                 move_obj.action_confirm(cr, uid, move_list, context=context)
@@ -1222,7 +1262,7 @@ class lounge_order(osv.osv):
 
         return True
 
-    #function analytic account
+    # function analytic account
     def _prepare_analytic_account(self, cr, uid, line, context=None):
         '''This method is designed to be inherited in a custom module'''
         return False
@@ -1235,7 +1275,7 @@ class lounge_order(osv.osv):
             if order.lines and not order.amount_total:
                 return True
             if (not order.lines) or (not order.statement_ids) or \
-                (abs(order.amount_total - order.amount_paid) > 0.00001):
+                    (abs(order.amount_total - order.amount_paid) > 0.00001):
                 return False
         return True
         """ Parsing Data From Payment View """
@@ -1332,18 +1372,19 @@ class lounge_order(osv.osv):
             'res_id': inv_ids and inv_ids[0] or False,
         }
 
-
     def action_invoice_state(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'invoiced'}, context=context)
 
-    #on submit button refund
+    # on submit button refund
     def refund(self, cr, uid, ids, context=None):
         """Create a copy of order  for refund order"""
         clone_list = []
         line_obj = self.pool.get('lounge.order.line')
 
         for order in self.browse(cr, uid, ids, context=context):
-            current_session_ids = self.pool.get('lounge.session').search(cr, uid, [('state', '!=', 'closed'), ('user_id', '=', uid)], context=context)
+            current_session_ids = self.pool.get('lounge.session').search(cr, uid, [('state', '!=', 'closed'),
+                                                                                   ('user_id', '=', uid)],
+                                                                         context=context)
             if not current_session_ids:
                 raise UserError(
                     _('To return product(s), you need to open a session that will be used to register the refund.'))
@@ -1381,7 +1422,9 @@ class lounge_order(osv.osv):
         start_at_datetime = datetime.strptime(dt, tools.DEFAULT_SERVER_DATETIME_FORMAT)
         date_tz_user = fields.datetime.context_timestamp(cr, uid, start_at_datetime, context=context)
         date_tz_user = date_tz_user.strftime(tools.DEFAULT_SERVER_DATE_FORMAT)
-        return self.pool['account.move'].create(cr, SUPERUSER_ID, {'ref': ref, 'journal_id': journal_id, 'date': date_tz_user}, context=context)
+        return self.pool['account.move'].create(cr, SUPERUSER_ID,
+                                                {'ref': ref, 'journal_id': journal_id, 'date': date_tz_user},
+                                                context=context)
 
     def _create_account_move_line(self, cr, uid, ids, session=None, move_id=None, context=None):
         # Tricky, via the workflow, we only have one id in the ids variable
@@ -1391,9 +1434,10 @@ class lounge_order(osv.osv):
         property_obj = self.pool.get('ir.property')
         cur_obj = self.pool.get('res.currency')
 
-        #session_ids = set(order.session_id for order in self.browse(cr, uid, ids, context=context))
+        # session_ids = set(order.session_id for order in self.browse(cr, uid, ids, context=context))
 
-        if session and not all(session.id == order.session_id.id for order in self.browse(cr, uid, ids, context=context)):
+        if session and not all(
+                        session.id == order.session_id.id for order in self.browse(cr, uid, ids, context=context)):
             raise UserError(_('Selected orders do not have the same session!'))
 
         grouped_data = {}
@@ -1417,7 +1461,8 @@ class lounge_order(osv.osv):
 
             if move_id is None:
                 # Create an entry for the sale
-                move_id = self._create_account_move(cr, uid, order.session_id.start_at, order.name, order.sale_journal.id, order.company_id.id, context=context)
+                move_id = self._create_account_move(cr, uid, order.session_id.start_at, order.name,
+                                                    order.sale_journal.id, order.company_id.id, context=context)
 
             move = account_move_obj.browse(cr, SUPERUSER_ID, move_id, context=context)
 
@@ -1427,12 +1472,15 @@ class lounge_order(osv.osv):
                 # 'quantity': line.qty,
                 # 'product_id': line.product_id.id,
                 values.update({
-                    'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False,
-                    'move_id' : move_id,
+                    'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(
+                        order.partner_id).id or False,
+                    'move_id': move_id,
                 })
 
                 if data_type == 'product':
-                    key = ('product', values['partner_id'], (values['product_id'], tuple(values['tax_ids'][0][2]), values['name']), values['analytic_account_id'], values['debit'] > 0)
+                    key = ('product', values['partner_id'],
+                           (values['product_id'], tuple(values['tax_ids'][0][2]), values['name']),
+                           values['analytic_account_id'], values['debit'] > 0)
                 elif data_type == 'tax':
                     key = ('tax', values['partner_id'], values['tax_line_id'], values['debit'] > 0)
                 elif data_type == 'counter_part':
@@ -1454,7 +1502,8 @@ class lounge_order(osv.osv):
                         for line in grouped_data[key]:
                             if line.get('tax_code_id') == values.get('tax_code_id'):
                                 current_value = line
-                                current_value['quantity'] = current_value.get('quantity', 0.0) +  values.get('quantity', 0.0)
+                                current_value['quantity'] = current_value.get('quantity', 0.0) + values.get('quantity',
+                                                                                                            0.0)
                                 current_value['credit'] = current_value.get('credit', 0.0) + values.get('credit', 0.0)
                                 current_value['debit'] = current_value.get('debit', 0.0) + values.get('debit', 0.0)
                                 break
@@ -1463,10 +1512,10 @@ class lounge_order(osv.osv):
                 else:
                     grouped_data[key].append(values)
 
-            #because of the weird way the lounge order is written, we need to make sure there is at least one line,
-            #because just after the 'for' loop there are references to 'line' and 'income_account' variables (that
-            #are set inside the for loop)
-            #TOFIX: a deep refactoring of this method (and class!) is needed in order to get rid of this stupid hack
+            # because of the weird way the lounge order is written, we need to make sure there is at least one line,
+            # because just after the 'for' loop there are references to 'line' and 'income_account' variables (that
+            # are set inside the for loop)
+            # TOFIX: a deep refactoring of this method (and class!) is needed in order to get rid of this stupid hack
             assert order.lines, _('The Lounge order must have lines when calling this method')
             # Create an move for each order line
 
@@ -1475,14 +1524,14 @@ class lounge_order(osv.osv):
                 amount = line.price_subtotal
 
                 # Search for the income account
-                if  line.product_id.property_account_income_id.id:
+                if line.product_id.property_account_income_id.id:
                     income_account = line.product_id.property_account_income_id.id
                 elif line.product_id.categ_id.property_account_income_categ_id.id:
                     income_account = line.product_id.categ_id.property_account_income_categ_id.id
                 else:
-                    raise UserError(_('Please define income '\
-                        'account for this product: "%s" (id:%d).') \
-                        % (line.product_id.name, line.product_id.id))
+                    raise UserError(_('Please define income ' \
+                                      'account for this product: "%s" (id:%d).') \
+                                    % (line.product_id.name, line.product_id.id))
 
                 name = line.product_id.name
                 if line.notice:
@@ -1496,10 +1545,11 @@ class lounge_order(osv.osv):
                     'product_id': line.product_id.id,
                     'account_id': income_account,
                     'analytic_account_id': self._prepare_analytic_account(cr, uid, line, context=context),
-                    'credit': ((amount>0) and amount) or 0.0,
-                    'debit': ((amount<0) and -amount) or 0.0,
+                    'credit': ((amount > 0) and amount) or 0.0,
+                    'debit': ((amount < 0) and -amount) or 0.0,
                     'tax_ids': [(6, 0, line.tax_ids_after_fiscal_position.ids)],
-                    'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
+                    'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(
+                        order.partner_id).id or False
                 })
 
                 # Create the tax lines
@@ -1509,35 +1559,40 @@ class lounge_order(osv.osv):
                         taxes.append(t.id)
                 if not taxes:
                     continue
-                for tax in account_tax_obj.browse(cr,uid, taxes, context=context).compute_all((line.price_unit * (100.0-line.discount) / 100.0) + line.charge, cur, line.qty)['taxes']:
+                for tax in account_tax_obj.browse(cr, uid, taxes, context=context).compute_all(
+                                (line.price_unit * (100.0 - line.discount) / 100.0) + line.charge, cur, line.qty)[
+                    'taxes']:
                     insert_data('tax', {
                         'name': _('Tax') + ' ' + tax['name'],
                         'product_id': line.product_id.id,
                         'quantity': line.qty,
                         'account_id': tax['account_id'] or income_account,
-                        'credit': ((tax['amount']>0) and tax['amount']) or 0.0,
-                        'debit': ((tax['amount']<0) and -tax['amount']) or 0.0,
+                        'credit': ((tax['amount'] > 0) and tax['amount']) or 0.0,
+                        'debit': ((tax['amount'] < 0) and -tax['amount']) or 0.0,
                         'tax_line_id': tax['id'],
-                        'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
+                        'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(
+                            order.partner_id).id or False
                     })
 
             # counterpart
             insert_data('counter_part', {
-                'name': _("Trade Receivables"), #order.name,
+                'name': _("Trade Receivables"),  # order.name,
                 'account_id': order_account,
                 'credit': ((order.amount_total < 0) and -order.amount_total) or 0.0,
                 'debit': ((order.amount_total > 0) and order.amount_total) or 0.0,
-                'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False
+                'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(
+                    order.partner_id).id or False
             })
 
-            order.write({'state':'done', 'account_move': move_id})
+            order.write({'state': 'done', 'account_move': move_id})
 
         all_lines = []
         for group_key, group_data in grouped_data.iteritems():
             for value in group_data:
-                all_lines.append((0, 0, value),)
-        if move_id: #In case no order was changed
-            self.pool.get("account.move").write(cr, SUPERUSER_ID, [move_id], {'line_ids':all_lines}, context=dict(context or {}, dont_create_taxes=True))
+                all_lines.append((0, 0, value), )
+        if move_id:  # In case no order was changed
+            self.pool.get("account.move").write(cr, SUPERUSER_ID, [move_id], {'line_ids': all_lines},
+                                                context=dict(context or {}, dont_create_taxes=True))
             self.pool.get("account.move").post(cr, SUPERUSER_ID, [move_id], context=context)
 
         return True
@@ -1580,6 +1635,7 @@ class lounge_order_line(osv.osv):
     _rec_name = "product_id"
 
     """Function"""
+
     def _order_line_fields(self, cr, uid, line, context=None):
         if line and 'tax_ids' not in line[2]:
             product = self.pool['product.product'].browse(cr, uid, line[2]['product_id'], context=context)
@@ -1591,17 +1647,20 @@ class lounge_order_line(osv.osv):
         for line in self.browse(cr, uid, ids, context=context):
             res[line.id] = line.order_id.fiscal_position_id.map_tax(line.tax_ids)
         return res
+
     """Function"""
 
     _columns = {
         'name': fields.char('Line No', required=True, copy=False),
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
-        'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,change_default=True),
+        'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,
+                                      change_default=True),
         'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
         'charge': fields.float('Charge', digits=0),
         'discount': fields.float('Discount (%)', digits=0),
         'price_unit': fields.float(string='Unit Price', digits=0),
-        'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',relation='account.tax', string='Taxes'),
+        'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',
+                                                         relation='account.tax', string='Taxes'),
         'tax_ids': fields.many2many('account.tax', string='Taxes'),
         'create_date': fields.datetime('Creation Date', readonly=True),
         'notice': fields.char('Discount Notice'),
@@ -1613,8 +1672,8 @@ class lounge_order_line(osv.osv):
     price_subtotal = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal w/o Tax')
     price_subtotal_incl = Fields.Float(compute='_compute_amount_line_all', digits=0, string='Subtotal')
 
-    #defination api
-    @api.depends('price_unit','tax_ids','charge','qty','discount','product_id')
+    # defination api
+    @api.depends('price_unit', 'tax_ids', 'charge', 'qty', 'discount', 'product_id')
     def _compute_amount_line_all(self):
         for line in self:
             currency = line.order_id.pricelist_id.currency_id
@@ -1629,18 +1688,21 @@ class lounge_order_line(osv.osv):
             line.price_subtotal = line.price_subtotal_incl = price * line.qty
 
             if taxes:
-                taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,partner=line.order_id.partner_id or False)
-                #line.price_charge = taxes['total_charge']
+                taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,
+                                          partner=line.order_id.partner_id or False)
+                # line.price_charge = taxes['total_charge']
                 line.price_subtotal = taxes['total_excluded']
                 line.price_subtotal_incl = taxes['total_included']
 
             line.price_charge = currency.round(line.price_charge)
             line.price_subtotal = currency.round(line.price_subtotal)
             line.price_subtotal_incl = currency.round(line.price_subtotal_incl)
+
     """SUM Function with compute """
 
     _defaults = {
-        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'lounge.order.line',context=context),
+        'name': lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'lounge.order.line',
+                                                                                       context=context),
         'qty': lambda *a: 1,
         'discount': lambda *a: 0.0,
         'charge': lambda *a: 0.0,
@@ -1648,42 +1710,46 @@ class lounge_order_line(osv.osv):
     }
 
     """On Change Event"""
-    def onchange_product_id(self, cr, uid, ids,booking_total,pricelist, product_id,charge,qty=0, partner_id=False, context=None):
+
+    def onchange_product_id(self, cr, uid, ids, booking_total, pricelist, product_id, charge, qty=0, partner_id=False,
+                            context=None):
         context = context or {}
         if not product_id:
             return {}
 
         if not pricelist:
-            raise UserError(_('You have to select a pricelist in the sale form , Please set one before choosing a product.'))
-        
-        price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],product_id, qty or 1.0, partner_id)[pricelist]
-        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0,charge,qty, price, context=context)
+            raise UserError(
+                _('You have to select a pricelist in the sale form , Please set one before choosing a product.'))
+
+        price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist], product_id, qty or 1.0, partner_id)[
+            pricelist]
+        result = self.onchange_qty(cr, uid, ids, pricelist, product_id, 0.0, charge, qty, price, context=context)
         result['value']['price_unit'] = price
 
         prod = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
-        
-        if(booking_total):
+
+        if (booking_total):
             booking_total = booking_total
         else:
             booking_total = 0
-        
-        if(prod.lounge_charge_every > 0 ):
-            total_charge = int(math.ceil(booking_total/prod.lounge_charge_every))
+
+        if (prod.lounge_charge_every > 0):
+            total_charge = int(math.ceil(booking_total / prod.lounge_charge_every))
         else:
             total_charge = 0
 
-        product_charge = int(round((prod.lounge_charge /100) * price))
+        product_charge = int(round((prod.lounge_charge / 100) * price))
 
-        if(total_charge > 1):
+        if (total_charge > 1):
             surcharge = (total_charge - 1) * product_charge
         else:
             surcharge = 0
-        
+
         result['value']['charge'] = surcharge
         result['value']['tax_ids'] = prod.taxes_id.ids
         return result
 
-    def onchange_qty(self, cr, uid, ids, pricelist, product, discount,charge,qty, price_unit, context=None):
+    def onchange_qty(self, cr, uid, ids, pricelist, product, discount, charge, qty, price_unit, context=None):
         result = {}
         if not product:
             return result
@@ -1699,13 +1765,14 @@ class lounge_order_line(osv.osv):
         cur = self.pool.get('product.pricelist').browse(cr, uid, [pricelist], context=context).currency_id
         if (prod.taxes_id):
             taxes = prod.taxes_id.compute_all(price, cur, qty, product=prod, partner=False)
-            #result['price_charge'] = taxes['total_charge']
+            # result['price_charge'] = taxes['total_charge']
             result['price_subtotal'] = taxes['total_excluded']
             result['price_subtotal_incl'] = taxes['total_included']
-        
+
         return {'value': result}
 
     """On Change Event"""
+
 
 class account_bank_statement_line(osv.osv):
     _inherit = 'account.bank.statement.line'

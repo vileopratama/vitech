@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_lounge_order_domestic_report_tree">
+            <field name="name">Domestic Orders</field>
+            <field name="model">report.lounge.order.domestic</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="partner_id" />
+                    <field name="company_type" />
+                    <field name="lounge_reference" />
+                    <field name="booking_from_date" />
+                    <field name="booking_to_date" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_report_lounge_order_domestic" model="ir.actions.act_window">
+            <field name="name">Domestic Orders</field>
+            <field name="res_model">report.lounge.order.domestic</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Domestic Orders"
+                  action="action_report_lounge_order_domestic"
+                  id="menu_report_lounge_order_domestic"
+                  parent="menu_lounge_report"
+                  sequence="5"/>
+    </data>
+</odoo>

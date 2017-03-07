@@ -105,6 +105,26 @@
         </div>
     </t>
 
+    <t t-name="LoungeActionflightWidget">
+        <div class="x-input-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <select class="form-control" name="flight_type">
+                            <option t-att-value="domestic">Domestic</option>
+                            <option t-att-value="international">International</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type='text' class="form-control" placeholder="Flight No." name="fligth_number" ></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
     <t t-name="LoungeActiontimeWidget">
         <div class="action-time">
             <div class="x-input-group">
@@ -159,7 +179,7 @@
             <button class="input-button number-char">1</button>
             <button class="input-button number-char">2</button>
             <button class="input-button number-char">3</button>
-            <button class="mode-button" data-mode='quantity'>Qty</button>
+            <button class="mode-button" data-mode='quantity'>Pax</button>
             <br />
             <button class="input-button number-char">4</button>
             <button class="input-button number-char">5</button>
@@ -257,6 +277,7 @@
                         <div class='subwindow-container'>
                             <div class='subwindow-container-fix pads'>
                                 <div class="control-buttons oe_hidden"></div>
+                                <div class="placeholder-ActionflightWidget"></div>
 	                            <div class="placeholder-ActiontimeWidget"></div>
                                 <div class="placeholder-ActionpadWidget"></div>
                                 <div class="placeholder-NumpadWidget"></div>

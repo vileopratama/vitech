@@ -364,6 +364,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	});
 
+	/* ---------- The Action Flight ---------- */
+	var ActionflightWidget = PosBaseWidget.extend({
+        template: 'LoungeActionflightWidget',
+	});
+
 	/* ---------- The Action Time ---------- */
 	var ActiontimeWidget = PosBaseWidget.extend({
 	    template: "LoungeActiontimeWidget",
@@ -932,6 +937,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	    start: function(){
 	        var self = this;
+
+	        this.actionflight = new ActionflightWidget(this,{});
+	        this.actionflight.replace(this.$('.placeholder-ActionflightWidget'));
 
 	        this.actiontime = new ActiontimeWidget(this,{});
 	        this.actiontime.replace(this.$('.placeholder-ActiontimeWidget'));
