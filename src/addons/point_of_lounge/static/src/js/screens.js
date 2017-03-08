@@ -385,7 +385,7 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.$('#flight_number').change(function(){
                 var flight_number = $(this).val();
                 self.lounge.get_order().set_flight_number(flight_number);
-                alert(self.lounge.get_order().get_flight_number());
+                //alert(self.lounge.get_order().get_flight_number());
             });
         },
 

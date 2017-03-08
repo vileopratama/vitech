@@ -1723,7 +1723,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        return {
 	            name : this.get_name(),
-	            flight_type : this.get_flight_type(),
+	            flight_type : !this.get_flight_type() ? 'domestic' : this.get_flight_type(),
 	            flight_number : this.get_flight_number(),
 	            booking_from_date : this.get_booking_from_date_local(),
 	            booking_to_date :  this.get_booking_to_date_local(),
@@ -1865,6 +1865,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_name: function() {
 	        return this.name;
+	    },
+	    get_flight_type:function(){
+            return this.lounge.get_flight_type();
+	    },
+	    get_flight_number:function(){
+            return this.lounge.get_flight_number();
 	    },
 	    get_booking_from_date_local: function() {
 			if(this.lounge.get_booking_from_date()) {
