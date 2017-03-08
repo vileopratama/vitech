@@ -646,6 +646,21 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return null;
 	    },
 
+	    get_flight_type: function() {
+	        var order = this.get_order();
+	        if (order) {
+	            return order.get_flight_type();
+	        }
+	        return null;
+	    },
+	    get_flight_number: function() {
+	        var order = this.get_order();
+	        if (order) {
+	            return order.get_flight_number();
+	        }
+	        return null;
+	    },
+
 	    get_booking_from_date: function() {
 	        var order = this.get_order();
 	        if (order) {
@@ -1107,7 +1122,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.discount = 0;
 	        this.charge = 0;
 	        this.discountStr = '0';
-	        this.type = 'unit';
+	        this.type = 'pack';
 	        this.selected = false;
 	        this.id       = orderline_id++;
 	    },
@@ -1180,13 +1195,18 @@ odoo.define('point_of_lounge.models', function (require) {
 	            var unit = this.get_unit();
 	            if(unit){
 	                if (unit.rounding) {
-	                    this.quantity    = round_pr(quant, unit.rounding);
+	                    //this.quantity    = round_pr(quant, unit.rounding);
+	                    this.quantity  = quant;
 	                    var decimals = this.lounge.dp['Product Unit of Measure'];
-	                    this.quantityStr = formats.format_value(round_di(this.quantity, decimals), { type: 'float', digits: [69, decimals]});
-	                } else {
-	                    this.quantity    = round_pr(quant, 1);
 	                    this.quantityStr = this.quantity.toFixed(0);
+	                    //this.quantityStr = formats.format_value(round_di(this.quantity, decimals), { type: 'float', digits: [69, decimals]});
+	                } else {
+	                    //this.quantity    = round_pr(quant, 1);
+	                    this.quantity  = quant;
+	                    this.quantityStr = this.quantity.toFixed(0);
+
 	                }
+
 	            }else{
 	                this.quantity    = quant;
 	                this.quantityStr = '' + this.quantity;
@@ -1602,6 +1622,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.temporary      = options.temporary || false;
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
+	        this.flight_number  = null;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;
@@ -1669,6 +1690,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        this.temporary = false;     // FIXME
 	        this.to_invoice = false;    // FIXME
+	        //this.flight_number = null;
 
 
 	        var orderlines = json.lines;
@@ -1701,6 +1723,8 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        return {
 	            name : this.get_name(),
+	            flight_type : this.get_flight_type(),
+	            flight_number : this.get_flight_number(),
 	            booking_from_date : this.get_booking_from_date_local(),
 	            booking_to_date :  this.get_booking_to_date_local(),
 	            booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),
@@ -2205,6 +2229,24 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_client_name: function(){
 	        var client = this.get('client');
 	        return client ? client.name : "";
+	    },
+	    //fligh type
+	    set_flight_type : function (flight_type) {
+	        this.assert_editable();
+	        this.set('flight_type',flight_type);
+	    },
+	    get_flight_type: function(){
+	        return this.get('flight_type');
+	    },
+	    //fligh type
+	    set_flight_number : function (flight_number) {
+	        this.assert_editable();
+	        //this.flight_number = flight_number;
+	        this.set('flight_number',flight_number);
+	    },
+	    get_flight_number: function(){
+	        return this.get('flight_number');
+	        //return this.flight_number;
 	    },
 	    set_booking_from_date: function(booking_from_date) {
 	        this.assert_editable();

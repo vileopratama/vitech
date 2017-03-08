@@ -110,15 +110,16 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <select class="form-control" name="flight_type">
+                        <select class="form-control" name="flight_type" id="flight_type">
                             <option t-att-value="domestic">Domestic</option>
                             <option t-att-value="international">International</option>
                         </select>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <input type='text' class="form-control" placeholder="Flight No." name="fligth_number" ></input>
+                        <input type='text' class="form-control" placeholder="Flight No." t-att-value="widget.lounge.get_flight_number()" name="fligth_number" id="flight_number"></input>
                     </div>
                 </div>
             </div>
@@ -700,6 +701,31 @@
                                 </div>
                             </t>
                         </t>
+
+                         <div class='button js_booking'>
+                             <i class="fa fa-plane"></i>
+	                        <span class='js_flight_type'>
+                                <t t-if="widget.lounge.get_flight_type()">
+                                    <t t-esc="widget.lounge.get_flight_type()" />
+                                </t>
+                                <t t-if="!widget.lounge.get_flight_type()">
+                                    Domestic
+                                </t>
+                            </span>
+                        </div>
+
+                        <div class='button js_booking'>
+                             <i class="fa fa-ticket"></i>
+	                        <span class='js_flight_number'>
+                                <t t-if="widget.lounge.get_flight_number()">
+                                    <t t-esc="widget.lounge.get_flight_number()" />
+                                </t>
+                                <t t-if="!widget.lounge.get_flight_number()">
+                                    Domestic
+                                </t>
+                            </span>
+                        </div>
+
                         <t t-if='widget.lounge.config.tip_product_id'>
                             <div class='button js_tip'>
                                 <i class='fa fa-heart' /> Tip
@@ -785,7 +811,7 @@
 
             <div class='orderlines' line-ratio='0.6'>
                 <t t-foreach='receipt.orderlines' t-as='line'>
-                    <t t-set='simple' t-value='line.discount === 0 and line.unit_name === "Unit(s)" and line.quantity === 1' />
+                    <t t-set='simple' t-value='line.discount === 0 and line.unit_name === "Pack(s)" and line.quantity === 1' />
                     <t t-if='simple'>
                         <line>
                             <left><t t-esc='line.product_name' /></left>
@@ -802,14 +828,14 @@
                         </t>
                         <line indent='1'>
                             <left>
-                                <value value-decimals='3' value-autoint='on'>
+                                <value value-decimals='0' value-autoint='on'>
                                     <t t-esc='line.quantity' />
                                 </value>
-                                <t t-if='line.unit_name !== "Unit(s)"'>
+                                <t t-if='line.unit_name !== "Pack(s)"'>
                                     <t t-esc='line.unit_name' />
                                 </t>
                                 x
-                                <value value-decimals='2'>
+                                <value value-decimals='0'>
                                     <t t-esc='line.price' />
                                 </value>
                             </left>

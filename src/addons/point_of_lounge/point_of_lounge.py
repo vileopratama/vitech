@@ -807,6 +807,8 @@ class lounge_order(osv.osv):
 
         return {
             'name': ui_order['name'],
+            'flight_type': ui_order['flight_type'],
+            'flight_number': ui_order['flight_number'],
             'booking_from_date': ui_order['booking_from_date'],
             'booking_to_date': ui_order['booking_to_date'],
             'booking_total': ui_order['booking_total'],
@@ -915,6 +917,9 @@ class lounge_order(osv.osv):
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
         'booking_from_date': fields.datetime('Booking From', readonly=False, select=True),
         'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
+        'flight_type': fields.selection([('domestic', 'Domestic'),
+                                        ('international', 'International')],string='Flight Type'),
+        'flight_number': fields.char('Flight No.', required=True,copy=False),
         'booking_total': fields.float(string="Total Hours"),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
@@ -1027,6 +1032,8 @@ class lounge_order(osv.osv):
     _defaults = {
         'user_id': lambda self, cr, uid, context: uid,
         'state': 'draft',
+        'flight_type':'domestic',
+        'flight_number':'-',
         'name': '/',
         'date_order': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'booking_from_date': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),

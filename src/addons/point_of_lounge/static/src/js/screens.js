@@ -367,7 +367,30 @@ odoo.define('point_of_lounge.screens', function (require) {
 	/* ---------- The Action Flight ---------- */
 	var ActionflightWidget = PosBaseWidget.extend({
         template: 'LoungeActionflightWidget',
+        init: function(parent, options){
+            var self = this;
+	        this._super(parent, options);
+	        self.renderElement();
+	    },
+	    renderElement: function() {
+            var self = this;
+            this._super();
+
+            this.$('#flight_type').change(function(){
+                var flight_type = $(this).val();
+                self.lounge.get_order().set_flight_type(flight_type);
+                //alert(self.lounge.get_order().get_flight_type());
+            });
+
+            this.$('#flight_number').change(function(){
+                var flight_number = $(this).val();
+                self.lounge.get_order().set_flight_number(flight_number);
+                alert(self.lounge.get_order().get_flight_number());
+            });
+        },
+
 	});
+	//gui.define_screen({name:'flight', widget:ActionflightWidget});
 
 	/* ---------- The Action Time ---------- */
 	var ActiontimeWidget = PosBaseWidget.extend({
@@ -1784,12 +1807,15 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    customer_changed: function() {
 	        var client = this.lounge.get_client();
 	        this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
+
 	    },
 	    time_changed: function() {
 	        var booking_from_date = this.lounge.get_order().get_booking_from_date();
 	        var booking_to_date = this.lounge.get_order().get_booking_to_date();
 	        this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
 	        this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
+	        this.$('.js_flight_type').text( this.lounge.get_flight_type() ? this.lounge.get_flight_type() : _t('Domestic') );
+	        this.$('.js_flight_number').text( this.lounge.get_flight_number() ? this.lounge.get_flight_number() : _t('None') );
 	    },
 	    click_set_customer: function(){
 	        this.gui.show_screen('clientlist');

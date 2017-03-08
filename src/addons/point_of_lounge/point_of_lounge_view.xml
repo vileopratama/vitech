@@ -475,6 +475,8 @@
                              <field name="session_id" />
                              <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" domain="[('customer', '=', True)]" context="{'search_default_customer':1}" attrs="{'readonly': [('state','=','invoiced')]}"/>
                              <field name="fiscal_position_id" options="{'no_create': True}"/>
+                             <field name="flight_type" />
+                             <field name="flight_number" />
                          </group>
                          <notebook colspan="4">
                              <page string="Products">
@@ -563,12 +565,12 @@
              <field name="model">lounge.order</field>
              <field name="arch" type="xml">
                  <tree string="Lounge Orders" decoration-info="state == 'draft'" decoration-muted="state in ('done','cancel')">
-                     <field name="name"/>
+                     <field name="flight_number"/>
                      <field name="lounge_reference"/>
                      <field name="partner_id"/>
                      <field name="date_order"/>
                      <field name="user_id"/>
-                     <field name="invoice_id"/>
+                     <field name="flight_type"/>
                      <field name="amount_total" sum="Amount total" widget="monetary"/>
                      <field name="company_id" groups="base.group_multi_company"/>
                      <field name="state"/>
