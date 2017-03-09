@@ -110,16 +110,16 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <select class="form-control" name="flight_type" id="flight_type">
-                            <option t-att-value="domestic">Domestic</option>
-                            <option t-att-value="international">International</option>
+                        <select class="form-control" id="flight_type" name="flight_type">
+                            <option t-att-value="'domestic'" value="domestic">Domestic</option>
+                            <option t-att-value="'international'" value="International">International</option>
                         </select>
 
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <input type='text' class="form-control" placeholder="Flight No." t-att-value="widget.lounge.get_flight_number()" name="fligth_number" id="flight_number"></input>
+                        <input type='text' class="form-control" placeholder="Flight No." t-att-value="widget.lounge.get_flight_number()"  name="flight_number" id="flight_number"></input>
                     </div>
                 </div>
             </div>
@@ -342,8 +342,15 @@
     <t t-name="LoungeClientLine">
         <tr class='client-line' t-att-data-id='partner.id'>
             <td><t t-esc='partner.name' /></td>
-            <td><t t-esc='partner.address' /></td>
-            <td><t t-esc='partner.phone or partner.mobile or ""' /></td>
+            <td>
+                <t t-if='partner.company_type === "person"'>
+                    Individual
+                </t>
+                <t t-if='partner.company_type === "company"'>
+                    Company
+                </t>
+            </td>
+            <td><t t-esc='partner.pic or ""' /></td>
         </tr>
     </t>
 
@@ -365,6 +372,17 @@
             </div>
             <div class='client-details-box clearfix'>
                 <div class='client-details-left'>
+                    <div class='client-detail'>
+                        <span class='label'>Type</span>
+                        <select class='detail client-type' name='company_type'>
+                            <option value='person'  t-att-value="'person'"  t-att-selected="partner.company_type ? (('person' === partner.company_type[0]) ? true : undefined) : undefined">Individual</option>
+                            <option value='company' t-att-value="'company'" t-att-selected="partner.company_type ? (('company' === partner.company_type[0]) ? true : undefined) : undefined">Company</option>
+                        </select>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>PIC</span>
+                        <input class='detail client-pic'    name='pic'          t-att-value='partner.pic' placeholder='Please Fill if Type Company'></input>
+                    </div>
                     <div class='client-detail'>
                         <span class='label'>Street</span>
                         <input class='detail client-address-street' name='street'       t-att-value='partner.street' placeholder='Street'></input>
@@ -421,6 +439,22 @@
             </div>
             <div class='client-details-box clearfix'>
                 <div class='client-details-left'>
+                    <div class='client-detail'>
+                        <span class='label'>Type</span>
+                        <span class='detail client-type'>
+                            <t t-if='partner.company_type === "person"'>
+                                Individual
+                            </t>
+                            <t t-if='partner.company_type === "company"'>
+                                Company
+                            </t>
+
+                        </span>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>PIC</span>
+                        <span class='detail client-pic'><t t-esc='partner.pic' /></span>
+                    </div>
                     <div class='client-detail'>
                         <span class='label'>Address</span>
                         <span class='detail client-address'><t t-esc='partner.address' /></span>
@@ -500,8 +534,8 @@
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
-                                                <th>Full Address</th>
-                                                <th>Phone</th>
+                                                <th>Type</th>
+                                                <th>PIC</th>
                                             </tr>
                                         </thead>
                                         <tbody class='client-list-contents'>

@@ -379,13 +379,11 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.$('#flight_type').change(function(){
                 var flight_type = $(this).val();
                 self.lounge.get_order().set_flight_type(flight_type);
-                //alert(self.lounge.get_order().get_flight_type());
             });
 
             this.$('#flight_number').change(function(){
                 var flight_number = $(this).val();
                 self.lounge.get_order().set_flight_number(flight_number);
-                //alert(self.lounge.get_order().get_flight_number());
             });
         },
 
@@ -844,8 +842,17 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.next_screen = options.next_screen || false;
 
 	        this.click_product_handler = function(){
-	            var product = self.lounge.db.get_product_by_id(this.dataset.productId);
-	            options.click_product_action(product);
+	            if(self.lounge.get_order().get_client()) {
+	                var product = self.lounge.db.get_product_by_id(this.dataset.productId);
+	                options.click_product_action(product);
+	            } else {
+	                self.gui.show_popup('error',{
+	                    'title': _t('error'),
+	                    'body': _t('A Customer Is Required.'),
+	                });
+
+	                return;
+	            }
 	        };
 
 	        this.product_list = options.product_list || [];
@@ -1059,8 +1066,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
+	            //self.lounge.get_order().finalize();
 	            self.save_changes();
-	            self.gui.back();    // FIXME HUH ?
+	            self.gui.back();// FIXME HUH ?
 	        });
 
 	        this.$('.new-customer').click(function(){

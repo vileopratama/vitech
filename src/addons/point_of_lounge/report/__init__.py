@@ -2,5 +2,5 @@ import lounge_receipt
 import lounge_invoice
 import lounge_order_report
 import lounge_details
-import lounge_order_xlsx
+#import lounge_order_xlsx
 import lounge_order_domestic_report

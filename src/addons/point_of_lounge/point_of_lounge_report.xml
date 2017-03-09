@@ -10,7 +10,7 @@
             file="point_of_lounge.report_receipt"
             paperformat="point_of_lounge.paperformat_posreceipt"/>
 
-        <report
+        <!--<report
             id="lounge_order_xlsx"
             model="lounge.order"
             string="Export Excel"
@@ -18,7 +18,7 @@
             name="lounge.order.xlsx"
             file="lounge.order.xlsx"
             attachment_use="False"
-        />
+        />-->
 
         <report
             id="lounge_invoice_report"

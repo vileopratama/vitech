@@ -11,6 +11,11 @@
                     <field name="lounge_reference" />
                     <field name="booking_from_date" />
                     <field name="booking_to_date" />
+                    <field name="flight_type" />
+                    <field name="flight_number" />
+                    <field name="service_01" />
+                    <field name="service_02" />
+                    <field name="service_03" />
                 </tree>
             </field>
         </record>

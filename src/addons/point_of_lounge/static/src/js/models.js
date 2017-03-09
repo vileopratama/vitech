@@ -182,7 +182,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },{
 	        model:  'res.partner',
-	        fields: ['name','street','city','state_id','country_id','vat','phone','zip','mobile','email','lounge_barcode','write_date'],
+	        fields: ['name','street','city','state_id','country_id','vat','phone','zip','mobile','pic','company_type','email','lounge_barcode','write_date'],
 	        domain: [['customer','=',true]],
 	        loaded: function(self,partners){
 	            self.partners = partners;
@@ -315,7 +315,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },{
 	        model:  'product.product',
 	        fields: ['display_name', 'list_price','price','lounge_categ_id', 'taxes_id', 'barcode', 'default_code',
-	                 'to_weight', 'uom_id', 'description_sale', 'description','lounge_charge','lounge_charge_every',
+	                 'to_weight', 'uom_id', 'description_sale', 'description','lounge_charge','discount_company','lounge_charge_every',
 	                 'product_tmpl_id'],
 	        order:  ['sequence','default_code','name'],
 	        domain: [['sale_ok','=',true],['available_in_lounge','=',true]],
@@ -1117,6 +1117,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return;
 	        }
 	        this.product = options.product;
+	        //this.partner = options.partner;
 	        this.price   = options.product.price;
 	        this.set_quantity(1);
 	        this.discount = 0;
@@ -1131,6 +1132,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        if (!this.product) {
 	            console.error('ERROR: attempting to recover product not available in the lounge');
 	        }
+	        //this.partner = this.lounge.get_client();
 	        this.price = json.price_unit;
 	        this.set_discount(json.discount);
 	        this.set_quantity(json.qty);
@@ -1171,11 +1173,10 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	    get_charge: function() {
 			var total_hour = this.get_booking_total();
-	        var charge_percentage = this.get_product().lounge_charge;
 	        var charge_every = this.get_product().lounge_charge_every;
-	        var charge_value = ! charge_percentage ? 0 : (charge_percentage/100) * this.get_unit_price();
-			var total_hour_charge = Math.round(total_hour / charge_every);
-			total_hour_charge = total_hour_charge > 1  ? total_hour_charge - 1 : 0;
+			var charge_value = !this.get_product().lounge_charge ? 0 : this.get_product().lounge_charge;
+			var subtotal_hour_charge = Math.round(total_hour / charge_every);
+			var total_hour_charge = subtotal_hour_charge > 1  ? subtotal_hour_charge - 1 : 0;
 			var total_charge = charge_value * total_hour_charge;
 			return Math.round(total_charge);
 	    },
@@ -1245,6 +1246,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_product: function(){
 	        return this.product;
 	    },
+	    get_partner: function(){
+	        return this.partner;
+	    },
 	    // selects or deselects this orderline
 	    set_selected: function(selected){
 	        this.selected = selected;
@@ -1309,8 +1313,19 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.price = round_di(parseFloat(price) || 0, this.lounge.dp['Product Price']);
 	        this.trigger('change',this);
 	    },
-	    get_unit_price: function(){
-	        return round_di(this.price || 0, this.lounge.dp['Product Price'])
+	    get_unit_price: function() {
+	        var discount = 0;
+	        var price = this.price;
+	        if(this.order.get_client()) {
+	            var customer_type = this.order.get_client().company_type;
+                if(customer_type == 'company') {
+                    discount = !this.product.discount_company ? 0 : this.product.discount_company;
+                } else {
+                    discount = 0;
+                }
+	        }
+	        price = price - discount;
+	        return round_di(price || 0, this.lounge.dp['Product Price']);
 	    },
 	    get_unit_display_price: function(){
 	        if (this.lounge.config.iface_tax_included) {
@@ -1498,9 +1513,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_all_prices: function(){
 	        var self = this;
 	        var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
+	        //var price_unit  = 100;
 	        var taxtotal = 0;
 	        var product =  this.get_product();
-	        var charge = !product.lounge_charge ? 0 : ((product.lounge_charge/100) * price_unit);
+	        //var charge = !product.lounge_charge ? 0 : ((product.lounge_charge/100) * price_unit);
+	        var charge = !product.lounge_charge ? 0 : product.lounge_charge;
 	        var total_hour = this.get_booking_total();
 	        var hour_if_charge = !product.lounge_charge_every ? 0 : product.lounge_charge_every;
 	        var taxes_ids = product.taxes_id;
@@ -1721,10 +1738,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return paymentLines.push([0, 0, item.export_as_JSON()]);
 	        }, this));
 
+	        var flight_type = !this.get_flight_type() ? 'domestic' : this.get_flight_type();
+	        flight_type = flight_type.toLowerCase();
+
+	        var flight_number = !this.get_flight_number() ? '-' : this.get_flight_number();
+	        flight_number = flight_number.toUpperCase();
+
 	        return {
 	            name : this.get_name(),
-	            flight_type : !this.get_flight_type() ? 'domestic' : this.get_flight_type(),
-	            flight_number : this.get_flight_number(),
+	            flight_type : flight_type,
+	            flight_number : flight_number,
 	            booking_from_date : this.get_booking_from_date_local(),
 	            booking_to_date :  this.get_booking_to_date_local(),
 	            booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),

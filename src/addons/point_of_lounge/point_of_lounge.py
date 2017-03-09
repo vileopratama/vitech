@@ -366,14 +366,17 @@ class product_template(osv.osv):
                                            help="Check if the product should be weighted using the hardware scale integration"),
         'lounge_categ_id': fields.many2one('lounge.category', 'Lounge Service Category',
                                            help="Those categories are used to group similar products for lounge."),
-        'lounge_charge': fields.float('In Charge', digits=(16, 7),
+        'lounge_charge': fields.float('In Charge', digits=(16,0),
                                       help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
+        'discount_company' : fields.float('Disc (Company)',digits=(16,0)),
         'lounge_charge_every': fields.integer('In Charge Every',
                                               help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
     }
+
     _defaults = {
         'lounge_to_weight': False,
         'available_in_lounge': True,
+        'discount_company': 0,
     }
 
     def unlink(self, cr, uid, ids, context=None):
@@ -918,7 +921,7 @@ class lounge_order(osv.osv):
         'booking_from_date': fields.datetime('Booking From', readonly=False, select=True),
         'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
         'flight_type': fields.selection([('domestic', 'Domestic'),
-                                        ('international', 'International')],string='Flight Type'),
+                                        ('international','International')],string='Flight Type',copy=False),
         'flight_number': fields.char('Flight No.', required=True,copy=False),
         'booking_total': fields.float(string="Total Hours"),
         'session_id': fields.many2one('lounge.session', 'Session',
@@ -958,6 +961,9 @@ class lounge_order(osv.osv):
                                           type='many2one', relation='stock.picking.type'),
         'config_id': fields.related('session_id', 'config_id', string="Lounge", type='many2one',
                                     relation='lounge.config'),
+        'service_01': fields.char(compute='_compute_amount_all',string='Service 1',size=100,store=True),
+        'service_02': fields.char(compute='_compute_amount_all',string='Service 2', size=100,store=True),
+        'service_03': fields.char(compute='_compute_amount_all',string='Service 3', size=100,store=True),
     }
 
     """
@@ -1002,6 +1008,18 @@ class lounge_order(osv.osv):
                 sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
+
+            #services
+            i = 1
+            for sline in order.lines:
+                if i == 1 :
+                    order.service_01 = sline.product_id.name
+                if i == 2 :
+                    order.service_02 = sline.product_id.name
+                if i == 3 :
+                    order.service_03 = sline.product_id.name
+                i = i + 1
+
 
     @api.onchange('booking_from_date')
     def _onchange_booking_from_date(self):

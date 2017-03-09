@@ -329,12 +329,13 @@
                         <field name="lounge_categ_id" attrs="{'invisible': [('available_in_lounge', '=', False)]}"/>
 	                    <label for="lounge_charge" />
                         <div>
-	                        <field name="lounge_charge" placeholder="%" widget='float' class="oe_inline" /> %
+	                        <field name="lounge_charge" placeholder="0" widget='float' class="oe_inline" />
                         </div>
 	                    <label for="lounge_charge_every" />
 	                    <div>
                             <field name="lounge_charge_every" placeholder="Hour" widget='integer' class="oe_inline" /> Hour
 	                    </div>
+                        <field name="discount_company"/>
                         <field name="lounge_to_weight" attrs="{'invisible': [('available_in_lounge', '=', False)]}"/>
                     </group>
                 </group>

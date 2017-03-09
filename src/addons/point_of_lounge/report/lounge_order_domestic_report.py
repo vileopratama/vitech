@@ -15,6 +15,11 @@ class LoungeOrderDomesticReport(osv.osv):
         'booking_from_date': fields.datetime(string='Booking From', readonly=False),
         'booking_to_date': fields.datetime(string='Booking To', readonly=False),
         'company_type': fields.char(string='Customer Type', readonly=False),
+        'flight_type': fields.char(string='Flight Type', readonly=False),
+        'flight_number': fields.char(string='Flight No', readonly=False),
+        'service_01': fields.char(string='Service 1', readonly=False),
+        'service_02': fields.char(string='Service 2', readonly=False),
+        'service_03': fields.char(string='Service 3', readonly=False),
     }
 
     def init(self, cr):
@@ -27,8 +32,15 @@ class LoungeOrderDomesticReport(osv.osv):
                 lo.lounge_reference AS lounge_reference,
                 lo.booking_from_date AS booking_from_date,
                 lo.booking_to_date AS booking_to_date,
-                CASE WHEN rp.company_type='company' THEN 'Company' ELSE 'Individual' END AS company_type
+                CASE WHEN rp.company_type='company' THEN 'Company' ELSE 'Individual' END AS company_type,
+                CASE WHEN lo.flight_type='international' THEN 'International' ELSE 'Domestic' END AS flight_type,
+                lo.flight_number AS flight_number,
+                lo.service_01 as service_01,
+                lo.service_02 as service_02,
+                lo.service_03 as service_03
                 FROM lounge_order AS lo
                 LEFT JOIN res_partner rp ON rp.id = lo.partner_id
+                WHERE lo.state IN ('paid','invoice')
+
             )
         """)
