@@ -2,8 +2,8 @@
 <odoo>
     <data>
         <record model="ir.ui.view" id="view_lounge_order_domestic_report_tree">
-            <field name="name">Domestic Orders</field>
-            <field name="model">report.lounge.order.domestic</field>
+            <field name="name">Cash Orders</field>
+            <field name="model">report.lounge.order.cash</field>
             <field name="arch" type="xml">
                 <tree create="0">
                     <field name="partner_id" />
@@ -15,7 +15,7 @@
                     <field name="service_01" />
                     <field name="service_02" />
                     <field name="service_03" />
-                    <field name="payment_method" />
+                    <field name="flight_type" />
                     <field name="grandtotal" />
                     <field name="payment_name" />
                     <field name="total_pax" />
@@ -23,11 +23,11 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_lounge_order_domestic_report_search">
-            <field name="name">report.lounge.order.domestic.search</field>
-            <field name="model">report.lounge.order.domestic</field>
+        <record model="ir.ui.view" id="view_lounge_order_cash_report_search">
+            <field name="name">report.lounge.order.cash.search</field>
+            <field name="model">report.lounge.order.cash</field>
             <field name="arch" type="xml">
-                <search string="Domestic Orders">
+                <search string="Cash Orders">
                     <field name="partner_id"/>
                     <field name="lounge_reference"/>
                     <field name="flight_number"/>
@@ -43,19 +43,19 @@
             </field>
         </record>
 
-        <record id="action_report_lounge_order_domestic" model="ir.actions.act_window">
-            <field name="name">Domestic Orders</field>
-            <field name="res_model">report.lounge.order.domestic</field>
+        <record id="action_report_lounge_order_cash" model="ir.actions.act_window">
+            <field name="name">Cash Orders</field>
+            <field name="res_model">report.lounge.order.cash</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="context">{"search_default_current_month":1}</field>
-            <field name="search_view_id" ref="view_lounge_order_domestic_report_search" />
+            <field name="search_view_id" ref="view_lounge_order_cash_report_search" />
         </record>
 
-        <menuitem name="Domestic Orders"
-                  action="action_report_lounge_order_domestic"
-                  id="menu_report_lounge_order_domestic"
+        <menuitem name="Cash Orders"
+                  action="action_report_lounge_order_cash"
+                  id="menu_report_lounge_order_cash"
                   parent="menu_lounge_report"
-                  sequence="5"/>
+                  sequence="6"/>
     </data>
 </odoo>

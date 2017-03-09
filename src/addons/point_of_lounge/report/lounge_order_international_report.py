@@ -3,9 +3,9 @@ from openerp import tools
 from openerp.osv import fields, osv
 
 
-class LoungeOrderDomesticReport(osv.osv):
-    _name = "report.lounge.order.domestic"
-    _description = "Lounge Orders Domestic"
+class LoungeOrderInternationalReport(osv.osv):
+    _name = "report.lounge.order.international"
+    _description = "Lounge Orders International"
     _auto = False
     _order = 'booking_from_date asc'
 
@@ -31,9 +31,9 @@ class LoungeOrderDomesticReport(osv.osv):
     }
 
     def init(self, cr):
-        tools.drop_view_if_exists(cr, 'report_lounge_order_domestic')
+        tools.drop_view_if_exists(cr, 'report_lounge_order_international')
         cr.execute("""
-            CREATE OR REPLACE VIEW report_lounge_order_domestic AS (
+            CREATE OR REPLACE VIEW report_lounge_order_international AS (
                 SELECT
                     MIN(lo.id) AS id,
                     lo.partner_id AS partner_id,
@@ -59,9 +59,8 @@ class LoungeOrderDomesticReport(osv.osv):
                 LEFT JOIN
                     account_journal AS aj ON aj.id = absl.journal_id
                 WHERE
-                    lo.state IN ('paid','invoice') AND lo.flight_type = 'domestic'
+                    lo.state IN ('paid','invoice') AND lo.flight_type = 'international'
                 GROUP BY
                     lo.id,rp.id,aj.id
-
             )
         """)

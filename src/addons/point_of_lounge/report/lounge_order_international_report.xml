@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record model="ir.ui.view" id="view_lounge_order_domestic_report_tree">
-            <field name="name">Domestic Orders</field>
-            <field name="model">report.lounge.order.domestic</field>
+        <record model="ir.ui.view" id="view_lounge_order_international_report_tree">
+            <field name="name">international Orders</field>
+            <field name="model">report.lounge.order.international</field>
             <field name="arch" type="xml">
                 <tree create="0">
                     <field name="partner_id" />
@@ -23,11 +23,11 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_lounge_order_domestic_report_search">
-            <field name="name">report.lounge.order.domestic.search</field>
-            <field name="model">report.lounge.order.domestic</field>
+        <record model="ir.ui.view" id="view_lounge_order_international_report_search">
+            <field name="name">report.lounge.order.international.search</field>
+            <field name="model">report.lounge.order.international</field>
             <field name="arch" type="xml">
-                <search string="Domestic Orders">
+                <search string="International Orders">
                     <field name="partner_id"/>
                     <field name="lounge_reference"/>
                     <field name="flight_number"/>
@@ -43,18 +43,18 @@
             </field>
         </record>
 
-        <record id="action_report_lounge_order_domestic" model="ir.actions.act_window">
-            <field name="name">Domestic Orders</field>
-            <field name="res_model">report.lounge.order.domestic</field>
+        <record id="action_report_lounge_order_international" model="ir.actions.act_window">
+            <field name="name">International Orders</field>
+            <field name="res_model">report.lounge.order.international</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="context">{"search_default_current_month":1}</field>
-            <field name="search_view_id" ref="view_lounge_order_domestic_report_search" />
+            <field name="search_view_id" ref="view_lounge_order_international_report_search" />
         </record>
 
-        <menuitem name="Domestic Orders"
-                  action="action_report_lounge_order_domestic"
-                  id="menu_report_lounge_order_domestic"
+        <menuitem name="International Orders"
+                  action="action_report_lounge_order_international"
+                  id="menu_report_lounge_order_international"
                   parent="menu_lounge_report"
                   sequence="5"/>
     </data>
