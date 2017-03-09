@@ -1744,6 +1744,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var flight_number = !this.get_flight_number() ? '-' : this.get_flight_number();
 	        flight_number = flight_number.toUpperCase();
 
+
+
 	        return {
 	            name : this.get_name(),
 	            flight_type : flight_type,

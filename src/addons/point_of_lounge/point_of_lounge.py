@@ -964,6 +964,8 @@ class lounge_order(osv.osv):
         'service_01': fields.char(compute='_compute_amount_all',string='Service 1',size=100,store=True),
         'service_02': fields.char(compute='_compute_amount_all',string='Service 2', size=100,store=True),
         'service_03': fields.char(compute='_compute_amount_all',string='Service 3', size=100,store=True),
+        'journal_id': fields.many2one('account.journal','Payment Method'),
+        'total_pax': fields.integer(compute='_compute_amount_all',string='No.Pax',size=3,store=True),
     }
 
     """
@@ -1009,17 +1011,20 @@ class lounge_order(osv.osv):
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
 
-            #services
-            i = 1
+            i = 0
+            qty = 0
             for sline in order.lines:
-                if i == 1 :
-                    order.service_01 = sline.product_id.name
-                if i == 2 :
-                    order.service_02 = sline.product_id.name
-                if i == 3 :
-                    order.service_03 = sline.product_id.name
                 i = i + 1
+                qty = qty + sline.qty
 
+                if i == 1:
+                    order.service_01 = sline.product_id.name
+                if i == 2:
+                    order.service_02 = sline.product_id.name
+                if i == 3:
+                    order.service_03 = sline.product_id.name
+
+            order.total_pax = int(math.ceil(qty / i))
 
     @api.onchange('booking_from_date')
     def _onchange_booking_from_date(self):
@@ -1680,7 +1685,7 @@ class lounge_order_line(osv.osv):
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,
                                       change_default=True),
-        'qty': fields.float('Quantity', digits_compute=dp.get_precision('Product Unit of Measure')),
+        'qty': fields.float('Pax(s)', digits_compute=dp.get_precision('Product Unit of Measure')),
         'charge': fields.float('Charge', digits=0),
         'discount': fields.float('Discount (%)', digits=0),
         'price_unit': fields.float(string='Unit Price', digits=0),

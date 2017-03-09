@@ -92,7 +92,7 @@ Sidebar.include({
                     else if (cell.classList.contains("oe_list_field_integer")) {
                         var tmp2 = text;
                         do {
-                            tmp = tmp2;
+                            var tmp = tmp2;
                             tmp2 = tmp.replace(
                                 _t.database.parameters.thousands_sep,
                                 ""

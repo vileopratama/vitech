@@ -16,7 +16,31 @@
                     <field name="service_01" />
                     <field name="service_02" />
                     <field name="service_03" />
+                    <field name="payment_method" />
+                    <field name="grandtotal" />
+                    <field name="payment_name" />
+                    <field name="total_pax" />
                 </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_lounge_order_domestic_report_search">
+            <field name="name">report.lounge.order.domestic.search</field>
+            <field name="model">report.lounge.order.domestic</field>
+            <field name="arch" type="xml">
+                <search string="Domestic Orders">
+                    <field name="partner_id"/>
+                    <field name="lounge_reference"/>
+                    <field name="flight_number"/>
+                    <field name="service_01"/>
+                    <field name="service_02"/>
+                    <field name="service_03"/>
+
+                    <filter string="Individual" domain="[('company_type', '=', 'Individual')]" />
+                    <filter string="Company" domain="[('company_type', '=', 'Company')]" />
+                    <filter string="Current Month" name='current_month' domain="[('booking_from_date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('booking_from_date','&lt;',time.strftime('%%Y-%%m-31'))]"/>
+
+                </search>
             </field>
         </record>
 
@@ -25,6 +49,8 @@
             <field name="res_model">report.lounge.order.domestic</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
+            <field name="context">{"search_default_current_month":1}</field>
+            <field name="search_view_id" ref="view_lounge_order_domestic_report_search" />
         </record>
 
         <menuitem name="Domestic Orders"
