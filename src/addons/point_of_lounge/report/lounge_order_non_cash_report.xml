@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record model="ir.ui.view" id="view_lounge_order_cash_report_tree">
-            <field name="name">Cash Orders</field>
-            <field name="model">report.lounge.order.cash</field>
+        <record model="ir.ui.view" id="view_lounge_order_non_cash_report_tree">
+            <field name="name">Non-Cash Orders</field>
+            <field name="model">report.lounge.order.non.cash</field>
             <field name="arch" type="xml">
                 <tree create="0">
                     <field name="partner_id" />
@@ -22,11 +22,11 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_lounge_order_cash_report_search">
-            <field name="name">report.lounge.order.cash.search</field>
-            <field name="model">report.lounge.order.cash</field>
+        <record model="ir.ui.view" id="view_lounge_order_non_cash_report_search">
+            <field name="name">report.lounge.order.non.cash.search</field>
+            <field name="model">report.lounge.order.non.cash</field>
             <field name="arch" type="xml">
-                <search string="Cash Orders">
+                <search string="Non-Cash Orders">
                     <field name="partner_id"/>
                     <field name="lounge_reference"/>
                     <field name="flight_number"/>
@@ -42,19 +42,19 @@
             </field>
         </record>
 
-        <record id="action_report_lounge_order_cash" model="ir.actions.act_window">
+        <record id="action_report_lounge_order_non_cash" model="ir.actions.act_window">
             <field name="name">Cash Orders</field>
-            <field name="res_model">report.lounge.order.cash</field>
+            <field name="res_model">report.lounge.order.non.cash</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="context">{"search_default_current_month":1}</field>
-            <field name="search_view_id" ref="view_lounge_order_cash_report_search" />
+            <field name="search_view_id" ref="view_lounge_order_non_cash_report_search" />
         </record>
 
-        <menuitem name="Cash Orders"
-                  action="action_report_lounge_order_cash"
-                  id="menu_report_lounge_order_cash"
+        <menuitem name="Non-Cash Orders"
+                  action="action_report_lounge_order_non_cash"
+                  id="menu_report_lounge_order_non_cash"
                   parent="menu_lounge_report"
-                  sequence="8"/>
+                  sequence="9"/>
     </data>
 </odoo>
