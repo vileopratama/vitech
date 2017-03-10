@@ -644,7 +644,7 @@
             action="action_lounge_session"
             id="menu_lounge_session_all"
             sequence="2"
-			groups="group_lounge_manager"
+			groups="group_lounge_manager,group_lounge_user"
             />
         
         
@@ -656,11 +656,11 @@
 			groups="group_lounge_manager"
 			/>
 
-         <menuitem 
+         <!--<menuitem
 				action="action_report_lounge_details"
                 id="menu_lounge_details"
 				parent="menu_lounge_report" 
-				sequence="6" />
+				sequence="6" />-->
 
     </data>
 </openerp>

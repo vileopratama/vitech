@@ -26,16 +26,16 @@
         </field>
     </record>
 
-    <record id="action_report_lounge_order_all_filtered" model="ir.actions.act_window">
-        <field name="name">Orders Analysis</field>
+    <record id="action_report_lounge_order" model="ir.actions.act_window">
+        <field name="name">All Orders</field>
         <field name="res_model">report.lounge.order</field>
         <field name="view_type">form</field>
-        <field name="view_mode">pivot,graph</field>
-        <field name="search_view_id" ref="view_report_lounge_order_search"/>
+        <field name="view_mode">tree</field>
+        <!--<field name="search_view_id" ref="view_report_lounge_order_search"/>
         <field name="context">{
             'search_default_config_id': [active_id],
             'default_config_id': active_id}
-        </field>
+        </field>-->
     </record>
 
     <!-- Dashboard -->
@@ -114,7 +114,7 @@
                                         </div>
 
                                         <div>
-                                            <a name="%(action_report_lounge_order_all_filtered)d" type="action">Orders</a>
+                                            <a name="%(action_report_lounge_order)d" type="action">Orders</a>
                                         </div>
                                     </div>
                                 </div>

@@ -1,14 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_lounge_order,lounge.order,model_lounge_order,group_lounge_user,1,1,1,1
 access_lounge_order_line,lounge.order.line,model_lounge_order_line,group_lounge_user,1,1,1,1
-
 access_stock_picking_lounge_user,stock.picking lounge_user,stock.model_stock_picking,group_lounge_user,1,1,1,1
 access_stock_warehouse_lounge_user,stock.warehouse lounge_user,stock.model_stock_warehouse,group_lounge_user,1,0,0,0
 access_lounge_order_stock_worker,lounge.order stock_worker,model_lounge_order,stock.group_stock_user,1,0,0,0
 access_stock_move_lounge_user,stock.move lounge_user,stock.model_stock_move,group_lounge_user,1,1,1,1
-
-
-access_report_lounge_order,report.lounge.order,model_report_lounge_order,group_lounge_user,1,1,1,1
 access_account_journal_lounge_user,account.journal lounge_user,account.model_account_journal,group_lounge_user,1,0,0,0
 access_account_payment_method_lounge_user,account.payment.method lounge_user,account.model_account_payment_method,group_lounge_manager,1,0,0,0
 access_account_bank_statement,account.bank.statement,account.model_account_bank_statement,group_lounge_user,1,1,1,0
@@ -37,3 +33,13 @@ access_barcode_rule_lounge_user,barcode.rule.lounge.user,barcodes.model_barcode_
 access_barcode_rule_lounge_manager,barcode.rule.lounge.manager,barcodes.model_barcode_rule,group_lounge_manager,1,1,1,1
 access_bank_statement_cashbox_user,account.bank.statement.cashbox user,account.model_account_bank_statement_cashbox,group_lounge_user,1,1,1,0
 access_account_cashbox_line_user,account.cashbox.line user,account.model_account_cashbox_line,group_lounge_user,1,1,1,0
+access_report_lounge_order_user,report.lounge.order,model_report_lounge_order,group_lounge_user,0,0,0,0
+access_report_lounge_order_manager,report.lounge.order,model_report_lounge_order,group_lounge_manager,1,0,0,0
+access_report_lounge_order_cash_user,report.lounge.order.cash,model_report_lounge_order_cash,group_lounge_user,0,0,0,0
+access_report_lounge_order_cash_manager,report.lounge.order.cash,model_report_lounge_order_cash,group_lounge_manager,1,0,0,0
+access_report_lounge_order_domestic_user,report.lounge.order.domestic,model_report_lounge_order_domestic,group_lounge_user,0,0,0,0
+access_report_lounge_order_domestic_manager,report.lounge.order.domestic,model_report_lounge_order_domestic,group_lounge_manager,1,0,0,0
+access_report_lounge_order_international_user,report.lounge.order.international,model_report_lounge_order_international,group_lounge_user,0,0,0,0
+access_report_lounge_order_international_manager,report.lounge.order.international,model_report_lounge_order_international,group_lounge_manager,1,0,0,0
+access_report_lounge_order_non_cash_user,report.lounge.order.non.cash,model_report_lounge_order_non_cash,group_lounge_user,0,0,0,0
+access_report_lounge_order_non_cash_manager,report.lounge.order.non.cash,model_report_lounge_order_non_cash,group_lounge_manager,1,0,0,0
