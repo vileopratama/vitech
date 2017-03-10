@@ -2078,8 +2078,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        var orders = this.lounge.db.get_orders_sorted(1000);
-	        //alert(orders);
 	        this.render_list(orders);
+
+	        //click order
+            this.$('.order-list-contents').delegate('.order-line','click',function(event){
+	            self.line_select(event,$(this),parseInt($(this).data('id')));
+	        });
 	    },
 	    render_list: function(orders){
 	        var contents = this.$el[0].querySelector('.order-list-contents');
@@ -2098,6 +2102,65 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            contents.appendChild(orderline);
 	        }
+	    },
+	    line_select: function(event,$line,id) {
+	        var order = this.lounge.db.get_order_by_id(id);
+	        this.$('.order-list .lowlight').removeClass('lowlight');
+	        if ( $line.hasClass('highlight') ){
+	            $line.removeClass('highlight');
+	            $line.addClass('lowlight');
+	            this.display_order_details('hide',order);
+	            //this.new_client = null;
+	            //this.toggle_save_button();
+	        } else {
+	            this.$('.order-list .highlight').removeClass('highlight');
+	            $line.addClass('highlight');
+	            var y = event.pageY - $line.parent().offset().top;
+	            this.display_order_details('show',partner,y);
+	            //this.new_client = partner;
+	            //this.toggle_save_button();
+	        }
+	    },
+	    display_order_details: function(visibility,order,clickpos) {
+	        var self = this;
+	        var contents = this.$('.order-details-contents');
+	        var parent   = this.$('.order-list').parent();
+	        var scroll   = parent.scrollTop();
+	        var height   = contents.height();
+
+	        if(visibility === 'show') {
+	            contents.empty();
+	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,partner:partner})));
+	            var new_height   = contents.height();
+
+	            if(!this.details_visible){
+	                if(clickpos < scroll + new_height + 20 ){
+	                    parent.scrollTop( clickpos - 20 );
+	                } else {
+	                    parent.scrollTop(parent.scrollTop() + new_height);
+	                }
+	            } else {
+	                parent.scrollTop(parent.scrollTop() - height + new_height);
+	            }
+
+	            this.details_visible = true;
+
+	        } else if (visibility === 'hide') {
+	            contents.empty();
+	            if( height > scroll ){
+	                contents.css({height:height+'px'});
+	                contents.animate({height:0},400,function(){
+	                    contents.css({height:''});
+	                });
+	            }else{
+	                parent.scrollTop( parent.scrollTop() - height);
+	            }
+
+	            this.details_visible = false;
+	        }
+	    },
+	    close: function(){
+	        this._super();
 	    },
 	});
 	gui.define_screen({name:'orderlist', widget: OrderListScreenWidget});

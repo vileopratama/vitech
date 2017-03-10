@@ -696,6 +696,15 @@
         </tr>
     </t>
 
+    <t t-name="LoungeOrderDetails">
+        <section class='order-details'>
+            <div class='order-name'><t t-esc='order.name'/></div>
+            <div class='edit-buttons'>
+                <div class='button edit'><i class='fa fa-pencil-square' /> Set Checkout</div>
+            </div>
+        </section>
+    </t>
+
     <t t-name="LoungePaymentScreen-Numpad">
         <div class="numpad">
             <button class="input-button number-char" data-action='1'>1</button>

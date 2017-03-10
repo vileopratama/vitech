@@ -369,6 +369,9 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        str = '' + order.id + ':' + str.replace(':','') + '\n';
 	        return str;
 	    },
+	    get_order_by_id: function(id){
+	        return this.order_by_id[id];
+	    },
         add_orders: function(orders){
 	        var updated_count = 0;
 	        var new_write_date = '';
