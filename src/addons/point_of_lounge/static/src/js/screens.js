@@ -2077,9 +2077,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.gui.back();
 	        });
 
-	        var orders = this.lounge.db.get_orders_sorted(1000);
-	        alert(orders);
-	        this.render_list(orders);
+	        //var orders = this.lounge.db.get_orders_sorted(1000);
+	        //alert(orders);
+	        //this.render_list(orders);
 	    },
 	    render_list: function(orders){
 	        var contents = this.$el[0].querySelector('.order-list-contents');

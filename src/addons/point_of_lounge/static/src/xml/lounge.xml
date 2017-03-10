@@ -1069,7 +1069,7 @@
         </div>
     </t>
 
-    <t t-name="LoungeErrorTracebackPopupWidget">
+    <t t-name="ErrorTracebackPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-error">
                 <p class="title"><t t-esc=" widget.options.title || 'Error' " /></p>

@@ -94,7 +94,7 @@ odoo.define('point_of_lounge.popups', function (require) {
 
 
 	var ErrorTracebackPopupWidget = ErrorPopupWidget.extend({
-	    template:'LoungeErrorTracebackPopupWidget',
+	    template:'ErrorTracebackPopupWidget',
 	    show: function(opts) {
 	        var self = this;
 	        this._super(opts);
