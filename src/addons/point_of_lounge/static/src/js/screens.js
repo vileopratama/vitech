@@ -2130,7 +2130,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        if(visibility === 'show') {
 	            contents.empty();
-	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,partner:partner})));
+	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order})));
 	            var new_height   = contents.height();
 
 	            if(!this.details_visible){
@@ -2149,7 +2149,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            contents.empty();
 	            if( height > scroll ){
 	                contents.css({height:height+'px'});
-	                contents.animate({height:0},400,function(){
+	                contents.animate({height:0},400,function() {
 	                    contents.css({height:''});
 	                });
 	            }else{
