@@ -2116,7 +2116,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            this.$('.order-list .highlight').removeClass('highlight');
 	            $line.addClass('highlight');
 	            var y = event.pageY - $line.parent().offset().top;
-	            this.display_order_details('show',partner,y);
+	            this.display_order_details('show',order,y);
 	            //this.new_client = partner;
 	            //this.toggle_save_button();
 	        }
