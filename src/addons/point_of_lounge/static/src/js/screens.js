@@ -441,6 +441,28 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// The action pad contains the payment button and the
 	// customer selection button
 
+	var ActioncheckoutWidget = PosBaseWidget.extend({
+	    template: 'LoungeActioncheckoutWidget',
+	    init: function(parent, options) {
+            var self = this;
+            this._super(parent, options);
+            this.lounge.bind('change:selectedClient', function() {
+                self.renderElement();
+            });
+	    },
+	    renderElement: function() {
+	        var self = this;
+            this._super();
+
+            this.$('.set-order').click(function(){
+                self.gui.show_screen('orderlist');
+            });
+	    }
+	});
+
+	// The action pad contains the payment button and the
+	// customer selection button
+
 	var ActionpadWidget = PosBaseWidget.extend({
 	    template: 'LoungeActionpadWidget',
         init: function(parent, options) {
@@ -973,6 +995,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        this.actiontime = new ActiontimeWidget(this,{});
 	        this.actiontime.replace(this.$('.placeholder-ActiontimeWidget'));
+
+	        this.actioncheckout = new ActioncheckoutWidget(this,{});
+	        this.actioncheckout.replace(this.$('.placeholder-ActioncheckoutWidget'));
 
 	        this.actionpad = new ActionpadWidget(this,{});
 	        this.actionpad.replace(this.$('.placeholder-ActionpadWidget'));
@@ -2029,6 +2054,55 @@ odoo.define('point_of_lounge.screens', function (require) {
 	});
 	gui.define_screen({name:'payment', widget: PaymentScreenWidget});
 
+	/*--------------------------------------*\
+	 |         THE LAST ORDER LIST              |
+	\*======================================*/
+
+	// The orderlist displays the list of customer,
+	// and allows the cashier to create, edit and assign
+	// orders.
+
+	var OrderListScreenWidget = ScreenWidget.extend({
+	    template: 'LoungeOrderListScreenWidget',
+	    init: function(parent, options){
+	        this._super(parent, options);
+	        this.order_cache = new DomCache();
+	    },
+	    auto_back: true,
+	    show: function(){
+	        var self = this;
+	        this._super();
+
+	        this.$('.back').click(function(){
+	            self.gui.back();
+	        });
+
+	        var orders = this.lounge.db.get_orders_sorted(1000);
+	        alert(orders);
+	        this.render_list(orders);
+	    },
+	    render_list: function(orders){
+	        var contents = this.$el[0].querySelector('.order-list-contents');
+	        contents.innerHTML = "";
+	        for(var i = 0, len = Math.min(orders.length,1000); i < len; i++){
+	            var order = orders[i];
+	            var orderline = this.order_cache.get_node(order.id);
+
+	            if(!orderline){
+	                var orderline_html = QWeb.render('LoungeOrderLine',{widget: this, order:orders[i]});
+	                var orderline = document.createElement('tbody');
+	                orderline.innerHTML = orderline_html;
+	                orderline = orderline.childNodes[1];
+	                this.order_cache.cache_node(order.id,orderline);
+	            }
+
+	            contents.appendChild(orderline);
+	        }
+	    },
+	});
+	gui.define_screen({name:'orderlist', widget: OrderListScreenWidget});
+
+
 	var set_fiscal_position_button = ActionButtonWidget.extend({
 	    template: 'LoungeSetFiscalPositionButton',
 	    button_click: function () {
@@ -2070,8 +2144,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    ProductScreenWidget: ProductScreenWidget,
 	    ProductListWidget: ProductListWidget,
 	    ClientListScreenWidget: ClientListScreenWidget,
+	    ActionflightWidget: ActionflightWidget,
 	    ActiontimeWidget: ActiontimeWidget,
+	    ActioncheckoutWidget: ActioncheckoutWidget,
 	    ActionpadWidget: ActionpadWidget,
+	    OrderListScreenWidget: OrderListScreenWidget,
 	    DomCache: DomCache,
 	    ProductCategoriesWidget: ProductCategoriesWidget,
 	    ScaleScreenWidget: ScaleScreenWidget,

@@ -26,7 +26,12 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        this.partner_by_id = {};
 	        this.partner_by_barcode = {};
 	        this.partner_search_string = "";
-	        this.partner_write_date = null;
+
+            this.order_sorted = [];
+	        this.order_by_id = {};
+	        this.order_by_barcode = {};
+	        this.order_search_string = "";
+	        this.order_write_date = null;
 
 	        this.category_by_id = {};
 	        this.root_category_id  = 0;
@@ -35,6 +40,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        this.category_childs = {};
 	        this.category_parent    = {};
 	        this.category_search_string = {};
+
 	        this.packagings_by_id = {};
 	        this.packagings_by_product_tmpl_id = {};
 	        this.packagings_by_barcode = {};
@@ -332,6 +338,85 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        }
 	        return results;
 	    },
+        get_orders_sorted: function(max_count){
+            max_count = max_count ? Math.min(this.order_sorted.length, max_count) : this.order_sorted.length;
+            var orders = [];
+            for (var i = 0; i < max_count; i++) {
+                orders.push(this.order_by_id[this.order_sorted[i]]);
+            }
+            return orders;
+        },
+        _order_search_string: function(order){
+	        var str =  order.name;
+	        /*if(partner.lounge_barcode){
+	            str += '|' + partner.lounge_barcode;
+	        }*/
+	        /*
+	        if(partner.address){
+	            str += '|' + partner.address;
+	        }*/
+	        /*
+	        if(partner.phone){
+	            str += '|' + partner.phone.split(' ').join('');
+	        }
+	        if(partner.mobile){
+	            str += '|' + partner.mobile.split(' ').join('');
+	        }
+	        if(partner.email){
+	            str += '|' + partner.email;
+	        }*/
+
+	        str = '' + order.id + ':' + str.replace(':','') + '\n';
+	        return str;
+	    },
+        add_orders: function(orders){
+	        var updated_count = 0;
+	        var new_write_date = '';
+	        var order;
+	        for(var i = 0, len = orders.length; i < len; i++){
+	            order = orders[i];
+	            if (this.order_write_date &&
+	                    this.order_by_id[order.id] &&
+	                    new Date(this.order_write_date).getTime() + 1000 >=
+	                    new Date(order.write_date).getTime() ) {
+	                continue;
+	            } else if (new_write_date < order.write_date ) {
+	                new_write_date  = order.write_date;
+	            }
+	            if (!this.order_by_id[order.id]) {
+	                this.order_sorted.push(order.id);
+	            }
+	            this.order_by_id[order.id] = order;
+
+	            updated_count += 1;
+	        }
+
+	        this.order_write_date = new_write_date || this.order_write_date;
+
+	        if (updated_count) {
+	            // If there were updates, we need to completely
+	            // rebuild the search string and the barcode indexing
+
+	            this.order_search_string = "";
+	            this.order_by_barcode = {};
+
+	            for (var id in this.order_by_id) {
+	                order = this.order_by_id[id];
+
+	                /*if(partner.lounge_barcode){
+	                    this.partner_by_barcode[partner.lounge_barcode] = partner;
+	                }
+	                partner.address = (partner.street || '') +', '+
+	                                  (partner.zip || '')    +' '+
+	                                  (partner.city || '')   +', '+
+	                                  (partner.country_id[1] || '');*/
+
+	                this.order_search_string += this._order_search_string(order);
+	            }
+	        }
+	        return updated_count;
+	    },
+
 	    /* removes all the data from the database. TODO : being able to selectively remove data */
 	    clear: function(){
 	        for(var i = 0, len = arguments.length; i < len; i++){

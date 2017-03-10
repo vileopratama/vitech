@@ -106,20 +106,22 @@
     </t>
 
     <t t-name="LoungeActionflightWidget">
-        <div class="x-input-group">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select class="form-control" id="flight_type" name="flight_type">
-                            <option t-att-value="'domestic'" value="domestic">Domestic</option>
-                            <option t-att-value="'international'" value="International">International</option>
-                        </select>
+        <div class="actionflight">
+            <div class="x-input-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <select class="form-control" id="flight_type" name="flight_type">
+                                <option t-att-value="'domestic'" value="domestic">Domestic</option>
+                                <option t-att-value="'international'" value="International">International</option>
+                            </select>
 
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type='text' class="form-control" placeholder="Flight No." t-att-value="widget.lounge.get_flight_number()"  name="flight_number" id="flight_number"></input>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type='text' class="form-control" placeholder="Flight No." t-att-value="widget.lounge.get_flight_number()"  name="flight_number" id="flight_number"></input>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,7 +129,7 @@
     </t>
 
     <t t-name="LoungeActiontimeWidget">
-        <div class="action-time">
+        <div class="actiontime">
             <div class="x-input-group">
                 <div class="row">
                     <div class="col-md-6">
@@ -153,6 +155,14 @@
                 </div>
             </div>
 	    </div>
+    </t>
+
+    <t t-name="LoungeActioncheckoutWidget">
+        <div class="actioncheckout">
+             <button t-attf-class='button set-order' >
+                 Checkout
+            </button>
+        </div>
     </t>
 
     <t t-name="LoungeActionpadWidget">
@@ -280,6 +290,7 @@
                                 <div class="control-buttons oe_hidden"></div>
                                 <div class="placeholder-ActionflightWidget"></div>
 	                            <div class="placeholder-ActiontimeWidget"></div>
+                                <div class="placeholder-ActioncheckoutWidget"></div>
                                 <div class="placeholder-ActionpadWidget"></div>
                                 <div class="placeholder-NumpadWidget"></div>
                             </div>
@@ -625,6 +636,64 @@
             </table>
         </t>
 
+    </t>
+
+    <t t-name="LoungeOrderListScreenWidget">
+        <div class="orderlist-screen screen">
+            <div class="screen-content">
+                <section class="top-content">
+                    <span class='button back'>
+                        <i class='fa fa-angle-double-left'></i>
+                        Cancel
+                    </span>
+                    <span class='searchbox'>
+                        <input placeholder='Search Order No or Customer' />
+                        <span class='search-clear'></span>
+                    </span>
+                    <span class='button next highlight'>
+                        Select Order
+                        <i class='fa fa-angle-double-right'></i>
+                    </span>
+                </section>
+                <section class="full-content">
+                    <div class='window'>
+                        <section class='subwindow collapsed'>
+                            <div class='subwindow-container collapsed'>
+                                <div class='subwindow-container-fix order-details-contents'>
+                                </div>
+                            </div>
+                        </section>
+                        <section class='subwindow'>
+                            <div class='subwindow-container'>
+                                <div class='subwindow-container-fix touch-scrollable scrollable-y'>
+                                    <table class='order-list'>
+                                        <thead>
+                                            <tr>
+                                                <th>Order No</th>
+                                                <th>Customer</th>
+                                                <th>Booking From</th>
+                                                <th>Flight Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class='order-list-contents'>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="LoungeOrderLine">
+        <tr class='order-line' t-att-data-id='order.id'>
+            <td><t t-esc='order.name' /></td>
+            <td><t t-esc='order.partner_id' /></td>
+            <td><t t-esc='order.booking_from_date' /></td>
+            <td><t t-esc='order.flight_type' /></td>
+        </tr>
     </t>
 
     <t t-name="LoungePaymentScreen-Numpad">

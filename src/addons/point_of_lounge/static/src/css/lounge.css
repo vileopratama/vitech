@@ -664,14 +664,67 @@ td {
     -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
- ********* The actionpad (payment, set customer) ********* */
+
+/********* The actioncheckout (checkout) ********* */
+.pos .actioncheckout {
+    padding: 0;
+    margin-top: 2px;
+    margin-right: 16px;
+    margin-left:16px;
+    text-align: center;
+    vertical-align: top;
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-color:#FFFFFF;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pos .actioncheckout .button {
+    position: relative;
+    display: block;
+    height: 54px;
+    width: 100%;
+    font-weight: bold;
+    vertical-align: middle;
+    color:#FFFFFF;
+    font-size: 14px;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color:#FFFFFF;
+    transition: all 150ms linear;
+}
+
+.pos .actioncheckout .button:hover {
+    background:#12739b;
+}
+
+.pos .actioncheckout .button:active {
+    background: black;
+    border-color: black;
+    color: white;
+}
+.pos .actioncheckout .button:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.pos .actioncheckout .button:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/********* The actionpad (payment, set customer) ********* */
 
 .pos .actionpad {
     display: inline-block;
     float: left;
     padding: 0;
     margin: 16px;
-    margin-top: 8px;
+    margin-top: 2px;
     margin-right: 0;
     text-align: center;
     vertical-align: top;
@@ -767,7 +820,7 @@ td {
     float: right;
     text-align: center;
     margin: 16px;
-    margin-top: 8px;
+    margin-top: 2px;
     margin-left: 0px;
     border: none;
     border-radius: 0;
@@ -1806,6 +1859,117 @@ td {
     margin-left: 120px;
 }
 
+/* e) The Last Order List Screen */
+.pos .orderlist-screen .order-list{
+    font-size: 16px;
+    width: 100%;
+    line-height: 40px;
+}
+.pos .orderlist-screen .order-list th,
+.pos .orderlist-screen .order-list td {
+    padding: 0px 8px;
+}
+.pos .orderlist-screen .client-list tr{
+    transition: all 150ms linear;
+    background: rgb(230,230,230);
+}
+.pos .orderlist-screen .order-list thead > tr,
+.pos .orderlist-screen .order-list tr:nth-child(even) {
+    background: rgb(247,247,247);
+}
+.pos .orderlist-screen .order-list tr.highlight{
+    transition: all 150ms linear;
+    background: rgb(110,200,155) !important;
+    color: white;
+}
+.pos .orderlist-screen .order-list tr.lowlight{
+    transition: all 150ms linear;
+    background: rgb(216, 238, 227);
+}
+.pos .orderlist-screen .order-list tr.lowlight:nth-child(even){
+    transition: all 150ms linear;
+    background: rgb(227, 246, 237);
+}
+.pos .orderlist-screen .order-details{
+    padding: 16px;
+    border-bottom: solid 5px rgb(110,200,155);
+}
+.pos .orderlist-screen .order-name {
+    font-size: 32px;
+    line-height: 64px;
+    margin-bottom:16px;
+}
+.pos .orderlist-screen .edit-buttons {
+    position: absolute;
+    right: 16px;
+    top: 10px;
+}
+.pos .orderlist-screen .edit-buttons .button{
+    display: inline-block;
+    margin-left: 16px;
+    color: rgb(128,128,128);
+    cursor: pointer;
+    font-size: 36px;
+}
+.pos .orderlist-screen .order-details-box{
+    position: relative;
+    font-size: 16px;
+}
+.pos .orderlist-screen .order-details-left{
+    width: 50%;
+    float: left;
+}
+.pos .orderlist-screen .order-details-right{
+    width: 50%;
+    float: right;
+}
+.pos .orderlist-screen .order-detail{
+    line-height: 24px;
+}
+.pos .orderlist-screen .order-detail > .label{
+    font-weight: bold;
+    display: inline-block;
+    width: 75px;
+    text-align: right;
+    margin-right: 8px;
+    color:#333;
+}
+.pos .orderlist-screen .order-details input,
+.pos .orderlist-screen .order-details select {
+    padding: 4px;
+    border-radius: 3px;
+    border: solid 1px #cecbcb;
+    margin-bottom: 4px;
+    background: white;
+    font-family: "Lato","Lucida Grande", Helvetica, Verdana, Arial;
+    color: #555555;
+    width: 340px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.pos .orderlist-screen .order-details input.order-name {
+    font-size: 24px;
+    line-height: 24px;
+    margin: 18px 6px;
+    width: 340px;
+}
+.pos .orderlist-screen .order-detail > .empty{
+    opacity: 0.3;
+}
+.pos .orderlist-screen .searchbox{
+    right: auto;
+    margin-left: -90px;
+    margin-top:8px;
+    left: 50%;
+
+}
+.pos .orderlist-screen .searchbox input{
+    width: 200px;
+}
+.pos .orderlist-screen .button.new-order {
+    left: 50%;
+    margin-left: 120px;
+}
 
 /*  ********* The OrderWidget  ********* */
 
@@ -2500,7 +2664,11 @@ td {
 }
 
 .x-input-group {
-    margin: 16px 16px 16px 16px;
+    margin: 10px 16px 10px 16px;
+}
+
+.x-input-group > .form-group {
+    margin-bottom:10px;
 }
 
 .breadcrumb {

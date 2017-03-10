@@ -54,6 +54,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.user = null;
 	        this.users = [];
 	        this.partners = [];
+	        this.orders = []; //last order
 	        this.cashier = null;
 	        this.cashregisters = [];
 	        this.taxes = [];
@@ -180,6 +181,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }
 	            self.units_by_id = units_by_id;
 	        }
+	    },{
+	        model:  'lounge.order',
+	        fields: ['name','booking_from_date','flight_type','partner_id','write_date'],
+	        domain: [['is_checkout','=',false]],
+	        loaded: function(self,orders){
+	            self.orders = orders;
+	            self.db.add_orders(orders);
+	        },
 	    },{
 	        model:  'res.partner',
 	        fields: ['name','street','city','state_id','country_id','vat','phone','zip','mobile','pic','company_type','email','lounge_barcode','write_date'],
