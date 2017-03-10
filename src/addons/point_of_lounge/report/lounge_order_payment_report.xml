@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_lounge_order_payment_report_pivot" model="ir.ui.view">
+            <field name="name">Orders Payment Analysis</field>
+            <field name="model">report.lounge.order.payment</field>
+            <field name="arch" type="xml">
+                <pivot string="Order Payment Analysis">
+                    <field name="name" type="row"/>
+                    <field name="date_order" type="col"/>
+                    <field name="count_payment" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="view_lounge_order_payment_report_graph" model="ir.ui.view">
+            <field name="name">Orders Payment Graph Analysis</field>
+            <field name="model">report.lounge.order.payment</field>
+            <field name="arch" type="xml">
+                <graph string="Order Payment Analysis">
+                    <field name="name" type="row"/>
+                    <field name="count_payment" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_lounge_order_payment_report_search">
+            <field name="name">report.lounge.order.search</field>
+            <field name="model">report.lounge.order.payment</field>
+            <field name="arch" type="xml">
+                <search string="Payment Analysist">
+                    <filter string="Current Month" name='current_month' domain="[('date_order','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date_order','&lt;',time.strftime('%%Y-%%m-31'))]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_report_lounge_order_payment" model="ir.actions.act_window">
+            <field name="name">Orders Payment Analysis</field>
+            <field name="res_model">report.lounge.order.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">pivot,graph</field>
+            <field name="search_view_id" ref="view_lounge_order_payment_report_search"/>
+            <field name="context">{"search_default_current_month":1}</field>
+        </record>
+
+        <menuitem name="Payment Analysist"
+                  action="action_report_lounge_order_payment"
+                  id="mmenu_report_lounge_order_payment"
+                  parent="menu_lounge_report"
+                  sequence="55"/>
+    </data>
+</odoo>

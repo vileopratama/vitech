@@ -6,4 +6,5 @@ import lounge_order_domestic_report
 import lounge_order_international_report
 import lounge_order_cash_report
 import lounge_order_non_cash_report
+import lounge_order_payment_report
 

@@ -43,3 +43,5 @@ access_report_lounge_order_international_user,report.lounge.order.international,
 access_report_lounge_order_international_manager,report.lounge.order.international,model_report_lounge_order_international,group_lounge_manager,1,0,0,0
 access_report_lounge_order_non_cash_user,report.lounge.order.non.cash,model_report_lounge_order_non_cash,group_lounge_user,0,0,0,0
 access_report_lounge_order_non_cash_manager,report.lounge.order.non.cash,model_report_lounge_order_non_cash,group_lounge_manager,1,0,0,0
+access_report_lounge_order_payment_user,report.lounge.order.payment,model_report_lounge_order_payment,group_lounge_user,0,0,0,0
+access_report_lounge_order_payment_manager,report.lounge.order.payment,model_report_lounge_order_payment,group_lounge_manager,1,0,0,0

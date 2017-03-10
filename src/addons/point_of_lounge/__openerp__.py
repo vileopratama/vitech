@@ -25,6 +25,7 @@
         'report/lounge_order_international_report.xml',
         'report/lounge_order_cash_report.xml',
         'report/lounge_order_non_cash_report.xml',
+        'report/lounge_order_payment_report.xml',
         'point_of_lounge_sequence.xml',
         'point_of_lounge_workflow.xml',
         'account_statement_view.xml',
