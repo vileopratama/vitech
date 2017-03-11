@@ -33,6 +33,12 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        this.order_search_string = "";
 	        this.order_write_date = null;
 
+	        this.order_line_sorted = [];
+	        this.order_line_by_id = {};
+	        this.order_line_by_barcode = {};
+	        this.order_line_search_string = "";
+	        this.order_line_write_date = null;
+
 	        this.category_by_id = {};
 	        this.root_category_id  = 0;
 	        this.category_products = {};
@@ -369,6 +375,14 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        str = '' + order.id + ':' + str.replace(':','') + '\n';
 	        return str;
 	    },
+	    get_order_lines_sorted: function(max_count){
+            max_count = max_count ? Math.min(this.order_line_sorted.length, max_count) : this.order_line_sorted.length;
+            var order_lines = [];
+            for (var i = 0; i < max_count; i++) {
+                order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
+            }
+            return order_lines;
+        },
 	    get_order_by_id: function(id){
 	        return this.order_by_id[id];
 	    },
@@ -415,6 +429,61 @@ odoo.define('point_of_lounge.DB', function (require) {
 	                                  (partner.country_id[1] || '');*/
 
 	                this.order_search_string += this._order_search_string(order);
+	            }
+	        }
+	        return updated_count;
+	    },
+        _order_line_search_string: function(order_line){
+	        var str =  order_line.name;
+	        str = '' + order_line.id + ':' + str.replace(':','') + '\n';
+	        return str;
+	    },
+	    get_order_line_by_id: function(id){
+	        return this.order_line_by_id[id];
+	    },
+	    add_order_lines: function(order_lines){
+	        var updated_count = 0;
+	        var new_write_date = '';
+	        var order_line;
+	        for(var i = 0, len = order_lines.length; i < len; i++){
+	            order_line = order_lines[i];
+	            if (this.order_line_write_date &&
+	                    this.order_line_by_id[order_line.id] &&
+	                    new Date(this.order_line_write_date).getTime() + 1000 >=
+	                    new Date(order_line.write_date).getTime() ) {
+	                continue;
+	            } else if (new_write_date < order_line.write_date ) {
+	                new_write_date  = order_line.write_date;
+	            }
+	            if (!this.order_line_by_id[order_line.id]) {
+	                this.order_line_sorted.push(order_line.id);
+	            }
+	            this.order_line_by_id[order_line.id] = order_line;
+
+	            updated_count += 1;
+	        }
+
+	        this.order_line_write_date = new_write_date || this.order_line_write_date;
+
+	        if (updated_count) {
+	            // If there were updates, we need to completely
+	            // rebuild the search string and the barcode indexing
+
+	            this.order_line_search_string = "";
+	            this.order_line_by_barcode = {};
+
+	            for (var id in this.order_line_by_id) {
+	                order_line = this.order_line_by_id[id];
+
+	                /*if(partner.lounge_barcode){
+	                    this.partner_by_barcode[partner.lounge_barcode] = partner;
+	                }
+	                partner.address = (partner.street || '') +', '+
+	                                  (partner.zip || '')    +' '+
+	                                  (partner.city || '')   +', '+
+	                                  (partner.country_id[1] || '');*/
+
+	                this.order_line_search_string += this._order_line_search_string(order_line);
 	            }
 	        }
 	        return updated_count;

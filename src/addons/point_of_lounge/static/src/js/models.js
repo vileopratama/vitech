@@ -183,11 +183,19 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },{
 	        model:  'lounge.order',
-	        fields: ['name','booking_from_date','flight_type','partner_id','write_date'],
+	        fields: ['name','lounge_reference','booking_from_date','booking_to_date','flight_type','flight_number','partner_id','company_type','total_pax','amount_total','amount_paid','write_date'],
 	        domain: [['is_checkout','=',false]],
 	        loaded: function(self,orders){
 	            self.orders = orders;
 	            self.db.add_orders(orders);
+	        },
+	    },{
+	        model:  'lounge.order.line',
+	        fields: ['name','lounge_reference','order_id','product_id','qty','charge','discount','price_unit','price_subtotal_incl','write_date'],
+	        domain: [['order_id.is_checkout','=',false]],
+	        loaded: function(self,lines){
+	            self.lines = lines;
+	            self.db.add_order_lines(lines);
 	        },
 	    },{
 	        model:  'res.partner',

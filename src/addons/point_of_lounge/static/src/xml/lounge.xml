@@ -689,20 +689,117 @@
 
     <t t-name="LoungeOrderLine">
         <tr class='order-line' t-att-data-id='order.id'>
-            <td><t t-esc='order.name' /></td>
+            <td><t t-esc='order.lounge_reference' /></td>
             <td><t t-esc='order.partner_id' /></td>
             <td><t t-esc='order.booking_from_date' /></td>
-            <td><t t-esc='order.flight_type' /></td>
+            <td>
+                <t t-if="order.flight_type=='domestic'">
+                     Domestic
+                </t>
+                <t t-if="order.flight_type=='international'">
+                     International
+                </t>
+            </td>
         </tr>
     </t>
 
     <t t-name="LoungeOrderDetails">
         <section class='order-details'>
-            <div class='order-name'><t t-esc='order.name'/></div>
+            <div class='order-name'><t t-esc='order.lounge_reference'/></div>
             <div class='edit-buttons'>
                 <div class='button edit'><i class='fa fa-pencil-square' /> Set Checkout</div>
             </div>
+            <div class='order-details-box clearfix'>
+                 <div class='order-details-left'>
+                     <div class='order-detail'>
+                         <span class='label'>Customer</span>
+                         <span class='detail order-customer'>
+                             <t t-esc='order.partner_id' />
+                         </span>
+                     </div>
+                      <div class='order-detail'>
+                         <span class='label'>Type</span>
+                         <span class='detail order-customer'>
+                              <t t-if="order.company_type=='company'">
+                                     Company
+                              </t>
+                             <t t-if="order.flight_type=='individual'">
+                                     Individual
+                             </t>
+                         </span>
+                     </div>
+                     <div class='order-detail'>
+                        <span class='label'>Checkin</span>
+                        <span class='detail order-checkin'><t t-esc='order.booking_from_date' /></span>
+                    </div>
+                      <div class='order-detail'>
+                        <span class='label'>No.Pax</span>
+                        <span class='detail order-pax'><t t-esc='order.total_pax' /></span>
+                    </div>
+                     <div class='order-detail'>
+                        <span class='label'>Checkout</span>
+                        <span class='detail order-checkout'><t t-esc='date["current_date"]' /> (<t t-esc='date["total_hours"]' />) Hour('s)</span>
+                    </div>
+                 </div>
+
+                <div class='order-details-right'>
+                    <div class='order-detail'>
+                        <span class='label'>Flight Type</span>
+                        <span class='detail order-amount-total'>
+                             <t t-if="order.flight_type=='domestic'">
+                                 Domestic
+                            </t>
+                            <t t-if="order.flight_type=='international'">
+                                 International
+                            </t>
+                        </span>
+                    </div>
+                     <div class='order-detail'>
+                        <span class='label'>Flight No</span>
+                        <span class='detail order-flight-number'>
+                             <t t-esc='order.flight_number' />
+                         </span>
+                    </div>
+                    <div class='order-detail'>
+                        <span class='label'>Total</span>
+                        <span class='detail order-amount-total'>
+                             <t t-esc='widget.format_currency(order.amount_total)' />
+                         </span>
+                    </div>
+                    <div class='order-detail'>
+                        <span class='label'>Last Pament</span>
+                        <span class='detail order-amount-paid'>
+                             <t t-esc='widget.format_currency(order.amount_paid)' />
+                         </span>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="subwindow-container-fix touch-scrollable scrollable-y">
+                <table class='orderline-list'>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>No.Pax</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class='orderline-list-contents'>
+                    </tbody>
+                </table>
+            </div>
         </section>
+    </t>
+
+    <t t-name="LoungeOrderDetailLine">
+        <tr class='order-line' t-att-data-id='order_line.id'>
+            <td><t t-esc='order_line.product_id' /></td>
+            <td><t t-esc='widget.format_currency(order_line.price_unit)' /></td>
+            <td><t t-esc='order_line.qty' /></td>
+            <td><t t-esc='widget.format_currency(order_line.price_subtotal_incl)'/></td>
+        </tr>
     </t>
 
     <t t-name="LoungePaymentScreen-Numpad">

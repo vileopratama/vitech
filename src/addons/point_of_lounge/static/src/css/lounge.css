@@ -1869,7 +1869,7 @@ td {
 .pos .orderlist-screen .order-list td {
     padding: 0px 8px;
 }
-.pos .orderlist-screen .client-list tr{
+.pos .orderlist-screen .order-list tr{
     transition: all 150ms linear;
     background: rgb(230,230,230);
 }
@@ -1970,6 +1970,40 @@ td {
     left: 50%;
     margin-left: 120px;
 }
+
+/* e) The Last Order Line List Screen */
+.pos .orderline-list{
+    margin:10px 0px 10px 0px;
+    font-size: 12px;
+    width: 100%;
+    line-height: 40px;
+}
+.pos .orderline-list th,
+.pos .orderline-list td {
+    padding: 0px 5px;
+}
+.pos .orderline-list tr{
+    transition: all 150ms linear;
+    background: rgb(230,230,230);
+}
+.pos .orderline-list thead > tr,
+.pos .orderline-list tr:nth-child(even) {
+    background: rgb(247,247,247);
+}
+.pos .orderline-list tr.highlight{
+    transition: all 150ms linear;
+    background: rgb(110,200,155) !important;
+    color: white;
+}
+.pos .orderline-list tr.lowlight{
+    transition: all 150ms linear;
+    background: rgb(216, 238, 227);
+}
+.pos .orderline-list tr.lowlight:nth-child(even){
+    transition: all 150ms linear;
+    background: rgb(227, 246, 237);
+}
+
 
 /*  ********* The OrderWidget  ********* */
 

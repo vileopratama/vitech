@@ -2067,6 +2067,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    init: function(parent, options){
 	        this._super(parent, options);
 	        this.order_cache = new DomCache();
+	        this.order_line_cache = new DomCache();
 	    },
 	    auto_back: true,
 	    show: function(){
@@ -2127,10 +2128,17 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var parent   = this.$('.order-list').parent();
 	        var scroll   = parent.scrollTop();
 	        var height   = contents.height();
-
+            //var date = {};
+	        var utc = new Date();
+	        var checkin_date  = moment(order.booking_from_date);
+	        var duration = moment.duration(moment(utc).diff(checkin_date));
+            var date = {
+                'current_date': moment(utc).format('YYYY-MM-DD hh:mm:ss'),
+                'total_hours' : Math.ceil(duration.asHours()),
+	        };
 	        if(visibility === 'show') {
 	            contents.empty();
-	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order})));
+	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,date:date})));
 	            var new_height   = contents.height();
 
 	            if(!this.details_visible){
@@ -2145,6 +2153,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            this.details_visible = true;
 
+	            var order_lines = this.lounge.db.get_order_lines_sorted(1000);
+	            this.render_line_list(order_lines);
+
 	        } else if (visibility === 'hide') {
 	            contents.empty();
 	            if( height > scroll ){
@@ -2157,6 +2168,23 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 
 	            this.details_visible = false;
+	        }
+	    },
+	    render_line_list: function(order_lines){
+	        var linecontents = this.$el[0].querySelector('.orderline-list-contents');
+	        linecontents.innerHTML = "";
+	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++){
+	            var order_line = order_lines[i];
+	            var orderline = this.order_line_cache.get_node(order_line.id);
+
+	            if(!orderline){
+	                var orderline_html = QWeb.render('LoungeOrderDetailLine',{widget: this, order_line:order_lines[i]});
+	                var orderline = document.createElement('tbody');
+	                orderline.innerHTML = orderline_html;
+	                orderline = orderline.childNodes[1];
+	                this.order_line_cache.cache_node(order_line.id,orderline);
+	            }
+	            linecontents.appendChild(orderline);
 	        }
 	    },
 	    close: function(){
