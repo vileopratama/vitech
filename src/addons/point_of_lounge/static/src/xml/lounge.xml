@@ -1170,6 +1170,40 @@
         </receipt>
     </t>
 
+
+    <t t-name="LoungeOrderPaymentScreenWidget">
+        <div class='payment-screen screen'>
+            <div class='screen-content'>
+                 <div class='top-content'>
+                     <span class='button back'>
+                        <i class='fa fa-angle-double-left'></i>
+                        Back
+                    </span>
+                     <h1>Order Charge Payment</h1>
+                     <span class='button next'>
+                        Validate
+                        <i class='fa fa-angle-double-right'></i>
+                    </span>
+                 </div>
+                <div class='left-content pc40 touch-scrollable scrollable-y'>
+                    <div class='paymentmethods-container'>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+     <t t-name="LoungeOrderPaymentScreen-Paymentmethods">
+        <div class='paymentmethods'>
+            <t t-foreach="widget.lounge.cashregisters" t-as="cashregister">
+                <div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
+                    <t t-esc="cashregister.journal_id[1]" />
+                </div>
+            </t>
+        </div>
+    </t>
+
     <t t-name="LoungePopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-alert">

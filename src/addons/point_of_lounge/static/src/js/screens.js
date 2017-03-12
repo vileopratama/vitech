@@ -2080,7 +2080,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            self.gui.show_screen('payment');
+	            self.gui.show_screen('order_payment');
 	        });
 
 	        var orders = this.lounge.db.get_orders_sorted(1000);
@@ -2307,6 +2307,73 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	});
 	gui.define_screen({name:'orderlist', widget: OrderListScreenWidget});
+
+	/*--------------------------------------*\
+	 |         THE ORDER CHARGE PAYMENT SCREEN           |
+	\*======================================*/
+
+	// The Payment Screen handles the order charge payments, and
+	// it is unfortunately quite complicated.
+    var OrderPaymentScreenWidget = ScreenWidget.extend({
+        template: 'LoungeOrderPaymentScreenWidget',
+        back_screen:'orderlist',
+        init: function(parent, options) {
+            var self = this;
+	        this._super(parent, options);
+	        this.lounge.bind('change:selectedOrder',function(){
+	            this.renderElement();
+	            this.watch_order_changes();
+	        },this);
+        },
+        renderElement: function() {
+            var self = this;
+	        this._super();
+
+	        var methods = this.render_paymentmethods();
+	        methods.appendTo(this.$('.paymentmethods-container'));
+
+	        this.$('.back').click(function(){
+	            self.click_back();
+	        });
+        },
+        watch_order_changes: function() {
+            var self = this;
+        },
+        click_back: function(){
+	        this.gui.show_screen('orderlist');
+	    },
+	    render_paymentmethods: function() {
+	        var self = this;
+	        var methods = $(QWeb.render('LoungeOrderPaymentScreen-Paymentmethods', { widget:this }));
+	        methods.on('click','.paymentmethod',function(){
+	            self.click_paymentmethods($(this).data('id'));
+	        });
+	        return methods;
+	    },
+	    click_paymentmethods: function(id) {
+	        var cashregister = null;
+	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
+	            if ( this.lounge.cashregisters[i].journal_id[0] === id ){
+	                cashregister = this.lounge.cashregisters[i];
+	                break;
+	            }
+	        }
+	        this.lounge.get_order().add_paymentline(cashregister); //important
+	        this.reset_input();
+	        this.render_paymentlines();
+	    },
+	    reset_input: function(){
+	        var line = this.lounge.get_order().selected_paymentline;
+	        this.firstinput  = true;
+	        if (line) {
+	            this.inputbuffer = this.format_currency_no_symbol(line.get_amount());
+	        } else {
+	            this.inputbuffer = "";
+	        }
+	    },
+    });
+    gui.define_screen({name:'order_payment', widget: OrderPaymentScreenWidget});
+
 
 
 	var set_fiscal_position_button = ActionButtonWidget.extend({
