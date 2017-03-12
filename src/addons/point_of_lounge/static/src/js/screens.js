@@ -2085,6 +2085,49 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.$('.order-list-contents').delegate('.order-line','click',function(event){
 	            self.line_select(event,$(this),parseInt($(this).data('id')));
 	        });
+
+	        var search_timeout = null;
+
+	        if(this.lounge.config.iface_vkeyboard && this.chrome.widget.keyboard){
+	            this.chrome.widget.keyboard.connect(this.$('.searchbox input'));
+	        }
+
+	        this.$('.searchbox input').on('keypress',function(event){
+	            clearTimeout(search_timeout);
+	            var query = this.value;
+
+	            search_timeout = setTimeout(function() {
+	                self.perform_search(query,event.which === 13);
+	            },70);
+	        });
+
+	        this.$('.searchbox .search-clear').click(function(){
+	            self.clear_search();
+	        });
+
+	    },
+	    perform_search: function(query, associate_result){
+	        var orders;
+	        if(query){
+	            orders = this.lounge.db.search_order(query);
+	            this.display_order_details('hide');
+
+	            if(associate_result && orders.length === 1) {
+	                this.gui.back();
+	            }
+
+	            this.render_list(orders);
+	        } else {
+	           orders = this.lounge.db.get_orders_sorted();
+	           this.render_list(orders);
+	        }
+
+	    },
+	    clear_search: function(){
+            var orders = this.lounge.db.get_orders_sorted(1000);
+            this.render_list(orders);
+            this.$('.searchbox input')[0].value = '';
+	        this.$('.searchbox input').focus();
 	    },
 	    render_list: function(orders){
 	        var contents = this.$el[0].querySelector('.order-list-contents');
@@ -2111,15 +2154,13 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            $line.removeClass('highlight');
 	            $line.addClass('lowlight');
 	            this.display_order_details('hide',order);
-	            //this.new_client = null;
-	            //this.toggle_save_button();
+
 	        } else {
 	            this.$('.order-list .highlight').removeClass('highlight');
 	            $line.addClass('highlight');
 	            var y = event.pageY - $line.parent().offset().top;
 	            this.display_order_details('show',order,y);
-	            //this.new_client = partner;
-	            //this.toggle_save_button();
+
 	        }
 	    },
 	    display_order_details: function(visibility,order,clickpos) {
@@ -2128,15 +2169,16 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var parent   = this.$('.order-list').parent();
 	        var scroll   = parent.scrollTop();
 	        var height   = contents.height();
-            //var date = {};
-	        var utc = new Date();
-	        var checkin_date  = moment(order.booking_from_date);
-	        var duration = moment.duration(moment(utc).diff(checkin_date));
-            var date = {
-                'current_date': moment(utc).format('YYYY-MM-DD hh:mm:ss'),
-                'total_hours' : Math.ceil(duration.asHours()),
-	        };
+
 	        if(visibility === 'show') {
+	            var utc = new Date();
+                var checkin_date  = moment(order.booking_from_date);
+                var duration = moment.duration(moment(utc).diff(checkin_date));
+                var date = {
+                    'current_date': moment(utc).format('YYYY-MM-DD hh:mm:ss'),
+                    'total_hours' : Math.ceil(duration.asHours()),
+                };
+
 	            contents.empty();
 	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,date:date})));
 	            var new_height   = contents.height();
@@ -2186,6 +2228,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	            linecontents.appendChild(orderline);
 	        }
+	    },
+	    hide: function () {
+	        this._super();
 	    },
 	    close: function(){
 	        this._super();

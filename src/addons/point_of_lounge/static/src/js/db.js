@@ -354,23 +354,25 @@ odoo.define('point_of_lounge.DB', function (require) {
         },
         _order_search_string: function(order){
 	        var str =  order.name;
-	        /*if(partner.lounge_barcode){
-	            str += '|' + partner.lounge_barcode;
-	        }*/
-	        /*
-	        if(partner.address){
-	            str += '|' + partner.address;
-	        }*/
-	        /*
-	        if(partner.phone){
-	            str += '|' + partner.phone.split(' ').join('');
+	        if(order.lounge_reference){
+	            str += '|' + order.lounge_reference;
 	        }
-	        if(partner.mobile){
-	            str += '|' + partner.mobile.split(' ').join('');
+
+            if(order.booking_from_date) {
+                str += '|' + order.booking_from_date;
+            }
+
+	        if(order.partner_id){
+	            str += '|' + order.partner_id;
 	        }
-	        if(partner.email){
-	            str += '|' + partner.email;
-	        }*/
+
+	        if(order.flight_type){
+	            str += '|' + order.flight_type;
+	        }
+
+	        if(order.flight_number){
+	            str += '|' + order.flight_number;
+	        }
 
 	        str = '' + order.id + ':' + str.replace(':','') + '\n';
 	        return str;
@@ -432,6 +434,26 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            }
 	        }
 	        return updated_count;
+	    },
+	    search_order: function(query){
+	        try {
+	            query = query.replace(/[\[\]\(\)\+\*\?\.\-\!\&\^\$\|\~\_\{\}\:\,\\\/]/g,'.');
+	            query = query.replace(' ','.+');
+	            var re = RegExp("([0-9]+):.*?"+query,"gi");
+	        }catch(e){
+	            return [];
+	        }
+	        var results = [];
+	        for(var i = 0; i < this.limit; i++){
+	            var r = re.exec(this.order_search_string);
+	            if(r){
+	                var id = Number(r[1]);
+	                results.push(this.get_order_by_id(id));
+	            }else{
+	                break;
+	            }
+	        }
+	        return results;
 	    },
         _order_line_search_string: function(order_line){
 	        var str =  order_line.name;
