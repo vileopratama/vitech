@@ -35,6 +35,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 
 	        this.order_line_sorted = [];
 	        this.order_line_by_id = {};
+	        //this.order_line_by_order_id = {};
 	        this.order_line_by_barcode = {};
 	        this.order_line_search_string = "";
 	        this.order_line_write_date = null;
@@ -358,10 +359,6 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            str += '|' + order.lounge_reference;
 	        }
 
-            if(order.booking_from_date) {
-                str += '|' + order.booking_from_date;
-            }
-
 	        if(order.partner_id){
 	            str += '|' + order.partner_id;
 	        }
@@ -377,14 +374,6 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        str = '' + order.id + ':' + str.replace(':','') + '\n';
 	        return str;
 	    },
-	    get_order_lines_sorted: function(max_count){
-            max_count = max_count ? Math.min(this.order_line_sorted.length, max_count) : this.order_line_sorted.length;
-            var order_lines = [];
-            for (var i = 0; i < max_count; i++) {
-                order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
-            }
-            return order_lines;
-        },
 	    get_order_by_id: function(id){
 	        return this.order_by_id[id];
 	    },
@@ -421,15 +410,6 @@ odoo.define('point_of_lounge.DB', function (require) {
 
 	            for (var id in this.order_by_id) {
 	                order = this.order_by_id[id];
-
-	                /*if(partner.lounge_barcode){
-	                    this.partner_by_barcode[partner.lounge_barcode] = partner;
-	                }
-	                partner.address = (partner.street || '') +', '+
-	                                  (partner.zip || '')    +' '+
-	                                  (partner.city || '')   +', '+
-	                                  (partner.country_id[1] || '');*/
-
 	                this.order_search_string += this._order_search_string(order);
 	            }
 	        }
@@ -455,13 +435,30 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        }
 	        return results;
 	    },
+	    get_order_lines_sorted: function(max_count){
+            max_count = max_count ? Math.min(this.order_line_sorted.length, max_count) : this.order_line_sorted.length;
+            var order_lines = [];
+            for (var i = 0; i < max_count; i++) {
+                order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
+                //order_lines.push(this.order_line_by_order_id[this.order_line_sorted[i]]);
+            }
+            return order_lines;
+        },
         _order_line_search_string: function(order_line){
-	        var str =  order_line.name;
+            var str =  order_line.name;
+
+	        if(order_line.order_id){
+	            str += '|' + order_line.order_id;
+	        }
+
 	        str = '' + order_line.id + ':' + str.replace(':','') + '\n';
 	        return str;
 	    },
 	    get_order_line_by_id: function(id){
 	        return this.order_line_by_id[id];
+	    },
+	    get_order_line_by_order_id: function(order_id){
+	        return this.order_line_by_order_id[order_id];
 	    },
 	    add_order_lines: function(order_lines){
 	        var updated_count = 0;
@@ -471,6 +468,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            order_line = order_lines[i];
 	            if (this.order_line_write_date &&
 	                    this.order_line_by_id[order_line.id] &&
+	                    //this.order_line_by_order_id[order_line.order_id] &&
 	                    new Date(this.order_line_write_date).getTime() + 1000 >=
 	                    new Date(order_line.write_date).getTime() ) {
 	                continue;
@@ -480,7 +478,12 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            if (!this.order_line_by_id[order_line.id]) {
 	                this.order_line_sorted.push(order_line.id);
 	            }
+	            /*if (!this.order_line_by_order_id[order_line.order_id]) {
+	                this.order_line_sorted.push(order_line.order_id);
+	            }*/
+
 	            this.order_line_by_id[order_line.id] = order_line;
+	            //this.order_line_by_order_id[order_line.order_id] = order_line;
 
 	            updated_count += 1;
 	        }
@@ -496,19 +499,36 @@ odoo.define('point_of_lounge.DB', function (require) {
 
 	            for (var id in this.order_line_by_id) {
 	                order_line = this.order_line_by_id[id];
-
-	                /*if(partner.lounge_barcode){
-	                    this.partner_by_barcode[partner.lounge_barcode] = partner;
-	                }
-	                partner.address = (partner.street || '') +', '+
-	                                  (partner.zip || '')    +' '+
-	                                  (partner.city || '')   +', '+
-	                                  (partner.country_id[1] || '');*/
-
 	                this.order_line_search_string += this._order_line_search_string(order_line);
 	            }
+
+	            /*for (var order_id in this.order_line_by_order_id) {
+	                order_line = this.order_line_by_order_id[order_id];
+	                this.order_line_search_string += this._order_line_search_string(order_line);
+	            }*/
+
 	        }
 	        return updated_count;
+	    },
+	    search_order_line: function(query){
+	        try {
+	            query = query.replace(/[\[\]\(\)\+\*\?\.\-\!\&\^\$\|\~\_\{\}\:\,\\\/]/g,'.');
+	            query = query.replace(' ','.+');
+	            var re = RegExp("([0-9]+):.*?"+query,"gi");
+	        }catch(e){
+	            return [];
+	        }
+	        var results = [];
+	        for(var i = 0; i < this.limit; i++){
+	            var r = re.exec(this.order_line_search_string);
+	            if(r){
+	                var id = Number(r[1]);
+	                results.push(this.get_order_line_by_id(id));
+	            }else{
+	                break;
+	            }
+	        }
+	        return results;
 	    },
 
 	    /* removes all the data from the database. TODO : being able to selectively remove data */

@@ -191,7 +191,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        },
 	    },{
 	        model:  'lounge.order.line',
-	        fields: ['name','lounge_reference','order_id','product_id','qty','charge','discount','price_unit','price_subtotal_incl','write_date'],
+	        fields: ['name','lounge_reference','order_id','product_id','lounge_charge','lounge_charge_every','qty','charge','discount','price_unit','price_subtotal_incl','write_date'],
 	        domain: [['order_id.is_checkout','=',false]],
 	        loaded: function(self,lines){
 	            self.lines = lines;

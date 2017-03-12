@@ -1688,6 +1688,8 @@ class lounge_order_line(osv.osv):
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,
                                       change_default=True),
+        'lounge_charge': fields.related('product_id','lounge_charge',string='Charge',type='float'),
+        'lounge_charge_every': fields.related('product_id', 'lounge_charge_every', string='Charge Every', type='integer'),
         'qty': fields.float('Pax(s)', digits_compute=dp.get_precision('Product Unit of Measure')),
         'charge': fields.float('Charge', digits=0),
         'discount': fields.float('Discount (%)', digits=0),

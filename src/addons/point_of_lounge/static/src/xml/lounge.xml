@@ -646,12 +646,12 @@
                         <i class='fa fa-angle-double-left'></i>
                         Cancel
                     </span>
-                    <span class='searchbox'>
-                        <input placeholder='Search Order No or Customer' />
+                    <span class='searchorder'>
+                        <input placeholder='Search Order No,Customer,Flight Type,Fligth Number' />
                         <span class='search-clear'></span>
                     </span>
-                    <span class='button next highlight'>
-                        Select Order
+                    <span class='button next oe_hidden highlight'>
+                        Payment
                         <i class='fa fa-angle-double-right'></i>
                     </span>
                 </section>
@@ -673,6 +673,7 @@
                                                 <th>Customer</th>
                                                 <th>Booking From</th>
                                                 <th>Flight Type</th>
+                                                <th>Total</th>
                                             </tr>
                                         </thead>
                                         <tbody class='order-list-contents'>
@@ -700,6 +701,7 @@
                      International
                 </t>
             </td>
+             <td><t t-esc='widget.format_currency(order.amount_total)' /></td>
         </tr>
     </t>
 
@@ -784,14 +786,33 @@
                             <th>Price</th>
                             <th>No.Pax</th>
                             <th>Total</th>
+                            <th>Charge</th>
+                            <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody class='orderline-list-contents'>
                     </tbody>
+                    <tfoot class='orderline-list-total'>
+                    </tfoot>
                 </table>
             </div>
         </section>
     </t>
+
+     <t t-name="LoungeOrderDetailLineTotal">
+        <tr>
+            <th colspan="5">Subtotal</th>
+            <th><t t-esc='widget.format_currency(params["subtotal"])' /></th>
+        </tr>
+         <tr>
+            <th colspan="5">Last Payment</th>
+            <th><t t-esc='widget.format_currency(params["last_payment"])' /></th>
+        </tr>
+         <tr>
+            <th colspan="5">Total Payment</th>
+            <th><t t-esc='widget.format_currency(params["total_payment"])' /></th>
+        </tr>
+     </t>
 
     <t t-name="LoungeOrderDetailLine">
         <tr class='order-line' t-att-data-id='order_line.id'>
@@ -799,6 +820,8 @@
             <td><t t-esc='widget.format_currency(order_line.price_unit)' /></td>
             <td><t t-esc='order_line.qty' /></td>
             <td><t t-esc='widget.format_currency(order_line.price_subtotal_incl)'/></td>
+            <td><t t-esc='widget.format_currency(order_line.total_charge)' /></td>
+            <td><t t-esc='widget.format_currency(order_line.subtotal)' /></td>
         </tr>
     </t>
 

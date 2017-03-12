@@ -2073,9 +2073,14 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    show: function(){
 	        var self = this;
 	        this._super();
+	        this.renderElement();
 
-	        this.$('.back').click(function(){
+	        this.$('.back').click(function() {
 	            self.gui.back();
+	        });
+
+	        this.$('.next').click(function(){
+	            self.gui.show_screen('payment');
 	        });
 
 	        var orders = this.lounge.db.get_orders_sorted(1000);
@@ -2089,10 +2094,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var search_timeout = null;
 
 	        if(this.lounge.config.iface_vkeyboard && this.chrome.widget.keyboard){
-	            this.chrome.widget.keyboard.connect(this.$('.searchbox input'));
+	            this.chrome.widget.keyboard.connect(this.$('.searchorder input'));
 	        }
 
-	        this.$('.searchbox input').on('keypress',function(event){
+	        this.$('.searchorder input').on('keypress',function(event){
 	            clearTimeout(search_timeout);
 	            var query = this.value;
 
@@ -2101,7 +2106,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            },70);
 	        });
 
-	        this.$('.searchbox .search-clear').click(function(){
+	        this.$('.searchorder .search-clear').click(function(){
 	            self.clear_search();
 	        });
 
@@ -2117,6 +2122,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 
 	            this.render_list(orders);
+
 	        } else {
 	           orders = this.lounge.db.get_orders_sorted();
 	           this.render_list(orders);
@@ -2126,8 +2132,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    clear_search: function(){
             var orders = this.lounge.db.get_orders_sorted(1000);
             this.render_list(orders);
-            this.$('.searchbox input')[0].value = '';
-	        this.$('.searchbox input').focus();
+            this.$('.searchorder input')[0].value = '';
+	        this.$('.searchorder input').focus();
 	    },
 	    render_list: function(orders){
 	        var contents = this.$el[0].querySelector('.order-list-contents');
@@ -2154,12 +2160,14 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            $line.removeClass('highlight');
 	            $line.addClass('lowlight');
 	            this.display_order_details('hide',order);
+	            this.toggle_save_button();
 
 	        } else {
 	            this.$('.order-list .highlight').removeClass('highlight');
 	            $line.addClass('highlight');
 	            var y = event.pageY - $line.parent().offset().top;
 	            this.display_order_details('show',order,y);
+	            this.toggle_save_button();
 
 	        }
 	    },
@@ -2174,13 +2182,14 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var utc = new Date();
                 var checkin_date  = moment(order.booking_from_date);
                 var duration = moment.duration(moment(utc).diff(checkin_date));
-                var date = {
+                var data = {
                     'current_date': moment(utc).format('YYYY-MM-DD hh:mm:ss'),
                     'total_hours' : Math.ceil(duration.asHours()),
+                    'last_payment' :  order.amount_total,
                 };
 
 	            contents.empty();
-	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,date:date})));
+	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,date:data})));
 	            var new_height   = contents.height();
 
 	            if(!this.details_visible){
@@ -2194,9 +2203,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 
 	            this.details_visible = true;
-
-	            var order_lines = this.lounge.db.get_order_lines_sorted(1000);
-	            this.render_line_list(order_lines);
+	            var query = order.name;
+	            var order_lines = this.lounge.db.search_order_line(query);
+	            this.render_line_list(order_lines,data);
 
 	        } else if (visibility === 'hide') {
 	            contents.empty();
@@ -2212,12 +2221,36 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            this.details_visible = false;
 	        }
 	    },
-	    render_line_list: function(order_lines){
+	    render_line_list: function(order_lines,data){
 	        var linecontents = this.$el[0].querySelector('.orderline-list-contents');
 	        linecontents.innerHTML = "";
-	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++){
+	        var subtotal = 0;
+	        var surcharge = 0;
+	        var params  = {};
+	        var charge;
+	        var total_hour;
+	        var hour_if_charge;
+	        var total_hour_charge;
+	        var total_charge;
+
+	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
 	            var order_line = order_lines[i];
 	            var orderline = this.order_line_cache.get_node(order_line.id);
+
+	            if(order_line.price_subtotal_incl)
+	                subtotal+=order_line.price_subtotal_incl;
+
+                /**
+                 * Calculation Charge
+                */
+                charge = !order_line.lounge_charge ? 0 : order_line.lounge_charge;
+	            total_hour = data['total_hours'];
+	            hour_if_charge = !order_line.lounge_charge_every ? 0 : order_line.lounge_charge_every;
+	            total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
+	            total_charge = (total_hour_charge <= 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
+	            order_line.total_charge = total_charge;
+	            order_line.subtotal = total_charge + order_line.price_subtotal_incl;
+	            subtotal+=order_line.subtotal;
 
 	            if(!orderline){
 	                var orderline_html = QWeb.render('LoungeOrderDetailLine',{widget: this, order_line:order_lines[i]});
@@ -2228,6 +2261,43 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	            linecontents.appendChild(orderline);
 	        }
+
+	        /* SUMMARY LINE */
+	        var vcontents = this.$('.orderline-list-total');
+	        var total_payment = subtotal > data['last_payment'] ? subtotal - data['last_payment'] : 0;
+	        vcontents.empty();
+	        params = {
+	            'subtotal' : subtotal,
+	            'last_payment' : data['last_payment'],
+	            'total_payment' : total_payment,
+	        };
+	        vcontents.append($(QWeb.render('LoungeOrderDetailLineTotal',{widget:this,params:params})));
+
+	    },
+	    toggle_save_button: function(){
+	        var $button = this.$('.button.next');
+	        /*if (this.editing_order) {
+	            $button.addClass('oe_hidden');
+	            return;
+	        } else if(this.new_order){
+	            if(!this.old_order){
+	                $button.text(_t('Set This Order'));
+	            }else{
+	                $button.text(_t('Change Order'));
+	            }
+	        }else{
+	            $button.text(_t('Payment'));
+	        }*/
+	        $button.text(_t('Payment'));
+	        $button.toggleClass('oe_hidden',!this.has_order_changed());
+	    },
+	    has_order_changed: function() {
+	        /*if( this.old_order && this.new_order ){
+	            return this.old_order.id !== this.new_order.id;
+	        }else{
+	            return !!this.old_order !== !!this.new_order;
+	        }*/
+	        return true;
 	    },
 	    hide: function () {
 	        this._super();

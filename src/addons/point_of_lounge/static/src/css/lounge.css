@@ -972,11 +972,11 @@ td {
 
 /*  b) the search box */
 
-.pos .searchbox {
+.pos .searchbox,.pos .searchorder {
     position: absolute;
     right: 2px;
 }
-.pos .searchbox input {
+.pos .searchbox input,.pos .searchorder input {
     width: 400px;
     border: 1px solid #cecbcb;
     padding: 10px 20px 5px 38px;
@@ -987,7 +987,7 @@ td {
     font-family: "Lato","Lucida Grande", Helvetica, Verdana, Arial;
     font-size: 13px;
 }
-.pos .searchbox input:focus {
+.pos .searchbox input:focus,.pos .searchorder input:focus {
     outline: none;
     box-shadow: 0px 0px 0px 2px rgb(153, 153, 255) inset;
     color: rgb(153, 153, 255);
@@ -1727,6 +1727,7 @@ td {
     background: rgb(230,230,230);
 }
 .pos .clientlist-screen .client-list thead > tr,
+.pos .clientlist-screen .client-list tfoot > tr,
 .pos .clientlist-screen .client-list tr:nth-child(even) {
     background: rgb(247,247,247);
 }
@@ -1874,6 +1875,7 @@ td {
     background: rgb(230,230,230);
 }
 .pos .orderlist-screen .order-list thead > tr,
+.pos .orderlist-screen .order-list tfoot > tr,
 .pos .orderlist-screen .order-list tr:nth-child(even) {
     background: rgb(247,247,247);
 }
@@ -1956,14 +1958,14 @@ td {
 .pos .orderlist-screen .order-detail > .empty{
     opacity: 0.3;
 }
-.pos .orderlist-screen .searchbox{
+.pos .orderlist-screen .searchorder{
     right: auto;
     margin-left: -90px;
     margin-top:8px;
     left: 50%;
 
 }
-.pos .orderlist-screen .searchbox input{
+.pos .orderlist-screen .searchorder input{
     width: 200px;
 }
 .pos .orderlist-screen .button.new-order {
@@ -1987,6 +1989,7 @@ td {
     background: rgb(230,230,230);
 }
 .pos .orderline-list thead > tr,
+.pos .orderline-list tfoot > tr,
 .pos .orderline-list tr:nth-child(even) {
     background: rgb(247,247,247);
 }
