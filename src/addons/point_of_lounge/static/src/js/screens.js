@@ -1608,7 +1608,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            },this);
 	        this.watch_order_changes();
 
-	        this.inputbuffer = "";
+	        this.inputbuffer = 0;
 	        this.firstinput  = true;
 	        this.decimal_point = _t.database.parameters.decimal_point;
 
@@ -2436,6 +2436,21 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
         watch_order_changes: function() {
             var self = this;
+            var order = this.lounge.get_order();
+
+            if (!order) {
+	            return;
+	        }
+
+	        if(this.old_order){
+	            this.old_order.unbind(null,null,this);
+	        }
+
+	        order.bind('all',function(){
+	            self.order_changes();
+	        });
+
+	        this.old_order = order;
         },
         payment_input: function(input) {
             var newbuf = this.gui.numpad_input(this.inputbuffer, input, {'firstinput': this.firstinput});
@@ -2533,7 +2548,22 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.click_delete_paymentline($(this).data('cid'));
 	        });
 
+	        lines.on('click','.paymentline',function(){
+	            self.click_paymentline($(this).data('cid'));
+	        });
+
 	        lines.appendTo(this.$('.paymentlines-container'));
+	    },
+	    click_paymentline: function(cid){
+	        var lines = this.lounge.get_order().get_paymentlines();
+	        for ( var i = 0; i < lines.length; i++ ) {
+	            if (lines[i].cid === cid) {
+	                this.lounge.get_order().select_paymentline(lines[i]);
+	                this.reset_input();
+	                this.render_paymentlines();
+	                return;
+	            }
+	        }
 	    },
 	    click_delete_paymentline: function(cid){
 	        var lines = this.lounge.get_order().get_paymentlines();
@@ -2627,10 +2657,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        order.initialize_validation_date();
 
 	        this.lounge.push_order(order);
-	        this.gui.show_screen('receipt');
+	        this.gui.show_screen('order_receipt');
 
 	    },
 	    show: function(){
+	        this.lounge.get_order().clean_empty_paymentlines();
+	        this.reset_input();
 	        this.render_paymentlines();
 	        window.document.body.addEventListener('keypress',this.keyboard_handler);
 	        window.document.body.addEventListener('keydown',this.keyboard_keydown_handler);
@@ -2644,7 +2676,121 @@ odoo.define('point_of_lounge.screens', function (require) {
     });
     gui.define_screen({name:'order_payment', widget: OrderPaymentScreenWidget});
 
+    /*--------------------------------------*\
+	 |   THE LAST ORDER RECEIPT SCREEN      |
+	\*======================================*/
+	// The receipt screen displays the order's
+	// receipt and allows it to be printed in a web browser.
+	// The receipt screen is not shown if the point of lounge
+	// is set up to print with the proxy. Altough it could
+	// be useful to do so...
+	var ReceiptScreenWidget = ScreenWidget.extend({
+	    template: 'LoungeOrderReceiptScreenWidget',
+	    show: function() {
+	        this._super();
+	        var self = this;
+	        this.render_change();
+	        this.render_receipt();
 
+	        if (this.should_auto_print()) {
+	            this.print();
+	            if (this.should_close_immediately()){
+	                this.click_next();
+	            }
+	        } else {
+	            this.lock_screen(false);
+	        }
+
+	    },
+	    render_change: function() {
+	        this.$('.change-value').html(this.format_currency(this.lounge.get_order().get_change()));
+	    },
+	    render_receipt: function() {
+	        var order = this.lounge.get_order();
+	        this.$('.pos-receipt-container').html(QWeb.render('LoungePosTicket',{
+	             widget:this,
+	             order: order,
+	             receipt: order.export_for_printing(),
+	             orderlines: order.get_orderlines(),
+	             paymentlines: order.get_paymentlines(),
+	        }));
+	    },
+	    should_auto_print: function() {
+	        return this.lounge.config.iface_print_auto && !this.lounge.get_order()._printed;
+	    },
+	    print: function() {
+	        var self = this;
+
+	        if (!this.lounge.config.iface_print_via_proxy) { // browser (html) printing
+	            this.lock_screen(true);
+	             setTimeout(function(){
+	                self.lock_screen(false);
+	            }, 1000);
+	            this.print_web();
+	        } else {
+	            this.print_xml();
+	            this.lock_screen(false);
+	        }
+	    },
+	    lock_screen: function(locked) {
+	        this._locked = locked;
+	        if (locked) {
+	            this.$('.next').removeClass('highlight');
+	        } else {
+	            this.$('.next').addClass('highlight');
+	        }
+	    },
+	    print_web: function() {
+	        window.print();
+	        this.lounge.get_order()._printed = true;
+	    },
+	    print_xml: function() {
+	         var env = {
+	            widget:  this,
+	            lounge:  this.lounge,
+	            order:   this.lounge.get_order(),
+	            receipt: this.lounge.get_order().export_for_printing(),
+	            paymentlines: this.lounge.get_order().get_paymentlines()
+	        };
+
+	        var receipt = QWeb.render('LoungeOrderXmlReceipt',env);
+	        this.lounge.proxy.print_receipt(receipt);
+	        this.lounge.get_order()._printed = true;
+	    },
+	    should_close_immediately: function() {
+	        return this.lounge.config.iface_print_via_proxy && this.lounge.config.iface_print_skip_screen;
+	    },
+	    click_next: function() {
+	        this.lounge.get_order().finalize();
+	    },
+	    click_back: function() {
+	        // Placeholder method for ReceiptScreen extensions that
+	        // can go back ...
+	    },
+	    renderElement: function() {
+	        var self = this;
+	        this._super();
+
+	        this.$('.next').click(function(){
+	            if (!self._locked) {
+	                self.click_next();
+	            }
+	        });
+
+	        this.$('.back').click(function(){
+	            if (!self._locked) {
+	                self.click_back();
+	            }
+	        });
+
+	        this.$('.button.print').click(function(){
+	            if (!self._locked) {
+	                self.print();
+	            }
+	        });
+	    }
+	});
+	gui.define_screen({name:'order_receipt', widget: OrderReceiptScreenWidget});
 
 	var set_fiscal_position_button = ActionButtonWidget.extend({
 	    template: 'LoungeSetFiscalPositionButton',
@@ -2693,6 +2839,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    ActionpadWidget: ActionpadWidget,
 	    OrderListScreenWidget: OrderListScreenWidget,
 	    OrderPaymentScreenWidget: OrderPaymentScreenWidget,
+	    OrderReceiptScreenWidget: OrderReceiptScreenWidget,
 	    DomCache: DomCache,
 	    ProductCategoriesWidget: ProductCategoriesWidget,
 	    ScaleScreenWidget: ScaleScreenWidget,
