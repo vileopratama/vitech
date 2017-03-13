@@ -2353,7 +2353,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var key = '';
 	            if (event.type === "keypress") {
                     if (event.keyCode === 13) { // Enter
-                        //self.validate_order();
+                        self.validate_order();
                     } else if ( event.keyCode === 190 || // Dot
 	                            event.keyCode === 110 ||  // Decimal point (numpad)
 	                            event.keyCode === 188 ||  // Comma
@@ -2379,7 +2379,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        };
 
 	        this.lounge.bind('change:selectedClient', function() {
-	            //self.customer_changed();
+	            self.customer_changed();
 	        }, this);
 
         },
@@ -2399,6 +2399,14 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        this.$('.back').click(function(){
 	            self.click_back();
+	        });
+
+	        this.$('.next').click(function(){
+	            self.validate_order();
+	        });
+
+	        this.$('.js_set_customer').click(function(){
+	            self.click_set_customer();
 	        });
         },
         render_numpad: function() {
@@ -2521,7 +2529,106 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            extradue: extradue,
 	        }));
 
+	        lines.on('click','.delete-button',function(){
+	            self.click_delete_paymentline($(this).data('cid'));
+	        });
+
 	        lines.appendTo(this.$('.paymentlines-container'));
+	    },
+	    click_delete_paymentline: function(cid){
+	        var lines = this.lounge.get_order().get_paymentlines();
+	        for ( var i = 0; i < lines.length; i++ ) {
+                if (lines[i].cid === cid) {
+                    this.lounge.get_order().remove_paymentline(lines[i]);
+                    this.reset_input();
+                    this.render_paymentlines();
+	                return;
+                }
+	        }
+	    },
+	    customer_changed: function() {
+	        var client = this.lounge.get_client();
+	        this.$('.js_customer_name').text( client ? client.name : _t('Guest') );
+
+	    },
+	    click_set_customer: function(){
+	        this.gui.show_screen('clientlist');
+	    },
+	    validate_order: function(force_validation) {
+	        var self = this;
+	        var order = this.lounge.get_order();
+
+	        // FIXME: this check is there because the backend is unable to
+	        // process empty orders. This is not the right place to fix it.
+	        if (order.get_orderlines().length === 0) {
+                 this.gui.show_popup('error',{
+	                'title': _t('Empty Order'),
+	                'body':  _t('There must be at least one product sale in your order before it can be validated'),
+	            });
+	        }
+
+            // process check payment lines.
+	        var plines = order.get_paymentlines();
+	        for (var i = 0; i < plines.length; i++) {
+	            if (plines[i].get_type() === 'bank' && plines[i].get_amount() < 0) {
+	                this.lounge_widget.screen_selector.show_popup('error',{
+	                    'message': _t('Negative Bank Payment'),
+	                    'comment': _t('You cannot have a negative amount in a Bank payment. Use a cash payment method to return money to the customer.'),
+	                });
+	                return;
+	            }
+	        }
+
+	        //check order is paid or not
+	        if (!order.is_paid() || this.invoicing) {
+	            return;
+	        }
+
+	         // The exact amount must be paid if there is no cash payment method defined.
+	        if (Math.abs(order.get_total_with_tax() - order.get_total_paid()) > 0.00001) {
+	            var cash = false;
+	            for (var i = 0; i < this.lounge.cashregisters.length; i++) {
+	                cash = cash || (this.lounge.cashregisters[i].journal.type === 'cash');
+	            }
+	            if (!cash) {
+	                this.gui.show_popup('error',{
+	                    title: _t('Cannot return change without a cash payment method'),
+	                    body:  _t('There is no cash payment method available in this point of sale to handle the change.\n\n Please pay the exact amount or add a cash payment method in the point of sale configuration'),
+	                });
+	                return;
+	            }
+	        }
+
+	        // if the change is too large, it's probably an input error, make the user confirm.
+	        if (!force_validation && (order.get_total_with_tax() * 1000 < order.get_total_paid())) {
+	            this.gui.show_popup('confirm',{
+	                title: _t('Please Confirm Large Amount'),
+	                body:  _t('Are you sure that the customer wants to  pay') +
+	                       ' ' +
+	                       this.format_currency(order.get_total_paid()) +
+	                       ' ' +
+	                       _t('for an order of') +
+	                       ' ' +
+	                       this.format_currency(order.get_total_with_tax()) +
+	                       ' ' +
+	                       _t('? Clicking "Confirm" will validate the payment.'),
+	                confirm: function() {
+	                    self.validate_order('confirm');
+	                },
+	            });
+	            return;
+	        }
+
+            // if the order cash with cashdrawer.
+	        if(order.is_paid_with_cash() && this.lounge.config.iface_cashdrawer) {
+	            this.lounge.proxy.open_cashbox();
+	        }
+
+	        order.initialize_validation_date();
+
+	        this.lounge.push_order(order);
+	        this.gui.show_screen('receipt');
+
 	    },
 	    show: function(){
 	        this.render_paymentlines();
