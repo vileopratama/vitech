@@ -2316,7 +2316,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// it is unfortunately quite complicated.
     var OrderPaymentScreenWidget = ScreenWidget.extend({
         template: 'LoungeOrderPaymentScreenWidget',
-        back_screen:'orderlist',
+        back_screen:'product',
         init: function(parent, options) {
             var self = this;
 	        this._super(parent, options);
@@ -2324,21 +2324,149 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            this.renderElement();
 	            this.watch_order_changes();
 	        },this);
+	        this.watch_order_changes();
+
+	        this.inputbuffer = "";
+	        this.firstinput  = true;
+	        this.decimal_point = _t.database.parameters.decimal_point;
+
+	        // This is a keydown handler that prevents backspace from
+	        // doing a back navigation. It also makes sure that keys that
+	        // do not generate a keypress in Chrom{e,ium} (eg. delete,
+	        // backspace, ...) get passed to the keypress handler.
+	        this.keyboard_keydown_handler = function(event){
+	            if (event.keyCode === 8 || event.keyCode === 46) { // Backspace and Delete
+	                event.preventDefault();
+	                 // These do not generate keypress events in
+	                // Chrom{e,ium}. Even if they did, we just called
+	                // preventDefault which will cancel any keypress that
+	                // would normally follow. So we call keyboard_handler
+	                // explicitly with this keydown event.
+	                self.keyboard_handler(event);
+	            }
+	        };
+
+	        // This keyboard handler listens for keypress events. It is
+	        // also called explicitly to handle some keydown events that
+	        // do not generate keypress events.
+	        this.keyboard_handler = function(event){
+	            var key = '';
+	            if (event.type === "keypress") {
+                    if (event.keyCode === 13) { // Enter
+                        //self.validate_order();
+                    } else if ( event.keyCode === 190 || // Dot
+	                            event.keyCode === 110 ||  // Decimal point (numpad)
+	                            event.keyCode === 188 ||  // Comma
+	                            event.keyCode === 46 ) {  // Numpad dot
+	                    key = self.decimal_point;
+	                }else if (event.keyCode >= 48 && event.keyCode <= 57) { // Numbers
+	                    key = '' + (event.keyCode - 48);
+	                } else if (event.keyCode === 45) { // Minus
+	                    key = '-';
+	                } else if (event.keyCode === 43) { // Plus
+	                    key = '+';
+	                }
+	            } else { // keyup/keydown
+	                if (event.keyCode === 46) { // Delete
+	                    key = 'CLEAR';
+	                } else if (event.keyCode === 8) { // Backspace
+	                    key = 'BACKSPACE';
+	                }
+	            }
+
+	            self.payment_input(key);
+	            event.preventDefault();
+	        };
+
+	        this.lounge.bind('change:selectedClient', function() {
+	            //self.customer_changed();
+	        }, this);
+
         },
         renderElement: function() {
             var self = this;
 	        this._super();
 
+            //numpad
+	        var numpad = this.render_numpad();
+	        numpad.appendTo(this.$('.payment-numpad'));
+
+
 	        var methods = this.render_paymentmethods();
 	        methods.appendTo(this.$('.paymentmethods-container'));
+
+	        this.render_paymentlines();
 
 	        this.$('.back').click(function(){
 	            self.click_back();
 	        });
         },
+        render_numpad: function() {
+            var self = this;
+	        var numpad = $(QWeb.render('LoungeOrderPaymentScreen-Numpad', { widget:this }));
+	        numpad.on('click','button',function(){
+	            self.click_numpad($(this));
+	        });
+	        return numpad;
+        },
+        click_numpad: function(button) {
+		    var paymentlines = this.lounge.get_order().get_paymentlines();
+		    var open_paymentline = false;
+
+            for (var i = 0; i < paymentlines.length; i++) {
+                if (! paymentlines[i].paid) {
+                    open_paymentline = true;
+                }
+            }
+
+            if (! open_paymentline) {
+                    this.lounge.get_order().add_paymentline( this.lounge.cashregisters[0]);
+                    this.render_paymentlines();
+                }
+
+	        this.payment_input(button.data('action'));
+	    },
         watch_order_changes: function() {
             var self = this;
         },
+        payment_input: function(input) {
+            var newbuf = this.gui.numpad_input(this.inputbuffer, input, {'firstinput': this.firstinput});
+            this.firstinput = (newbuf.length === 0);
+
+            // popup block inputs to prevent sneak editing.
+	        if (this.gui.has_popup()) {
+	            return;
+	        }
+
+	        if (newbuf !== this.inputbuffer) {
+	            this.inputbuffer = newbuf;
+	            var order = this.lounge.get_order();
+	            if (order.selected_paymentline) {
+	                var amount = this.inputbuffer;
+	                if (this.inputbuffer !== "-") {
+	                    amount = formats.parse_value(this.inputbuffer, {type: "float"}, 0.0);
+	                }
+
+	                order.selected_paymentline.set_amount(amount);
+	                this.order_changes();
+	                this.render_paymentlines();
+	                this.$('.paymentline.selected .edit').text(this.format_currency_no_symbol(amount));
+	            }
+	        }
+        },
+        // called when the order is changed, used to show if
+	    // the order is paid or not
+	    order_changes: function(){
+	        var self = this;
+	        var order = this.lounge.get_order();
+	        if (!order) {
+	            return;
+	        } else if (order.is_paid()) {
+	            self.$('.next').addClass('highlight');
+	        }else{
+	            self.$('.next').removeClass('highlight');
+	        }
+	    },
         click_back: function(){
 	        this.gui.show_screen('orderlist');
 	    },
@@ -2370,6 +2498,41 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        } else {
 	            this.inputbuffer = "";
 	        }
+	    },
+	    render_paymentlines: function() {
+            var self  = this;
+            var order = this.lounge.get_order();
+	        if (!order) {
+	            return;
+	        }
+
+	        var lines = order.get_paymentlines();
+	        var due   = order.get_due();
+	        var extradue = 0;
+	        if (due && lines.length  && due !== order.get_due(lines[lines.length-1])) {
+	            extradue = due;
+	        }
+
+	        this.$('.paymentlines-container').empty();
+	        var lines = $(QWeb.render('LoungeOrderPaymentScreen-Paymentlines', {
+	            widget: this,
+	            order: order,
+	            paymentlines: lines,
+	            extradue: extradue,
+	        }));
+
+	        lines.appendTo(this.$('.paymentlines-container'));
+	    },
+	    show: function(){
+	        this.render_paymentlines();
+	        window.document.body.addEventListener('keypress',this.keyboard_handler);
+	        window.document.body.addEventListener('keydown',this.keyboard_keydown_handler);
+	        this._super();
+	    },
+	    hide: function(){
+	        window.document.body.removeEventListener('keypress',this.keyboard_handler);
+	        window.document.body.removeEventListener('keydown',this.keyboard_keydown_handler);
+	        this._super();
 	    },
     });
     gui.define_screen({name:'order_payment', widget: OrderPaymentScreenWidget});
@@ -2422,6 +2585,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    ActioncheckoutWidget: ActioncheckoutWidget,
 	    ActionpadWidget: ActionpadWidget,
 	    OrderListScreenWidget: OrderListScreenWidget,
+	    OrderPaymentScreenWidget: OrderPaymentScreenWidget,
 	    DomCache: DomCache,
 	    ProductCategoriesWidget: ProductCategoriesWidget,
 	    ScaleScreenWidget: ScaleScreenWidget,

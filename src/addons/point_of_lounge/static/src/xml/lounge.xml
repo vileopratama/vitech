@@ -1187,10 +1187,41 @@
                  </div>
                 <div class='left-content pc40 touch-scrollable scrollable-y'>
                     <div class='paymentmethods-container'>
-
                     </div>
                 </div>
+                <div class='right-content pc60 touch-scrollable scrollable-y'>
+                    <section class='paymentlines-container'>
+                    </section>
+                    <section class='payment-numpad'>
+                    </section>
+                </div>
             </div>
+        </div>
+    </t>
+
+    <t t-name="LoungeOrderPaymentScreen-Numpad">
+        <div class="numpad">
+            <button class="input-button number-char" data-action='1'>1</button>
+            <button class="input-button number-char" data-action='2'>2</button>
+            <button class="input-button number-char" data-action='3'>3</button>
+            <button class="mode-button" data-action='+10'>+10</button>
+            <br />
+            <button class="input-button number-char" data-action='4'>4</button>
+            <button class="input-button number-char" data-action='5'>5</button>
+            <button class="input-button number-char" data-action='6'>6</button>
+            <button class="mode-button" data-action='+20'>+20</button>
+            <br />
+            <button class="input-button number-char" data-action='7'>7</button>
+            <button class="input-button number-char" data-action='8'>8</button>
+            <button class="input-button number-char" data-action='9'>9</button>
+            <button class="mode-button" data-action='+50'>+50</button>
+            <br />
+            <button class="input-button numpad-char" data-action='CLEAR' >C</button>
+            <button class="input-button number-char" data-action='0'>0</button>
+            <button class="input-button number-char" t-att-data-action='widget.decimal_point'><t t-esc='widget.decimal_point'/></button>
+            <button class="input-button numpad-backspace" data-action='BACKSPACE' >
+                <img src="/point_of_lounge/static/src/img/backspace.png" width="24" height="21" />
+            </button>
         </div>
     </t>
 
@@ -1202,6 +1233,32 @@
                 </div>
             </t>
         </div>
+    </t>
+
+    <t t-name="LoungeOrderPaymentScreen-Paymentlines">
+        <t t-if="!paymentlines.length">
+            <div class='paymentlines-empty'>
+                <div class='total'>
+                    <t t-esc="widget.format_currency(order.get_total_with_tax())"/>
+                </div>
+                <div class='message'>
+                    Please select a payment method.
+                </div>
+            </div>
+        </t>
+        <t t-if="paymentlines.length">
+            <table class='paymentlines'>
+                <thead>
+                    <tr class='label'>
+                        <th>Due</th>
+                        <th>Tendered</th>
+                        <th>Change</th>
+                        <th>Pay Method</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </t>
     </t>
 
     <t t-name="LoungePopupWidget">
