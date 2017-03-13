@@ -2684,7 +2684,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	// The receipt screen is not shown if the point of lounge
 	// is set up to print with the proxy. Altough it could
 	// be useful to do so...
-	var ReceiptScreenWidget = ScreenWidget.extend({
+	var OrderReceiptScreenWidget = ScreenWidget.extend({
 	    template: 'LoungeOrderReceiptScreenWidget',
 	    show: function() {
 	        this._super();
