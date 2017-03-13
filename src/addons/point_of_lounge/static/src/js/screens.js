@@ -2677,7 +2677,7 @@ odoo.define('point_of_lounge.screens', function (require) {
     gui.define_screen({name:'order_payment', widget: OrderPaymentScreenWidget});
 
     /*--------------------------------------*\
-	 |   THE LAST ORDER RECEIPT SCREEN      |
+	 | THE LAST ORDER RECEIPT SCREEN/FINISH  |
 	\*======================================*/
 	// The receipt screen displays the order's
 	// receipt and allows it to be printed in a web browser.
