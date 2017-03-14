@@ -2336,13 +2336,13 @@ odoo.define('point_of_lounge.screens', function (require) {
         init: function(parent, options) {
             var self = this;
 	        this._super(parent, options);
-	        //this.lounge.bind('change:selectedCheckoutOrder',function(){
+	        this.lounge.bind('change:selectedCheckoutOrder',function(){
 	            this.renderElement();
 	            this.watch_checkout_order_changes();
-	        //},this);
+	        },this);
 	        this.watch_checkout_order_changes();
 
-	        this.inputbuffer = "";
+	        this.inputbuffer = 10000;
 	        this.firstinput  = true;
 	        this.decimal_point = _t.database.parameters.decimal_point;
 
@@ -2434,11 +2434,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return numpad;
         },
         click_numpad: function(button) {
-		    var paymentlines = this.lounge.get_checkout_order().get_paymentlines();
+		    var checkout_paymentlines = this.lounge.get_checkout_order().get_paymentlines();
 		    var open_paymentline = false;
 
-            for (var i = 0; i < paymentlines.length; i++) {
-                if (! paymentlines[i].paid) {
+            for (var i = 0; i < checkout_paymentlines.length; i++) {
+                if (! checkout_paymentlines[i].paid) {
                     open_paymentline = true;
                 }
             }
@@ -2497,7 +2497,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    // the order is paid or not
 	    checkout_order_changes: function(){
 	        var self = this;
-	        var checkout_order = this.lounge.get_order();
+	        var checkout_order = this.lounge.get_checkout_order();
 	        if (!checkout_order) {
 	            return;
 	        } else if (checkout_order.is_paid()) {
