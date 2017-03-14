@@ -2245,6 +2245,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.checkout_paymentlines.add(newPaymentline);
 	        this.select_paymentline(newPaymentline);
 	    },
+	    is_paid: function(){
+	        return this.get_due() === 0;
+	    },
 	});
 
 	var CheckoutOrderCollection = Backbone.Collection.extend({

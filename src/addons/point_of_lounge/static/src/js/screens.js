@@ -2530,7 +2530,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.render_paymentlines();
 	    },
 	    reset_input: function(){
-	        var line = this.lounge.get_checkout_order().selected_paymentline;
+	        var line = this.lounge.get_checkout_order().selected_checkout_paymentline;
 	        this.firstinput  = true;
 	        if (line) {
 	            this.inputbuffer = this.format_currency_no_symbol(line.get_amount());
