@@ -1281,7 +1281,7 @@
                                  <t t-if='!checkout_order.get_change(line)'>
                                     <td class='col-change col-md-3' ></td>
                                 </t>
-                                <td class='delete-button col-md-1' t-att-data-cid='line.cid'> <i class='fa fa-times-circle' />Remove</td>
+                                <td class='delete-button col-md-1' t-att-data-cid='line.cid'> <i class='fa fa-times-circle' /></td>
                             </tr>
                         </t>
                         <t t-if='!line.selected'>

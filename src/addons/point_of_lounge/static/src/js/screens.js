@@ -2541,7 +2541,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    render_paymentlines: function() {
             var self  = this;
             var checkout_order = this.lounge.get_checkout_order();
-            alert(checkout_order);
 	        if (!checkout_order) {
 	            return;
 	        }
@@ -2561,7 +2560,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            extradue: extradue,
 	        }));
 
-	        lines.on('click','.delete-button',function(){
+	        lines.on('click','.delete-button',function() {
 	            self.click_delete_paymentline($(this).data('cid'));
 	        });
 
@@ -2572,10 +2571,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        lines.appendTo(this.$('.paymentlines-container'));
 	    },
 	    click_paymentline: function(cid){
-	        var lines = this.lounge.get_order().get_paymentlines();
+	        var lines = this.lounge.get_checkout_order().get_paymentlines();
 	        for ( var i = 0; i < lines.length; i++ ) {
 	            if (lines[i].cid === cid) {
-	                this.lounge.get_order().select_paymentline(lines[i]);
+	                this.lounge.get_checkout_order().select_paymentline(lines[i]);
 	                this.reset_input();
 	                this.render_paymentlines();
 	                return;
@@ -2583,7 +2582,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 	    },
 	    click_delete_paymentline: function(cid){
-	        var lines = this.lounge.get_order().get_paymentlines();
+	        var lines = this.lounge.get_checkout_order().get_paymentlines();
 	        for ( var i = 0; i < lines.length; i++ ) {
                 if (lines[i].cid === cid) {
                     this.lounge.get_checkout_order().remove_paymentline(lines[i]);
@@ -2652,11 +2651,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                title: _t('Please Confirm Large Amount'),
 	                body:  _t('Are you sure that the customer wants to  pay') +
 	                       ' ' +
-	                       this.format_currency(order.get_total_paid()) +
+	                       this.format_currency(checkout_order.get_total_paid()) +
 	                       ' ' +
 	                       _t('for an order of') +
 	                       ' ' +
-	                       this.format_currency(order.get_total_with_tax()) +
+	                       this.format_currency(checkout_order.get_total_with_tax()) +
 	                       ' ' +
 	                       _t('? Clicking "Confirm" will validate the payment.'),
 	                confirm: function() {
@@ -2666,8 +2665,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            return;
 	        }
 
-            // if the order cash with cashdrawer.
-	        if(order_checkout.is_paid_with_cash() && this.lounge.config.iface_cashdrawer) {
+            // if the checkout order cash with cashdrawer.
+	        if(checkout_order.is_paid_with_cash() && this.lounge.config.iface_cashdrawer) {
 	            this.lounge.proxy.open_cashbox();
 	        }
 
