@@ -2480,13 +2480,13 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        if (newbuf !== this.inputbuffer) {
 	            this.inputbuffer = newbuf;
 	            var checkout_order = this.lounge.get_checkout_order();
-	            if (checkout_order.selected_paymentline) {
+	            if (checkout_order.selected_checkout_paymentline) {
 	                var amount = this.inputbuffer;
 	                if (this.inputbuffer !== "-") {
 	                    amount = formats.parse_value(this.inputbuffer, {type: "float"}, 0.0);
 	                }
 
-	                checkout_order.selected_paymentline.set_amount(amount);
+	                checkout_order.selected_checkout_paymentline.set_amount(amount);
 	                this.checkout_order_changes();
 	                this.render_paymentlines();
 	                this.$('.paymentline.selected .edit').text(this.format_currency_no_symbol(amount));
