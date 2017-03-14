@@ -70,12 +70,19 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.set({
 	            'synch':            { state:'connected', pending:0 },
 	            'orders':           new OrderCollection(),
+	            'checkout_orders':  new CheckoutOrderCollection(),
 	            'selectedOrder':    null,
+	            'selectedCheckoutOrder': null,
 	            'selectedClient':   null,
+	            'selectedCheckoutClient' : null,
 	        });
 
 	        this.get('orders').bind('remove', function(order,_unused_,options){
 	            self.on_removed_order(order,options.index,options.reason);
+	        });
+
+	        this.get('checkout_orders').bind('remove', function(checkout_order,_unused_,options){
+	            self.on_removed_checked_order(checkout_order,options.index,options.reason);
 	        });
 
 	        // Forward the 'client' attribute on the selected order to 'selectedClient'
@@ -83,8 +90,21 @@ odoo.define('point_of_lounge.models', function (require) {
 	            var order = self.get_order();
 	            this.set('selectedClient', order ? order.get_client() : null );
 	        }
+	        //this.get('orders').bind('add remove change', update_client, this);
+	        //this.bind('change:selectedOrder', update_client, this);
+
+	        // Forward the 'client' attribute on the selected order to 'selectedClient'
+	        function update_checkout_client() {
+	            var checkout_order = self.get_checkout_order();
+	            this.set('selectedCheckoutClient', checkout_order ? checkout_order.get_client() : null );
+	        }
+
 	        this.get('orders').bind('add remove change', update_client, this);
+	        this.get('checkout_orders').bind('add remove change', update_checkout_client, this);
+
 	        this.bind('change:selectedOrder', update_client, this);
+	        this.bind('change:selectedCheckoutOrder', update_checkout_client, this);
+
 
 	        // We fetch the backend data on the server asynchronously. this is done only when the pos user interface is launched,
 	        // Any change on this data made on the server is thus not reflected on the lounge  until it is relaunched.
@@ -95,7 +115,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    after_load_server_data: function(){
 	         this.load_orders();
+	         this.load_checkout_orders();
 	         this.set_start_order();
+	         this.set_start_checkout_order();
 	         if(this.config.use_proxy){
 	             return this.connect_to_proxy();
 	         }
@@ -609,6 +631,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.set('selectedOrder', order);
 	        return order;
 	    },
+	    add_new_checkout_order: function(){
+	        var checkout_order = new exports.CheckoutOrder({},{lounge:this});
+	        this.get('checkout_orders').add(checkout_order);
+	        this.set('selectedCheckoutOrder', checkout_order);
+	        return checkout_order;
+	    },
 	    // load the locally saved unpaid orders for this session.
 	    load_orders: function(){
 	        var jsons = this.db.get_unpaid_orders();
@@ -639,6 +667,36 @@ odoo.define('point_of_lounge.models', function (require) {
 	            this.get('orders').add(orders);
 	        }
 	    },
+	    // load the locally saved unpaid orders for this session.
+	    load_checkout_orders: function(){
+	        var jsons = this.db.get_unpaid_checkout_orders();
+	        var checkout_orders = [];
+	        var not_loaded_count = 0;
+
+	        for (var i = 0; i < jsons.length; i++) {
+	            var json = jsons[i];
+	            if (json.lounge_session_id === this.lounge_session.id) {
+	                checkout_orders.push(new exports.CheckoutOrder({},{
+	                    lounge:  this,
+	                    json: json,
+	                }));
+	            } else {
+	                not_loaded_count += 1;
+	            }
+	        }
+
+	        if (not_loaded_count) {
+	            console.info('There are '+not_loaded_count+' locally saved unpaid orders belonging to another session');
+	        }
+
+	        checkout_orders = checkout_orders.sort(function(a,b){
+	            return a.sequence_number - b.sequence_number;
+	        });
+
+	        if (checkout_orders.length) {
+	            this.get('checkout_orders').add(checkout_orders);
+	        }
+	    },
 
 	    set_start_order: function(){
 	        var orders = this.get('orders').models;
@@ -650,15 +708,38 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 
+	    set_start_checkout_order: function(){
+	        var checkout_orders = this.get('checkout_orders').models;
+
+	        if (checkout_orders.length && !this.get('selectedCheckoutOrder')) {
+	            this.set('selectedCheckoutOrder',checkout_orders[0]);
+	        } else {
+	            this.add_new_checkout_order();
+	        }
+	    },
+
 	    // return the current order
 	    get_order: function(){
 	        return this.get('selectedOrder');
+	    },
+
+	    // return the current order
+	    get_checkout_order: function(){
+	        return this.get('selectedCheckoutOrder');
 	    },
 
 	    get_client: function() {
 	        var order = this.get_order();
 	        if (order) {
 	            return order.get_client();
+	        }
+	        return null;
+	    },
+
+        get_checkout_client: function() {
+	        var checkout_order = this.get_checkout_order();
+	        if (checkout_order) {
+	            return checkout_order.get_checkout_client();
 	        }
 	        return null;
 	    },
@@ -1267,7 +1348,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	            "priceWithoutTax": all_taxes.total_excluded, //28
 	            "tax": taxtotal,
 	            "taxDetails": taxdetail,
-	            "surcharge": all_taxes.total_included_without_charge, // 18 +
 	        };
 	    },
 	    get_unit_price: function() {
@@ -1278,6 +1358,66 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    compute_all: function(taxes, price_unit,quantity, currency_rounding) {
 	        var self = this;
+	        var total_excluded = round_pr((price_unit) * quantity, currency_rounding);
+	        var total_included = total_excluded;
+	        var base = total_excluded;
+	        var list_taxes = [];
+
+	        if (this.lounge.company.tax_calculation_rounding_method == "round_globally"){
+	           currency_rounding = currency_rounding * 0.00001;
+	        }
+
+	        _(taxes).each(function(tax) {
+	            tax = self._map_tax_fiscal_position(tax);
+	            if (tax.amount_type === 'group'){
+	                var ret = self.compute_all(tax.children_tax_ids, price_unit, quantity, currency_rounding);
+	                total_excluded = ret.total_excluded;
+	                base = ret.total_excluded;
+	                total_included = ret.total_included;
+	                list_taxes = list_taxes.concat(ret.taxes);
+	            }  else {
+	                 var tax_amount = self._compute_all(tax, base, quantity);
+	                 if (tax_amount){
+	                    if (tax.price_include) {
+	                        total_excluded -= tax_amount;
+	                        base -= tax_amount;
+	                    } else {
+	                        total_included += tax_amount;
+	                    }
+
+	                    if (tax.include_base_amount) {
+	                        base += tax_amount;
+	                    }
+
+	                    var data = {
+	                        id: tax.id,
+	                        amount: tax_amount,
+	                        name: tax.name,
+	                    };
+	                    list_taxes.push(data);
+	                 }
+	            }
+
+	        });
+
+	        return {taxes: list_taxes, total_excluded: total_excluded,total_included: total_included};
+
+	    },
+	    _compute_all: function(tax, base_amount, quantity) {
+	        if (tax.amount_type === 'fixed') {
+	            var sign_base_amount = base_amount >= 0 ? 1 : -1;
+	            return (Math.abs(tax.amount) * sign_base_amount) * quantity;
+	        }
+	        if ((tax.amount_type === 'percent' && !tax.price_include) || (tax.amount_type === 'division' && tax.price_include)){
+	            return base_amount * tax.amount / 100;
+	        }
+	        if (tax.amount_type === 'percent' && tax.price_include){
+	            return base_amount - (base_amount / (1 + tax.amount / 100));
+	        }
+	        if (tax.amount_type === 'division' && !tax.price_include) {
+	            return base_amount / (1 - tax.amount / 100) - base_amount;
+	        }
+	        return false;
 	    },
     });
 
@@ -1803,6 +1943,261 @@ odoo.define('point_of_lounge.models', function (require) {
 	    model: exports.Paymentline,
 	});
 
+	// Every Paymentline contains a cashregister and an amount of money.
+	exports.CheckoutPaymentline = Backbone.Model.extend({
+	    initialize: function(attributes, options) {
+	        this.lounge = options.lounge;
+	        this.checkout_order = options.checkout_order;
+	        this.amount = 0;
+	        this.selected = false;
+	        if (options.json) {
+	            this.init_from_JSON(options.json);
+	            return;
+	        }
+	        this.cashregister = options.cashregister;
+	        this.name = this.cashregister.journal_id[1];
+	    },
+	    init_from_JSON: function(json){
+	        this.amount = json.amount;
+	        this.cashregister = this.lounge.cashregisters_by_id[json.statement_id];
+	        this.name = this.cashregister.journal_id[1];
+	    },
+	    //sets the amount of money on this payment line
+	    set_amount: function(value){
+	        this.checkout_order.assert_editable();
+	        this.amount = round_di(parseFloat(value) || 0, this.lounge.currency.decimals);
+	        this.trigger('change',this);
+	    },
+	    // returns the amount of money on this paymentline
+	    get_amount: function(){
+	        return this.amount;
+	    },
+	    get_amount_str: function(){
+	        return formats.format_value(this.amount, {
+	            type: 'float', digits: [69, this.lounge.currency.decimals]
+	        });
+	    },
+	    set_selected: function(selected){
+	        if(this.selected !== selected){
+	            this.selected = selected;
+	            this.trigger('change',this);
+	        }
+	    },
+	    // returns the payment type: 'cash' | 'bank'
+	    get_type: function(){
+	        return this.cashregister.journal.type;
+	    },
+	    // returns the associated cashregister
+	    //exports as JSON for server communication
+	    export_as_JSON: function(){
+	        return {
+	            name: time.datetime_to_str(new Date()),
+	            statement_id: this.cashregister.id,
+	            lounge_account_id: this.cashregister.lounge_account_id[0],
+	            journal_id: this.cashregister.journal_id[0],
+	            amount: this.get_amount()
+	        };
+	    },
+	    //exports as JSON for receipt printing
+	    export_for_printing: function(){
+	        return {
+	            amount: this.get_amount(),
+	            journal: this.cashregister.journal_id[1],
+	        };
+	    },
+	});
+
+	var CheckoutPaymentlineCollection = Backbone.Collection.extend({
+	    model: exports.CheckoutPaymentline,
+	});
+
+	exports.CheckoutOrder = Backbone.Model.extend({
+	    initialize: function(attributes,options){
+             Backbone.Model.prototype.initialize.apply(this, arguments);
+             options  = options || {};
+             this.lounge = options.lounge;
+             this.selected_checkout_orderline = undefined;
+             this.checkout_orderlines = new CheckoutOrderlineCollection();
+             this.checkout_paymentlines   = new CheckoutPaymentlineCollection();
+	    },
+	    get_client: function(){
+	        return this.get('client');
+	    },
+	    assert_editable: function() {
+	        if (this.finalized) {
+	            throw new Error('Finalized Order cannot be modified');
+	        }
+	    },
+	    get_last_orderline: function(){
+	        return this.checkout_orderlines.at(this.checkout_orderlines.length -1);
+	    },
+	    select_orderline: function(line){
+	        if(line){
+	            if(line !== this.selected_checkout_orderline){
+	                if(this.selected_checkout_orderline){
+	                    this.selected_checkout_orderline.set_selected(false);
+	                }
+	                this.selected_checkout_orderline = line;
+	                this.selected_checkout_orderline.set_selected(true);
+	            }
+	        }else{
+	            this.checkout_selected_orderline = undefined;
+	        }
+	    },
+	    add_product: function(product, options) {
+            if(this._printed) {
+                this.destroy();
+                return this.lounge.get_checkout_order().add_product(product, options);
+            }
+
+            this.assert_editable();
+            options = options || {};
+            var attr = JSON.parse(JSON.stringify(product));
+            attr.lounge = this.lounge;
+	        attr.order = this;
+
+	        var line = new exports.CheckoutOrderline({}, {lounge: this.lounge, order: this, product: product});
+
+	        if(options.quantity !== undefined) {
+	            line.set_quantity(options.quantity);
+	        }
+
+	        if(options.price !== undefined){
+	            line.set_unit_price(options.price);
+	        }
+
+	        if(options.discount !== undefined){
+	            line.set_discount(options.discount);
+	        }
+
+	        if(options.extras !== undefined){
+	            for (var prop in options.extras) {
+	                line[prop] = options.extras[prop];
+	            }
+	        }
+
+	        var last_orderline = this.get_last_orderline();
+	        if( last_orderline && last_orderline.can_be_merged_with(line) && options.merge !== false){
+	            last_orderline.merge(line);
+	        }else {
+	            //add checkout orderlines
+	            this.checkout_orderlines.add(line);
+	        }
+	        this.select_orderline(this.get_last_orderline());
+	    },
+	    get_paymentlines: function(){
+	        return this.checkout_paymentlines.models;
+	    },
+	    get_due: function(checkout_paymentline) {
+	        if (!checkout_paymentline) {
+	            var due = this.get_total_with_tax() - this.get_total_paid();
+	        } else {
+	            var due = this.get_total_with_tax();
+	            var lines = this.checkout_paymentlines.models;
+	            for (var i = 0; i < lines.length; i++) {
+	                if (lines[i] === checkout_paymentline) {
+	                    break;
+	                } else {
+	                    due -= lines[i].get_amount();
+	                }
+	            }
+	        }
+	        return round_pr(Math.max(0,due), this.lounge.currency.rounding);
+	    },
+	    get_change: function(checkout_paymentline) {
+	        if (!checkout_paymentline) {
+	            var change = this.get_total_paid() - this.get_total_with_tax();
+	        } else {
+	            var change = -this.get_total_with_tax();
+	            var lines  = this.checkout_paymentlines.models;
+	            for (var i = 0; i < lines.length; i++) {
+	                change += lines[i].get_amount();
+	                if (lines[i] === paymentline) {
+	                    break;
+	                }
+	            }
+	        }
+	        return round_pr(Math.max(0,change), this.lounge.currency.rounding);
+	    },
+	    get_total_with_tax: function() {
+	        return this.get_total_without_tax() + this.get_total_tax();
+	    },
+	    get_total_without_tax: function() {
+            return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
+                return sum + orderLine.get_price_without_tax();
+            }),0), this.lounge.currency.rounding);
+	    },
+	    get_total_tax: function() {
+	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
+	            return sum + orderLine.get_tax();
+	        }), 0), this.lounge.currency.rounding);
+	    },
+
+	    get_total_paid: function() {
+	        return round_pr(this.checkout_paymentlines.reduce((function(sum, paymentLine) {
+	            return sum + paymentLine.get_amount();
+	        }), 0), this.lounge.currency.rounding);
+	    },
+	    remove_paymentline: function(line){
+	        this.assert_editable();
+	        if(this.selected_checkout_paymentline === line){
+	            this.select_checkout_paymentline(undefined);
+	        }
+	        this.checkout_paymentlines.remove(line);
+	    },
+	    clean_empty_paymentlines: function() {
+	        var lines = this.checkout_paymentlines.models;
+	        var empty = [];
+	        for ( var i = 0; i < lines.length; i++) {
+	            if (!lines[i].get_amount()) {
+	                empty.push(lines[i]);
+	            }
+	        }
+	        for ( var i = 0; i < empty.length; i++) {
+	            this.remove_paymentline(empty[i]);
+	        }
+	    },
+	    remove_orderline: function(line){
+	        this.assert_editable();
+	        this.checkout_orderlines.remove(line);
+	        this.select_orderline(this.get_last_orderline());
+	    },
+	    get_orderlines: function(){
+	        return this.checkout_orderlines.models;
+	    },
+	    remove_orderlines() {
+	        var lines = this.get_orderlines();
+	        this.remove_orderline(lines);
+	    },
+	    select_paymentline: function(line){
+	        if(line !== this.selected_checkout_paymentline){
+	            if(this.selected_checkout_paymentline){
+	                this.selected_checkout_paymentline.set_selected(false);
+	            }
+	            this.selected_checkout_paymentline = line;
+	            if(this.selected_checkout_paymentline){
+	                this.selected_checkout_paymentline.set_selected(true);
+	            }
+	            this.trigger('change:selected_paymentline',this.selected_checkout_paymentline);
+	        }
+	    },
+	    /* ---- Payment Lines --- */
+	    add_paymentline: function(cashregister) {
+	        this.assert_editable();
+	        var newPaymentline = new exports.CheckoutPaymentline({},{checkout_order: this, cashregister:cashregister, lounge: this.lounge});
+	        if(cashregister.journal.type !== 'cash' || this.lounge.config.iface_precompute_cash){
+	            newPaymentline.set_amount( Math.max(this.get_due(),0) );
+	        }
+	        this.checkout_paymentlines.add(newPaymentline);
+	        this.select_paymentline(newPaymentline);
+
+	    },
+	});
+
+	var CheckoutOrderCollection = Backbone.Collection.extend({
+	    model: exports.CheckoutOrder,
+	});
+
 	// An order more or less represents the content of a client's shopping cart (the OrderLines)
 	// plus the associated payment information (the Paymentlines)
 	// there is always an active ('selected') order in the Lounge, a new one is created
@@ -1844,6 +2239,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.orderlines.on('change',   function(){ this.save_to_db("orderline:change"); }, this);
 	        this.orderlines.on('add',      function(){ this.save_to_db("orderline:add"); }, this);
 	        this.orderlines.on('remove',   function(){ this.save_to_db("orderline:remove"); }, this);
+
 	        this.paymentlines.on('change', function(){ this.save_to_db("paymentline:change"); }, this);
 	        this.paymentlines.on('add',    function(){ this.save_to_db("paymentline:add"); }, this);
 	        this.paymentlines.on('remove', function(){ this.save_to_db("paymentline:rem"); }, this);
@@ -2135,6 +2531,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_orderlines: function(){
 	        return this.orderlines.models;
 	    },
+	    checkout_get_orderlines: function(){
+	        return this.checkout_orderlines.models;
+	    },
 	    get_last_orderline: function(){
 	        return this.orderlines.at(this.orderlines.length -1);
 	    },
@@ -2268,6 +2667,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	    checkout_get_selected_orderline: function(){
 	        return this.checkout_selected_orderline;
 	    },
+	    checkout_destroy() {
+	        var order_lines = this.checkout_get_orderlines();
+	        this.checkout_remove_orderline(order_lines);
+            //for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
+              //  this.trigger('set_value','remove');
+            //}
+	    },
 	    select_orderline: function(line){
 	        if(line){
 	            if(line !== this.selected_orderline){
@@ -2354,7 +2760,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_total_with_tax: function() {
 	        return this.get_total_without_tax() + this.get_total_tax();
 	    },
-	    checkout_get_total_with_taxt: function () {
+	    checkout_get_total_with_tax: function () {
 	        return this.checkout_get_total_without_tax() + this.checkout_get_total_tax();
 	    },
 	    get_total_without_tax: function() {
@@ -2634,11 +3040,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	    deleteLastChar: function() {
 	        if(this.get('buffer') === ""){
 	            if(this.get('mode') === 'quantity'){
+	                //alert("Alep");
 	                this.trigger('set_value','remove');
 	            }else{
+	                //alert("Alep2");
 	                this.trigger('set_value',this.get('buffer'));
 	            }
 	        }else{
+	            //alert("Alepx");
 	            var newBuffer = this.get('buffer').slice(0,-1) || "";
 	            this.set({ buffer: newBuffer });
 	            this.trigger('set_value',this.get('buffer'));

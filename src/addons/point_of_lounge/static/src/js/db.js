@@ -691,6 +691,14 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        }
 	        return orders;
 	    },
+	    get_unpaid_checkout_orders: function(){
+	        var saved = this.load('unpaid_checkout_orders',[]);
+	        var checkout_orders = [];
+	        for (var i = 0; i < saved.length; i++) {
+	            checkout_orders.push(saved[i].data);
+	        }
+	        return checkout_orders;
+	    },
 	});
 
 	return LoungeDB;

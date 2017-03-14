@@ -2236,9 +2236,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var total_hour_charge;
 	        var total_charge;
 
-
-	        //destroy
-            //this.lounge.get_order().finalize();
+	        //remove order line
+           this.lounge.get_checkout_order().remove_orderlines();
 
 	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
 	            var order_line = order_lines[i];
@@ -2249,7 +2248,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            //add to checkout order
 	            for (var j = 0; j < qty; j++) {
                     var product = self.lounge.db.get_product_by_id(product_id);
-                    this.lounge.get_order().checkout_add_product(product);
+                    this.lounge.get_checkout_order().add_product(product);
 	            }
 
 	            if(order_line.price_subtotal_incl)
@@ -2337,11 +2336,11 @@ odoo.define('point_of_lounge.screens', function (require) {
         init: function(parent, options) {
             var self = this;
 	        this._super(parent, options);
-	        this.lounge.bind('change:selectedOrder',function(){
+	        this.lounge.bind('change:selectedCheckoutOrder',function(){
 	            this.renderElement();
 	            this.watch_order_changes();
 	        },this);
-	        this.watch_order_changes();
+	        this.watch_checkout_order_changes();
 
 	        this.inputbuffer = "";
 	        this.firstinput  = true;
@@ -2370,7 +2369,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var key = '';
 	            if (event.type === "keypress") {
                     if (event.keyCode === 13) { // Enter
-                        self.validate_order();
+                        self.validate_checkout_order();
                     } else if ( event.keyCode === 190 || // Dot
 	                            event.keyCode === 110 ||  // Decimal point (numpad)
 	                            event.keyCode === 188 ||  // Comma
@@ -2395,7 +2394,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            event.preventDefault();
 	        };
 
-	        this.lounge.bind('change:selectedClient', function() {
+	        this.lounge.bind('change:selectedCheckoutClient', function() {
 	            self.customer_changed();
 	        }, this);
 
@@ -2435,7 +2434,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return numpad;
         },
         click_numpad: function(button) {
-		    var paymentlines = this.lounge.get_order().get_paymentlines();
+		    var paymentlines = this.lounge.get_checkout_order().get_paymentlines();
 		    var open_paymentline = false;
 
             for (var i = 0; i < paymentlines.length; i++) {
@@ -2445,29 +2444,29 @@ odoo.define('point_of_lounge.screens', function (require) {
             }
 
             if (! open_paymentline) {
-                    this.lounge.get_order().add_paymentline( this.lounge.cashregisters[0]);
+                    this.lounge.get_checkout_order().add_paymentline( this.lounge.cashregisters[0]);
                     this.render_paymentlines();
                 }
 
 	        this.payment_input(button.data('action'));
 	    },
-        watch_order_changes: function() {
+        watch_checkout_order_changes: function() {
             var self = this;
-            var order = this.lounge.get_order();
+            var checkout_order = this.lounge.get_checkout_order();
 
-            if (!order) {
+            if (!checkout_order) {
 	            return;
 	        }
 
-	        if(this.old_order){
-	            this.old_order.unbind(null,null,this);
+	        if(this.old_checkout_order){
+	            this.old_checkout_order.unbind(null,null,this);
 	        }
 
-	        order.bind('all',function(){
-	            self.order_changes();
+	        checkout_order.bind('all',function(){
+	            self.checkout_order_changes();
 	        });
 
-	        this.old_order = order;
+	        this.old_checkout_order = checkout_order;
         },
         payment_input: function(input) {
             var newbuf = this.gui.numpad_input(this.inputbuffer, input, {'firstinput': this.firstinput});
@@ -2480,15 +2479,15 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        if (newbuf !== this.inputbuffer) {
 	            this.inputbuffer = newbuf;
-	            var order = this.lounge.get_order();
-	            if (order.selected_paymentline) {
+	            var checkout_order = this.lounge.get_checkout_order();
+	            if (checkout_order.selected_paymentline) {
 	                var amount = this.inputbuffer;
 	                if (this.inputbuffer !== "-") {
 	                    amount = formats.parse_value(this.inputbuffer, {type: "float"}, 0.0);
 	                }
 
-	                order.selected_paymentline.set_amount(amount);
-	                this.order_changes();
+	                checkout_order.selected_paymentline.set_amount(amount);
+	                this.checkout_order_changes();
 	                this.render_paymentlines();
 	                this.$('.paymentline.selected .edit').text(this.format_currency_no_symbol(amount));
 	            }
@@ -2496,12 +2495,12 @@ odoo.define('point_of_lounge.screens', function (require) {
         },
         // called when the order is changed, used to show if
 	    // the order is paid or not
-	    order_changes: function(){
+	    checkout_order_changes: function(){
 	        var self = this;
-	        var order = this.lounge.get_order();
-	        if (!order) {
+	        var checkout_order = this.lounge.get_order();
+	        if (!checkout_order) {
 	            return;
-	        } else if (order.is_paid()) {
+	        } else if (checkout_order.is_paid()) {
 	            self.$('.next').addClass('highlight');
 	        }else{
 	            self.$('.next').removeClass('highlight');
@@ -2526,12 +2525,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                break;
 	            }
 	        }
-	        this.lounge.get_order().add_paymentline(cashregister); //important
+	        this.lounge.get_checkout_order().add_paymentline(cashregister); //important
 	        this.reset_input();
 	        this.render_paymentlines();
 	    },
 	    reset_input: function(){
-	        var line = this.lounge.get_order().selected_paymentline;
+	        var line = this.lounge.get_checkout_order().selected_paymentline;
 	        this.firstinput  = true;
 	        if (line) {
 	            this.inputbuffer = this.format_currency_no_symbol(line.get_amount());
@@ -2541,22 +2540,22 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_paymentlines: function() {
             var self  = this;
-            var order = this.lounge.get_order();
-	        if (!order) {
+            var checkout_order = this.lounge.get_checkout_order();
+	        if (!checkout_order) {
 	            return;
 	        }
 
-	        var lines = order.get_paymentlines();
-	        var due   = order.get_due();
+	        var lines = checkout_order.get_paymentlines();
+	        var due   = checkout_order.get_due();
 	        var extradue = 0;
-	        if (due && lines.length  && due !== order.get_due(lines[lines.length-1])) {
+	        if (due && lines.length  && due !== checkout_order.get_due(lines[lines.length-1])) {
 	            extradue = due;
 	        }
 
 	        this.$('.paymentlines-container').empty();
 	        var lines = $(QWeb.render('LoungeOrderPaymentScreen-Paymentlines', {
 	            widget: this,
-	            order: order,
+	            checkout_order: checkout_order,
 	            paymentlines: lines,
 	            extradue: extradue,
 	        }));
@@ -2586,7 +2585,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var lines = this.lounge.get_order().get_paymentlines();
 	        for ( var i = 0; i < lines.length; i++ ) {
                 if (lines[i].cid === cid) {
-                    this.lounge.get_order().remove_paymentline(lines[i]);
+                    this.lounge.get_checkout_order().remove_paymentline(lines[i]);
                     this.reset_input();
                     this.render_paymentlines();
 	                return;
@@ -2594,20 +2593,20 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 	    },
 	    customer_changed: function() {
-	        var client = this.lounge.get_client();
+	        var client = this.lounge.get_checkout_client();
 	        this.$('.js_customer_name').text( client ? client.name : _t('Guest') );
 
 	    },
 	    click_set_customer: function(){
 	        this.gui.show_screen('clientlist');
 	    },
-	    validate_order: function(force_validation) {
+	    validate_checkout__order: function(force_validation) {
 	        var self = this;
-	        var order = this.lounge.get_order();
+	        var checkout_order = this.lounge.get_checkout__order();
 
 	        // FIXME: this check is there because the backend is unable to
 	        // process empty orders. This is not the right place to fix it.
-	        if (order.get_orderlines().length === 0) {
+	        if (checkout_order.get_orderlines().length === 0) {
                  this.gui.show_popup('error',{
 	                'title': _t('Empty Order'),
 	                'body':  _t('There must be at least one product sale in your order before it can be validated'),
@@ -2615,7 +2614,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
             // process check payment lines.
-	        var plines = order.get_paymentlines();
+	        var plines = checkout_order.get_paymentlines();
 	        for (var i = 0; i < plines.length; i++) {
 	            if (plines[i].get_type() === 'bank' && plines[i].get_amount() < 0) {
 	                this.lounge_widget.screen_selector.show_popup('error',{
@@ -2627,12 +2626,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        //check order is paid or not
-	        if (!order.is_paid() || this.invoicing) {
+	        if (!checkout_order.is_paid() || this.invoicing) {
 	            return;
 	        }
 
 	         // The exact amount must be paid if there is no cash payment method defined.
-	        if (Math.abs(order.get_total_with_tax() - order.get_total_paid()) > 0.00001) {
+	        if (Math.abs(checkout_order.get_total_with_tax() - checkout_order.get_total_paid()) > 0.00001) {
 	            var cash = false;
 	            for (var i = 0; i < this.lounge.cashregisters.length; i++) {
 	                cash = cash || (this.lounge.cashregisters[i].journal.type === 'cash');
@@ -2647,7 +2646,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        // if the change is too large, it's probably an input error, make the user confirm.
-	        if (!force_validation && (order.get_total_with_tax() * 1000 < order.get_total_paid())) {
+	        if (!force_validation && (checkout_order.get_total_with_tax() * 1000 < checkout_order.get_total_paid())) {
 	            this.gui.show_popup('confirm',{
 	                title: _t('Please Confirm Large Amount'),
 	                body:  _t('Are you sure that the customer wants to  pay') +
@@ -2660,25 +2659,25 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                       ' ' +
 	                       _t('? Clicking "Confirm" will validate the payment.'),
 	                confirm: function() {
-	                    self.validate_order('confirm');
+	                    self.validate_checkout_order('confirm');
 	                },
 	            });
 	            return;
 	        }
 
             // if the order cash with cashdrawer.
-	        if(order.is_paid_with_cash() && this.lounge.config.iface_cashdrawer) {
+	        if(order_checkout.is_paid_with_cash() && this.lounge.config.iface_cashdrawer) {
 	            this.lounge.proxy.open_cashbox();
 	        }
 
-	        order.initialize_validation_date();
+	        checkout_order.initialize_validation_date();
 
-	        this.lounge.push_order(order);
+	        this.lounge.push_checkout_order(checkout_order);
 	        this.gui.show_screen('order_receipt');
 
 	    },
 	    show: function(){
-	        this.lounge.get_order().clean_empty_paymentlines();
+	        this.lounge.get_checkout_order().clean_empty_paymentlines();
 	        this.reset_input();
 	        this.render_paymentlines();
 	        window.document.body.addEventListener('keypress',this.keyboard_handler);
