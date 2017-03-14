@@ -1135,6 +1135,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return;
 	        }
             this.product = options.product;
+            this.price   = options.product.price;
+            this.set_quantity(1);
+            this.type = 'pack';
+            this.selected = false;
         },
         init_from_JSON: function(json) {
 	        this.product = this.lounge.db.get_product_by_id(json.product_id);
@@ -1166,6 +1170,66 @@ odoo.define('point_of_lounge.models', function (require) {
 	    merge: function(orderline){
 	        this.order.assert_editable();
 	        this.set_quantity(this.get_quantity() + orderline.get_quantity());
+	    },
+	    // return the checkout product of this orderline
+	    get_product: function(){
+	        return this.product;
+	    },
+	    // return the unit of measure of the product
+	    get_unit: function(){
+	        var unit_id = this.product.uom_id;
+	        if(!unit_id){
+	            return undefined;
+	        }
+	        unit_id = unit_id[0];
+	        if(!this.lounge){
+	            return undefined;
+	        }
+	        return this.lounge.units_by_id[unit_id];
+	    },
+	    get_product_type: function(){
+	        return this.type;
+	    },
+	    // returns the discount [0,100]%
+	    get_discount: function(){
+	        return this.discount;
+	    },
+	    set_quantity: function(quantity){
+	        this.order.assert_editable();
+	        if(quantity === 'remove'){
+	            this.order.checkout_remove_orderline(this);
+	            return;
+	        }else{
+	            var quant = parseFloat(quantity) || 0;
+	            var unit = this.get_unit();
+	            if(unit){
+	                if (unit.rounding) {
+	                    //this.quantity    = round_pr(quant, unit.rounding);
+	                    this.quantity  = quant;
+	                    var decimals = this.lounge.dp['Product Unit of Measure'];
+	                    this.quantityStr = this.quantity.toFixed(0);
+	                    //this.quantityStr = formats.format_value(round_di(this.quantity, decimals), { type: 'float', digits: [69, decimals]});
+	                } else {
+	                    //this.quantity    = round_pr(quant, 1);
+	                    this.quantity  = quant;
+	                    this.quantityStr = this.quantity.toFixed(0);
+	                }
+
+	            }else{
+	                this.quantity    = quant;
+	                this.quantityStr = '' + this.quantity;
+	            }
+	        }
+	        this.trigger('change',this);
+	    },
+	    // selects or deselects this orderline
+	    set_selected: function(selected){
+	        this.selected = selected;
+	        this.trigger('change',this);
+	    },
+	    // return the quantity of product
+	    get_quantity: function(){
+	        return this.quantity;
 	    },
     });
 
@@ -1703,6 +1767,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.init_locked    = true;
 	        this.lounge         = options.lounge;
 	        this.selected_orderline   = undefined;
+	        this.checkout_selected_orderline   = undefined;
 	        this.selected_paymentline = undefined;
 	        this.screen_data    = {};  // see Gui
 
@@ -2025,7 +2090,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_last_orderline: function(){
 	        return this.orderlines.at(this.orderlines.length -1);
 	    },
-	    get_checkout_last_orderline: function(){
+	    checkout_get_last_orderline: function(){
 	        return this.checkout_orderlines.at(this.checkout_orderlines.length -1);
 	    },
 	    get_tip: function() {
@@ -2064,6 +2129,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.assert_editable();
 	        this.orderlines.remove(line);
 	        this.select_orderline(this.get_last_orderline());
+	    },
+	    checkout_remove_orderline: function(line){
+	        this.assert_editable();
+	        this.checkout_orderlines.remove(line);
+	        this.checkout_select_orderline(this.checkout_get_last_orderline());
 	    },
 	    add_product: function(product, options){
 	        if(this._printed){
@@ -2114,9 +2184,41 @@ odoo.define('point_of_lounge.models', function (require) {
             var attr = JSON.parse(JSON.stringify(product));
             attr.lounge = this.lounge;
 	        attr.order = this;
+
+	        var line = new exports.CheckoutOrderline({}, {lounge: this.lounge, order: this, product: product});
+
+	        if(options.quantity !== undefined) {
+	            line.set_quantity(options.quantity);
+	        }
+
+	        if(options.price !== undefined){
+	            line.set_unit_price(options.price);
+	        }
+
+	        if(options.discount !== undefined){
+	            line.set_discount(options.discount);
+	        }
+
+	        if(options.extras !== undefined){
+	            for (var prop in options.extras) {
+	                line[prop] = options.extras[prop];
+	            }
+	        }
+
+	        var last_orderline = this.checkout_get_last_orderline();
+	        if( last_orderline && last_orderline.can_be_merged_with(line) && options.merge !== false){
+	            last_orderline.merge(line);
+	        }else {
+	            //add checkout orderlines
+	            this.checkout_orderlines.add(line);
+	        }
+	        this.checkout_select_orderline(this.checkout_get_last_orderline());
 	    },
 	    get_selected_orderline: function(){
 	        return this.selected_orderline;
+	    },
+	    checkout_get_selected_orderline: function(){
+	        return this.checkout_selected_orderline;
 	    },
 	    select_orderline: function(line){
 	        if(line){
@@ -2129,6 +2231,19 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }
 	        }else{
 	            this.selected_orderline = undefined;
+	        }
+	    },
+	    checkout_select_orderline: function(line){
+	        if(line){
+	            if(line !== this.checkout_selected_orderline){
+	                if(this.checkout_selected_orderline){
+	                    this.checkout_selected_orderline.set_selected(false);
+	                }
+	                this.checkout_selected_orderline = line;
+	                this.checkout_selected_orderline.set_selected(true);
+	            }
+	        }else{
+	            this.checkout_selected_orderline = undefined;
 	        }
 	    },
 	    deselect_orderline: function(){

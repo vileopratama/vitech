@@ -605,8 +605,8 @@ odoo.define('point_of_lounge.chrome', function (require) {
 
 			if(err.message === 'XmlHttpRequestError '){
 				title = 'Network Failure (XmlHttpRequestError)';
-				body  = 'The Point of Sale could not be loaded due to a network problem.\n Please check your internet connection.';
-			}else if(err.message === 'OpenERP Server Error'){
+				body  = 'The Point of Lounge could not be loaded due to a network problem.\n Please check your internet connection.';
+			}else if(err.message === 'Vitech Server Error'){
 				title = err.data.message;
 				body  = err.data.debug;
 			}
