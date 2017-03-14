@@ -1273,7 +1273,7 @@
                                 <td class='col-tendered edit col-md-3'>
                                     <t t-esc='widget.inputbuffer' />
                                 </td>
-                                <t t-if='order.get_change(line)'>
+                                <t t-if='checkout_order.get_change(line)'>
                                     <td class='col-change highlight col-md-3' >
                                         <t t-esc='widget.format_currency_no_symbol(checkout_order.get_change(line))' />
                                     </td>
@@ -1281,7 +1281,7 @@
                                  <t t-if='!checkout_order.get_change(line)'>
                                     <td class='col-change col-md-3' ></td>
                                 </t>
-                                <td class='delete-button col-md-1' t-att-data-cid='line.cid'> <i class='fa fa-times-circle' /> </td>
+                                <td class='delete-button col-md-1' t-att-data-cid='line.cid'> <i class='fa fa-times-circle' />Remove</td>
                             </tr>
                         </t>
                         <t t-if='!line.selected'>

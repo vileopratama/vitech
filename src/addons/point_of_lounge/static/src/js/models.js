@@ -616,6 +616,20 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 
+	    // this is called when an order is removed from the order collection. It ensures that there is always an existing
+	    // order and a valid selected order
+	    on_removed_checkout_order: function(removed_checkout_order,index,reason){
+	        var checkout_order_list = this.get_checkout_order_list();
+	        if( (reason === 'abandon' || removed_checkout_order.temporary) && checkout_order_list.length > 0){
+	            // when we intentionally remove an unfinished order, and there is another existing one
+	            this.set_checkout_order(order_list[index] || checkout_order_list[checkout_order_list.length -1]);
+	        }else{
+	            // when the order was automatically removed after completion,
+	            // or when we intentionally delete the only concurrent order
+	            this.add_new_checkout_order();
+	        }
+	    },
+
 	    // returns the user who is currently the cashier for this point of sale
 	    get_cashier: function(){
 	        return this.cashier || this.user;
@@ -796,9 +810,19 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.set({ selectedOrder: order });
 	    },
 
+	    // change the current order
+	    set_checkout_order: function(checkout_order){
+	        this.set({ selectedCheckoutOrder: checkout_order });
+	    },
+
 	    // return the list of unpaid orders
 	    get_order_list: function(){
 	        return this.get('orders').models;
+	    },
+
+	    // return the list of unpaid orders
+	    get_checkout_order_list: function(){
+	        return this.get('checkout_orders').models;
 	    },
 
 	    //removes the current order
@@ -806,6 +830,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var order = this.get_order();
 	        if (order) {
 	            order.destroy({'reason':'abandon'});
+	        }
+	    },
+
+	    //removes the current order
+	    delete_current_checkout_order: function(){
+	        var checkout_order = this.get_checkout_order();
+	        if (checkout_order) {
+	            checkout_order.destroy({'reason':'abandon'});
 	        }
 	    },
 
@@ -823,6 +855,28 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        this.flush_mutex.exec(function(){
 	            var flushed = self._flush_orders(self.db.get_orders(), opts);
+
+	            flushed.always(function(ids){
+	                pushed.resolve();
+	            });
+	        });
+	        return pushed;
+	    },
+
+	    // saves the order locally and try to send it to the backend.
+	    // it returns a deferred that succeeds after having tried to send the order and all the other pending orders.
+	    push_checkout_order: function(order, opts) {
+	        opts = opts || {};
+	        var self = this;
+
+	        if(checkout_order){
+	            this.db.add_checkout_order(checkout_order.export_as_JSON());
+	        }
+
+	        var pushed = new $.Deferred();
+
+	        this.flush_mutex.exec(function(){
+	            var flushed = self._flush_orders(self.db.get_checkout__orders(), opts);
 
 	            flushed.always(function(ids){
 	                pushed.resolve();
@@ -2112,7 +2166,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            var lines  = this.checkout_paymentlines.models;
 	            for (var i = 0; i < lines.length; i++) {
 	                change += lines[i].get_amount();
-	                if (lines[i] === paymentline) {
+	                if (lines[i] === checkout_paymentline) {
 	                    break;
 	                }
 	            }
@@ -2141,7 +2195,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    remove_paymentline: function(line){
 	        this.assert_editable();
 	        if(this.selected_checkout_paymentline === line){
-	            this.select_checkout_paymentline(undefined);
+	            this.select_paymentline(undefined);
 	        }
 	        this.checkout_paymentlines.remove(line);
 	    },
@@ -2190,7 +2244,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        this.checkout_paymentlines.add(newPaymentline);
 	        this.select_paymentline(newPaymentline);
-
 	    },
 	});
 

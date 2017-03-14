@@ -2336,10 +2336,10 @@ odoo.define('point_of_lounge.screens', function (require) {
         init: function(parent, options) {
             var self = this;
 	        this._super(parent, options);
-	        this.lounge.bind('change:selectedCheckoutOrder',function(){
+	        //this.lounge.bind('change:selectedCheckoutOrder',function(){
 	            this.renderElement();
-	            this.watch_order_changes();
-	        },this);
+	            this.watch_checkout_order_changes();
+	        //},this);
 	        this.watch_checkout_order_changes();
 
 	        this.inputbuffer = "";
@@ -2418,7 +2418,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            self.validate_order();
+	            self.validate_checkout_order();
 	        });
 
 	        this.$('.js_set_customer').click(function(){
@@ -2541,6 +2541,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    render_paymentlines: function() {
             var self  = this;
             var checkout_order = this.lounge.get_checkout_order();
+            alert(checkout_order);
 	        if (!checkout_order) {
 	            return;
 	        }
@@ -2600,7 +2601,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    click_set_customer: function(){
 	        this.gui.show_screen('clientlist');
 	    },
-	    validate_checkout__order: function(force_validation) {
+	    validate_checkout_order: function(force_validation) {
 	        var self = this;
 	        var checkout_order = this.lounge.get_checkout__order();
 
