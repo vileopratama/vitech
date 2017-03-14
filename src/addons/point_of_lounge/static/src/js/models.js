@@ -1120,6 +1120,59 @@ odoo.define('point_of_lounge.models', function (require) {
 	    pmodels.splice.apply(pmodels,[index,0].concat(models));
 	};
 
+	var checkout_orderline_id = 1;
+
+	// An orderline represent one element of the content of a client's shopping cart.
+	// An orderline contains a product, its quantity, its price, discount. etc.
+	// An Order contains zero or more Orderlines.
+
+    exports.CheckoutOrderline = Backbone.Model.extend({
+        initialize: function(attr,options){
+            this.lounge = options.lounge;
+            this.order = options.order;
+            if (options.json) {
+	            this.init_from_JSON(options.json);
+	            return;
+	        }
+            this.product = options.product;
+        },
+        init_from_JSON: function(json) {
+	        this.product = this.lounge.db.get_product_by_id(json.product_id);
+	        if (!this.product) {
+	            console.error('ERROR: attempting to recover product not available in the lounge');
+	        }
+	        //this.partner = this.lounge.get_client();
+	        this.price = json.price_unit;
+	        this.set_discount(json.discount);
+	        this.set_quantity(json.qty);
+	        this.id    = json.id;
+	        checkout_orderline_id = Math.max(this.id+1,checkout_orderline_id);
+	    },
+	    can_be_merged_with: function(orderline){
+	        if( this.get_product().id !== orderline.get_product().id) {
+	            return false;
+	        }else if(!this.get_unit() || !this.get_unit().groupable){
+	            return false;
+	        }else if(this.get_product_type() !== orderline.get_product_type()){
+	            return false;
+	        }else if(this.get_discount() > 0) { // we don't merge discounted orderlines
+	            return false;
+	        }else if(this.price !== orderline.price){
+	            return false;
+	        }else{
+	            return true;
+	        }
+	    },
+	    merge: function(orderline){
+	        this.order.assert_editable();
+	        this.set_quantity(this.get_quantity() + orderline.get_quantity());
+	    },
+    });
+
+    var CheckoutOrderlineCollection = Backbone.Collection.extend({
+	    model: exports.CheckoutOrderline,
+	});
+
 	var orderline_id = 1;
 
 	// An orderline represent one element of the content of a client's shopping cart.
@@ -1133,8 +1186,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	            this.init_from_JSON(options.json);
 	            return;
 	        }
+	        //alert(options.product);
 	        this.product = options.product;
-	        //this.partner = options.partner;
 	        this.price   = options.product.price;
 	        this.set_quantity(1);
 	        this.discount = 0;
@@ -1658,6 +1711,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.to_invoice     = false;
 	        this.flight_number  = null;
 	        this.orderlines     = new OrderlineCollection();
+	        this.checkout_orderlines = new CheckoutOrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;
 	        this.finalized      = false; // if true, cannot be modified.
@@ -1971,6 +2025,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_last_orderline: function(){
 	        return this.orderlines.at(this.orderlines.length -1);
 	    },
+	    get_checkout_last_orderline: function(){
+	        return this.checkout_orderlines.at(this.checkout_orderlines.length -1);
+	    },
 	    get_tip: function() {
 	        var tip_product = this.lounge.db.get_product_by_id(this.lounge.config.tip_product_id[0]);
 	        var lines = this.get_orderlines();
@@ -2013,6 +2070,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            this.destroy();
 	            return this.lounge.get_order().add_product(product, options);
 	        }
+
 	        this.assert_editable();
 	        options = options || {};
 	        var attr = JSON.parse(JSON.stringify(product));
@@ -2021,6 +2079,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var line = new exports.Orderline({}, {lounge: this.lounge, order: this, product: product});
 
 	        if(options.quantity !== undefined){
+
 	            line.set_quantity(options.quantity);
 	        }
 	        if(options.price !== undefined){
@@ -2043,6 +2102,18 @@ odoo.define('point_of_lounge.models', function (require) {
 	            this.orderlines.add(line);
 	        }
 	        this.select_orderline(this.get_last_orderline());
+	    },
+	    checkout_add_product: function(product, options){
+            if(this._printed) {
+                this.destroy();
+                return this.lounge.get_order().checkout_add_product(product, options);
+            }
+
+            this.assert_editable();
+            options = options || {};
+            var attr = JSON.parse(JSON.stringify(product));
+            attr.lounge = this.lounge;
+	        attr.order = this;
 	    },
 	    get_selected_orderline: function(){
 	        return this.selected_orderline;

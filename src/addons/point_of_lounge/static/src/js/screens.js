@@ -259,6 +259,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return this.gui.get_current_screen_param('product');
 	    },
 	    order_product: function(){
+	        //alert("x");
 	        this.lounge.get_order().add_product(this.get_product(),{ quantity: this.weight });
 	    },
 	    get_product_name: function(){
@@ -863,7 +864,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.show_scale = options.show_scale || false;
 	        this.next_screen = options.next_screen || false;
 
-	        this.click_product_handler = function(){
+	        this.click_product_handler = function() {
 	            if(self.lounge.get_order().get_client()) {
 	                var product = self.lounge.db.get_product_by_id(this.dataset.productId);
 	                options.click_product_action(product);
@@ -1037,6 +1038,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 
 	    click_product: function(product) {
+
 	       if(product.to_weight && this.lounge.config.iface_electronic_scale){
 	           this.gui.show_screen('scale',{product: product});
 	       }else{
@@ -2222,6 +2224,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 	    },
 	    render_line_list: function(order_lines,data){
+	        var self = this;
 	        var linecontents = this.$el[0].querySelector('.orderline-list-contents');
 	        linecontents.innerHTML = "";
 	        var subtotal = 0;
@@ -2233,13 +2236,27 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var total_hour_charge;
 	        var total_charge;
 
+
+	        //destroy
+            //this.lounge.get_order().finalize();
+
 	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
 	            var order_line = order_lines[i];
 	            var orderline = this.order_line_cache.get_node(order_line.id);
+	            var product_id = order_line.product_id[0];
+	            var qty = order_line.qty;
+
+	            //add to checkout order
+	            for (var j = 0; j < qty; j++) {
+                    var product = self.lounge.db.get_product_by_id(product_id);
+                    this.lounge.get_order().checkout_add_product(product);
+	            }
 
 	            if(order_line.price_subtotal_incl)
 	                subtotal+=order_line.price_subtotal_incl;
 
+	            //alert(order_line.product_id[1]);
+	            //alert(order_line.qty);
                 /**
                  * Calculation Charge
                 */
@@ -2249,7 +2266,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
 	            total_charge = (total_hour_charge <= 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
 	            order_line.total_charge = total_charge;
-	            order_line.subtotal = total_charge + order_line.price_subtotal_incl;
+	            order_line.subtotal = (qty * total_charge) + order_line.price_subtotal_incl;
 	            subtotal+=order_line.subtotal;
 
 	            if(!orderline){
