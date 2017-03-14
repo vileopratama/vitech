@@ -1137,8 +1137,11 @@ odoo.define('point_of_lounge.models', function (require) {
             this.product = options.product;
             this.price   = options.product.price;
             this.set_quantity(1);
+            this.discount = 0;
+            this.discountStr = '0';
             this.type = 'pack';
             this.selected = false;
+            this.id  = checkout_orderline_id++;
         },
         init_from_JSON: function(json) {
 	        this.product = this.lounge.db.get_product_by_id(json.product_id);
@@ -1230,6 +1233,51 @@ odoo.define('point_of_lounge.models', function (require) {
 	    // return the quantity of product
 	    get_quantity: function(){
 	        return this.quantity;
+	    },
+	    get_price_without_tax: function(){
+	        return this.get_all_prices().priceWithoutTax;
+	    },
+	    get_tax: function(){
+	        return this.get_all_prices().tax;
+	    },
+	    get_all_prices: function(){
+            var self = this;
+            var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
+            var taxtotal = 0;
+            var product =  this.get_product();
+            var taxes_ids = product.taxes_id;
+            var taxes =  this.lounge.taxes;
+            var taxdetail = {};
+	        var product_taxes = [];
+
+	        _(taxes_ids).each(function(el){
+	            product_taxes.push(_.detect(taxes, function(t){
+	                return t.id === el;
+	            }));
+	        });
+
+	        var all_taxes = this.compute_all(product_taxes, price_unit,this.get_quantity(), this.lounge.currency.rounding);
+	        _(all_taxes.taxes).each(function(tax) {
+	            taxtotal += tax.amount;
+	            taxdetail[tax.id] = tax.amount;
+	        });
+
+	        return {
+	            "priceWithTax": all_taxes.total_included, // 32.2
+	            "priceWithoutTax": all_taxes.total_excluded, //28
+	            "tax": taxtotal,
+	            "taxDetails": taxdetail,
+	            "surcharge": all_taxes.total_included_without_charge, // 18 +
+	        };
+	    },
+	    get_unit_price: function() {
+	        var discount = 0;
+	        var price = this.price;
+	        price = price - discount;
+	        return round_di(price || 0, this.lounge.dp['Product Price']);
+	    },
+	    compute_all: function(taxes, price_unit,quantity, currency_rounding) {
+	        var self = this;
 	    },
     });
 
@@ -2306,10 +2354,18 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_total_with_tax: function() {
 	        return this.get_total_without_tax() + this.get_total_tax();
 	    },
+	    checkout_get_total_with_taxt: function () {
+	        return this.checkout_get_total_without_tax() + this.checkout_get_total_tax();
+	    },
 	    get_total_without_tax: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
 	            return sum + orderLine.get_price_without_tax();
 	        }), 0), this.lounge.currency.rounding);
+	    },
+	    checkout_get_total_without_tax: function() {
+            return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
+                return sum + orderLine.get_price_without_tax();
+            }),0), this.lounge.currency.rounding);
 	    },
 	    get_total_discount: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
@@ -2318,6 +2374,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_total_tax: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
+	            return sum + orderLine.get_tax();
+	        }), 0), this.lounge.currency.rounding);
+	    },
+	    checkout_get_total_tax: function() {
+	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
 	            return sum + orderLine.get_tax();
 	        }), 0), this.lounge.currency.rounding);
 	    },
