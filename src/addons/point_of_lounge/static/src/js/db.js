@@ -640,7 +640,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        // if the checkout order was already stored, we overwrite its data
 	        for(var i = 0, len = checkout_orders.length; i < len; i++){
 	            if(checkout_orders[i].id === checkout_order_id){
-	                checkout_orders[i].data = order;
+	                checkout_orders[i].data = checkout_order;
 	                this.save('checkout_orders',checkout_orders);
 	                return checkout_order_id;
 	            }
