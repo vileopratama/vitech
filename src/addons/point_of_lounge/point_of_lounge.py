@@ -982,22 +982,22 @@ class lounge_order(osv.osv):
             }, context=context)
         return order_id
 
-    def update_from_ui(self, cr, uid, orders, context=None):
-        submitted_references = [o['data']['name'] for o in orders]
+    def update_from_ui(self, cr, uid, checkout_orders, context=None):
+        submitted_references = [o['data']['name'] for o in checkout_orders]
         existing_order_ids = self.search(cr, uid, [('lounge_reference', 'in', submitted_references)],
                                          context=context)
         existing_orders = self.read(cr, uid, existing_order_ids, ['lounge_reference'], context=context)
         existing_references = set([o['lounge_reference'] for o in existing_orders])
-        orders_to_save = [o for o in orders if o['data']['name'] not in existing_references]
-        order_ids = []
+        checkout_orders_to_save = [o for o in checkout_orders if o['data']['name'] not in existing_references]
+        checkout_order_ids = []
 
-        for tmp_order in orders_to_save:
-            order = tmp_order['data']
-            order_id = self._process_checkout_order(cr, uid, order, context=context)
-            order_ids.append(order_id)
+        for tmp_order in checkout_orders_to_save:
+            checkout_order = tmp_order['data']
+            checkout_order_id = self._process_checkout_order(cr, uid, checkout_order, context=context)
+            checkout_order_ids.append(checkout_order_id)
 
             try:
-                self.signal_workflow(cr, uid, [order_id], 'paid')
+                self.signal_workflow(cr, uid, [checkout_order_id], 'paid')
             except psycopg2.OperationalError:
                 # do not hide transactional errors, the order(s) won't be saved!
                 raise
@@ -1008,7 +1008,7 @@ class lounge_order(osv.osv):
             #    self.action_invoice(cr, uid, [order_id], context)
             #    order_obj = self.browse(cr, uid, order_id, context)
             #    self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [order_obj.invoice_id.id],'invoice_open')
-        return order_ids
+        return checkout_order_ids
 
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),

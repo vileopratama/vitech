@@ -1069,7 +1069,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return loungeOrderModel.call('update_from_ui',
 	            [_.map(checkout_orders, function (checkout_order) {
 	                //checkout_order.to_invoice = options.to_invoice || false;
-	                alert(checkout_order.name);
+	                //alert(checkout_order.name);
 	                return checkout_order;
 	            })],
 	            undefined,
@@ -1090,14 +1090,15 @@ odoo.define('point_of_lounge.models', function (require) {
 	                    delete error.data.debug;
 	                }
 
-	                /* Hide error if already shown before ...
-	                if ((!self.get('failed') || options.show_error) && !options.to_invoice) {
+	                /* Hide error if already shown before ...*/
+	                //if ((!self.get('failed') || options.show_error) && !options.to_invoice) {
+	                if ((!self.get('failed') || options.show_error)) {
 	                    self.gui.show_popup('error-traceback',{
 	                        'title': error.data.message,
 	                        'body':  error.data.debug
 	                    });
 	                }
-	                self.set('failed',error)*/
+	                self.set('failed',error)
 	            }
 	            // prevent an error popup creation by the rpc failure
 	            // we want the failure to be silent as we send the orders in the background
@@ -2322,7 +2323,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        for (var i = 0; i < paymentlines.length; i++) {
 	            var paymentline = paymentlines[i][2];
 	            var newpaymentline = new exports.CheckoutPaymentline({},{lounge: this.lounge, order: this, json: paymentline});
-	            this.paymentlines.add(newpaymentline);
+	            this.checkout_paymentlines.add(newpaymentline);
 
 	            if (i === paymentlines.length - 1) {
 	                this.select_paymentline(newpaymentline);
