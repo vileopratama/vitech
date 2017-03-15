@@ -1381,6 +1381,22 @@ odoo.define('point_of_lounge.models', function (require) {
                  id: this.id,
 	        };
 	    },
+	     //used to create a json of the ticket, to be sent to the printer
+	    export_for_printing: function(){
+	        return {
+	            quantity:           this.get_quantity(),
+	            unit_name:          this.get_unit().name,
+	            price:              this.get_unit_display_price(),
+	            discount:           this.get_discount(),
+	            product_name:       this.get_product().display_name,
+	            price_display :     this.get_display_price(),
+	            price_with_tax :    this.get_price_with_tax(),
+	            price_without_tax:  this.get_price_without_tax(),
+	            tax:                this.get_tax(),
+	            product_description:      this.get_product().description,
+	            product_description_sale: this.get_product().description_sale,
+	        };
+	    },
 	    can_be_merged_with: function(orderline){
 	        if( this.get_product().id !== orderline.get_product().id) {
 	            return false;
@@ -1463,6 +1479,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_price_without_tax: function(){
 	        return this.get_all_prices().priceWithoutTax;
 	    },
+	    get_price_with_tax: function(){
+	        return this.get_all_prices().priceWithTax;
+	    },
 	    get_tax: function(){
 	        return this.get_all_prices().tax;
 	    },
@@ -1500,6 +1519,28 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var price = this.price;
 	        price = price - discount;
 	        return round_di(price || 0, this.lounge.dp['Product Price']);
+	    },
+	    get_base_price: function(){
+	        var rounding = this.lounge.currency.rounding;
+	        return round_pr(this.get_unit_price() * this.get_quantity() * (1 - this.get_discount()/100), rounding);
+	    },
+	    get_unit_display_price: function(){
+	        if (this.lounge.config.iface_tax_included) {
+	            var quantity = this.quantity;
+	            this.quantity = 1.0;
+	            var price = this.get_all_prices().priceWithTax;
+	            this.quantity = quantity;
+	            return price;
+	        } else {
+	            return this.get_unit_price();
+	        }
+	    },
+	    get_display_price: function() {
+	        if (this.lounge.config.iface_tax_included) {
+	            return this.get_price_with_tax();
+	        } else {
+	            return this.get_base_price();
+	        }
 	    },
 	    compute_all: function(taxes, price_unit,quantity, currency_rounding) {
 	        var self = this;
@@ -2183,7 +2224,7 @@ odoo.define('point_of_lounge.models', function (require) {
              this.checkout_orderlines = new CheckoutOrderlineCollection();
              this.checkout_paymentlines   = new CheckoutPaymentlineCollection();
              this.lounge_session_id = this.lounge.lounge_session.id;
-
+             this.finalized = false; // if true, cannot be modified.
 
              if (options.json) {
                 this.init_from_JSON(options.json);
@@ -2226,6 +2267,107 @@ odoo.define('point_of_lounge.models', function (require) {
                 creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
                 fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false
 	        }
+	    },
+	    //used to create a json of the ticket, to be sent to the printer
+	    export_for_printing: function() {
+	        var orderlines = [];
+	        var self = this;
+
+	        this.checkout_orderlines.each(function(orderline) {
+	            orderlines.push(orderline.export_for_printing());
+	        });
+
+	        var paymentlines = [];
+	        this.checkout_paymentlines.each(function(paymentline){
+	            paymentlines.push(paymentline.export_for_printing());
+	        });
+
+	        var client  = this.get('client');
+	        var cashier = this.lounge.cashier || this.lounge.user;
+	        var company = this.lounge.company;
+	        var shop = this.lounge.shop;
+	        var date    = new Date();
+
+	        function is_xml(subreceipt){
+	            return subreceipt ? (subreceipt.split('\n')[0].indexOf('<!DOCTYPE QWEB') >= 0) : false;
+	        }
+
+	        function render_xml(subreceipt){
+	            if (!is_xml(subreceipt)) {
+	                return subreceipt;
+	            } else {
+	                subreceipt = subreceipt.split('\n').slice(1).join('\n');
+	                var qweb = new QWeb2.Engine();
+	                qweb.debug = core.debug;
+	                qweb.default_dict = _.clone(QWeb.default_dict);
+	                qweb.add_template('<templates><t t-name="subreceipt">'+subreceipt+'</t></templates>');
+	                return qweb.render('subreceipt',{'lounge':self.lounge,'widget':self.lounge.chrome,'order':self, 'receipt': receipt});
+	            }
+	        }
+
+	        var receipt = {
+	            orderlines: orderlines,
+	            paymentlines: paymentlines,
+	            subtotal: this.get_subtotal(),
+	            total_with_tax: this.get_total_with_tax(),
+	            total_without_tax: this.get_total_without_tax(),
+	            total_tax: this.get_total_tax(),
+	            total_paid: this.get_total_paid(),
+	            total_discount: this.get_total_discount(),
+	            tax_details: this.get_tax_details(),
+	            change: this.get_change(),
+	            name : this.get_name(),
+	            client: client ? client.name : null ,
+	            invoice_id: null,   //TODO
+	            cashier: cashier ? cashier.name : null,
+	            precision: {
+	                price: 2,
+	                money: 2,
+	                quantity: 3,
+	            },
+	            date: {
+	                year: date.getFullYear(),
+	                month: date.getMonth(),
+	                date: date.getDate(),       // day of the month
+	                day: date.getDay(),         // day of the week
+	                hour: date.getHours(),
+	                minute: date.getMinutes() ,
+	                isostring: date.toISOString(),
+	                localestring: date.toLocaleString(),
+	            },
+	            company:{
+	                email: company.email,
+	                website: company.website,
+	                company_registry: company.company_registry,
+	                contact_address: company.partner_id[1],
+	                vat: company.vat,
+	                name: company.name,
+	                phone: company.phone,
+	                logo:  this.lounge.company_logo_base64,
+	            },
+	            shop:{
+	                name: shop.name,
+	            },
+	            currency: this.lounge.currency,
+	        };
+
+	        if (is_xml(this.lounge.config.receipt_header)){
+	            receipt.header = '';
+	            receipt.header_xml = render_xml(this.lounge.config.receipt_header);
+	        } else {
+	            receipt.header = this.lounge.config.receipt_header || '';
+	        }
+
+	        if (is_xml(this.lounge.config.receipt_footer)){
+	            receipt.footer = '';
+	            receipt.footer_xml = render_xml(this.lounge.config.receipt_footer);
+	        } else {
+	            receipt.footer = this.lounge.config.receipt_footer || '';
+	        }
+
+
+
+	        return receipt;
 	    },
 	    generate_unique_id: function() {
 	        function zero_pad(num,size){
@@ -2360,6 +2502,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return sum + paymentLine.get_amount();
 	        }), 0), this.lounge.currency.rounding);
 	    },
+	    get_subtotal : function(){
+	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine){
+	            return sum + orderLine.get_display_price();
+	        }), 0), this.lounge.currency.rounding);
+	    },
 	    remove_paymentline: function(line){
 	        this.assert_editable();
 	        if(this.selected_checkout_paymentline === line){
@@ -2423,6 +2570,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    initialize_validation_date: function () {
 	        this.validation_date = this.validation_date || new Date();
+	    },
+	    finalize: function(){
+	        this.destroy();
+	    },
+	    destroy: function() {
+	        Backbone.Model.prototype.destroy.apply(this,arguments);
+	        this.lounge.db.remove_unpaid_checkout_order(this);
 	    },
 	});
 

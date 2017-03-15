@@ -701,6 +701,23 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        this.save('unpaid_orders',orders);
 	        return order_id;
 	    },
+	    save_unpaid_checkout_order: function(checkout_order){
+	        var checkout_order_id = checkout_order.uid;
+	        var checkout_orders = this.load('unpaid_checkout_orders',[]);
+	        var serialized = checkout_order.export_as_JSON();
+
+	        for (var i = 0; i < checkout_orders.length; i++) {
+	            if (checkout_orders[i].id === checkout_order_id){
+	                checkout_orders[i].data = serialized;
+	                this.save('unpaid_checkout_orders',checkout_orders);
+	                return checkout_order_id;
+	            }
+	        }
+
+	        checkout_orders.push({id: checkout_order_id, data: serialized});
+	        this.save('unpaid_checkout_orders',checkout_orders);
+	        return checkout_order_id;
+	    },
 	    remove_unpaid_order: function(order){
 	        var orders = this.load('unpaid_orders',[]);
 	        orders = _.filter(orders, function(o){
@@ -708,7 +725,17 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        });
 	        this.save('unpaid_orders',orders);
 	    },
+	    remove_unpaid_checkout_order: function(checkout_order) {
+	        var checkout_orders = this.load('unpaid_checkout_orders',[]);
+	        checkout_orders = _.filter(checkout_orders, function(o){
+	            return o.id !== checkout_order.uid;
+	        });
+	        this.save('unpaid_checkout_orders',orders);
+	    },
 	    remove_all_unpaid_orders: function(){
+	        this.save('unpaid_orders',[]);
+	    },
+	    remove_all_unpaid_checkout_orders: function(){
 	        this.save('unpaid_orders',[]);
 	    },
 	    get_unpaid_orders: function(){
