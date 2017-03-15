@@ -615,7 +615,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    },
 
 	    /* paid orders */
-	    add_order: function(order){
+	    add_order: function(order) {
 	        var order_id = order.uid;
 	        var orders  = this.load('orders',[]);
 
@@ -632,6 +632,24 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        this.save('orders',orders);
 	        return order_id;
 	    },
+	     /* paid orders */
+	    add_checkout_order: function(checkout_order) {
+	        var checkout_order_id = checkout_order.uid;
+	        var checkout_orders  = this.load('checkout_orders',[]);
+
+	        // if the checkout order was already stored, we overwrite its data
+	        for(var i = 0, len = checkout_orders.length; i < len; i++){
+	            if(checkout_orders[i].id === checkout_order_id){
+	                checkout_orders[i].data = order;
+	                this.save('checkout_orders',checkout_orders);
+	                return checkout_order_id;
+	            }
+	        }
+
+	        checkout_orders.push({id: checkout_order_id, data: checkout_order});
+	        this.save('checkout_orders',checkout_orders);
+	        return checkout_order_id;
+	    },
 	    remove_order: function(order_id){
 	        var orders = this.load('orders',[]);
 	        orders = _.filter(orders, function(order){
@@ -639,11 +657,21 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        });
 	        this.save('orders',orders);
 	    },
+	    remove_checkout_order: function(checkout_order_id){
+	        var checkout_orders = this.load('checkout_orders',[]);
+	        checkout_orders = _.filter(checkout_orders, function(checkout_order){
+	            return checkout_order.id !== checkout_order_id;
+	        });
+	        this.save('checkout_orders',checkout_orders);
+	    },
 	    remove_all_orders: function(){
 	        this.save('orders',[]);
 	    },
 	    get_orders: function(){
 	        return this.load('orders',[]);
+	    },
+	    get_checkout_orders: function(){
+	        return this.load('checkout_orders',[]);
 	    },
 	    get_order: function(order_id){
 	        var orders = this.get_orders();

@@ -2602,7 +2602,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    validate_checkout_order: function(force_validation) {
 	        var self = this;
-	        var checkout_order = this.lounge.get_checkout__order();
+	        var checkout_order = this.lounge.get_checkout_order();
 
 	        // FIXME: this check is there because the backend is unable to
 	        // process empty orders. This is not the right place to fix it.

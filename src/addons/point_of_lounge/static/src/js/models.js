@@ -865,7 +865,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	    // saves the order locally and try to send it to the backend.
 	    // it returns a deferred that succeeds after having tried to send the order and all the other pending orders.
-	    push_checkout_order: function(order, opts) {
+	    push_checkout_order: function(checkout_order, opts) {
 	        opts = opts || {};
 	        var self = this;
 
@@ -876,7 +876,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var pushed = new $.Deferred();
 
 	        this.flush_mutex.exec(function(){
-	            var flushed = self._flush_orders(self.db.get_checkout__orders(), opts);
+	            var flushed = self._flush_checkout_orders(self.db.get_checkout_orders(), opts);
 
 	            flushed.always(function(ids){
 	                pushed.resolve();
@@ -963,6 +963,28 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }
 	        });
 	    },
+	    _flush_checkout_orders: function(checkout_orders, options) {
+	        var self = this;
+	        this.set('synch',{ state: 'connecting', pending: checkout_orders.length});
+
+	        return self._save_checkout_to_server(checkout_orders, options).done(function(server_ids) {
+	            var pending = self.db.get_checkout_orders().length;
+
+	            self.set('synch', {
+	                state: pending ? 'connecting' : 'connected',
+	                pending: pending
+	            });
+
+	            return server_ids;
+	        }).fail(function(error, event){
+	            var pending = self.db.get_checkout_orders().length;
+	            if (self.get('failed')) {
+	                self.set('synch', { state: 'error', pending: pending });
+	            } else {
+	                self.set('synch', { state: 'disconnected', pending: pending });
+	            }
+	        });
+	    },
 
 	    // send an array of orders to the server
 	    // available options:
@@ -1020,6 +1042,65 @@ odoo.define('point_of_lounge.models', function (require) {
 	            // we want the failure to be silent as we send the orders in the background
 	            event.preventDefault();
 	            console.error('Failed to send orders:', orders);
+	        });
+	    },
+
+	     // send an array of orders to the server
+	    // available options:
+	    // - timeout: timeout for the rpc call in ms
+	    // returns a deferred that resolves with the list of
+	    // server generated ids for the sent orders
+	    _save_checkout_to_server: function (checkout_orders, options) {
+	        if (!checkout_orders || !checkout_orders.length) {
+	            var result = $.Deferred();
+	            result.resolve([]);
+	            return result;
+	        }
+
+	        options = options || {};
+
+	        var self = this;
+	        var timeout = typeof options.timeout === 'number' ? options.timeout : 7500 * checkout_orders.length;
+
+	        // we try to send the order. shadow prevents a spinner if it takes too long. (unless we are sending an invoice,
+	        // then we want to notify the user that we are waiting on something )
+	        var loungeOrderModel = new Model('lounge.order');
+	        return loungeOrderModel.call('update_from_ui',
+	            [_.map(checkout_orders, function (checkout_order) {
+	                //checkout_order.to_invoice = options.to_invoice || false;
+	                return checkout_order;
+	            })],
+	            undefined,
+	            {
+	                //shadow: !options.to_invoice,
+	                timeout: timeout
+	            }
+	        ).then(function (server_ids) {
+	            _.each(checkout_orders, function (checkout_order) {
+	                self.db.remove_checkout_order(checkout_order.id);
+	            });
+	            self.set('failed',false);
+	            return server_ids;
+	        }).fail(function (error, event){
+	            if(error.code === 200 ){    // Business Logic Error, not a connection problem
+	                //if warning do not need to display traceback!!
+	                if (error.data.exception_type == 'warning') {
+	                    delete error.data.debug;
+	                }
+
+	                /* Hide error if already shown before ...
+	                if ((!self.get('failed') || options.show_error) && !options.to_invoice) {
+	                    self.gui.show_popup('error-traceback',{
+	                        'title': error.data.message,
+	                        'body':  error.data.debug
+	                    });
+	                }
+	                self.set('failed',error)*/
+	            }
+	            // prevent an error popup creation by the rpc failure
+	            // we want the failure to be silent as we send the orders in the background
+	            event.preventDefault();
+	            console.error('Failed to send orders:', checkout_orders);
 	        });
 	    },
 
@@ -1290,6 +1371,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.id    = json.id;
 	        checkout_orderline_id = Math.max(this.id+1,checkout_orderline_id);
 	    },
+	    export_as_JSON: function() {
+	        return {
+                 qty: this.get_quantity(),
+                 price_unit: this.get_unit_price(),
+                 discount: this.get_discount(),
+                 product_id: this.get_product().id,
+                 tax_ids: [[6, false, _.map(this.get_applicable_taxes(), function(tax){ return tax.id; })]],
+                 id: this.id,
+	        };
+	    },
 	    can_be_merged_with: function(orderline){
 	        if( this.get_product().id !== orderline.get_product().id) {
 	            return false;
@@ -1472,6 +1563,23 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return base_amount / (1 - tax.amount / 100) - base_amount;
 	        }
 	        return false;
+	    },
+	    get_applicable_taxes: function() {
+	        var i;
+	        // Shenaningans because we need
+	        // to keep the taxes ordering.
+	        var ptaxes_ids = this.get_product().taxes_id;
+	        var ptaxes_set = {};
+	        for (i = 0; i < ptaxes_ids.length; i++) {
+	            ptaxes_set[ptaxes_ids[i]] = true;
+	        }
+
+	        var taxes = [];
+	        for (i = 0; i < this.lounge.taxes.length; i++) {
+                if (ptaxes_set[this.lounge.taxes[i].id]) {
+	                taxes.push(this.lounge.taxes[i]);
+	            }
+	        }
 	    },
     });
 
@@ -2071,8 +2179,68 @@ odoo.define('point_of_lounge.models', function (require) {
              options  = options || {};
              this.lounge = options.lounge;
              this.selected_checkout_orderline = undefined;
+             this.creation_date  = new Date();
              this.checkout_orderlines = new CheckoutOrderlineCollection();
              this.checkout_paymentlines   = new CheckoutPaymentlineCollection();
+             this.lounge_session_id = this.lounge.lounge_session.id;
+
+
+             if (options.json) {
+                this.init_from_JSON(options.json);
+             } else {
+                this.sequence_number = this.lounge.lounge_session.sequence_number++;
+                this.uid  = this.generate_unique_id();
+                this.name = _t("Order ") + this.uid;
+                this.validation_date = undefined;
+             }
+	    },
+	    init_from_JSON: function(json) {
+	        //this.sequence_number = json.sequence_number;
+	        //this.lounge.lounge_session.sequence_number = Math.max(this.sequence_number+1,this.lounge.lounge_session.sequence_number);
+	        //this.validation_date = json.creation_date;
+	    },
+	    export_as_JSON: function() {
+	        var orderLines, paymentLines;
+	        orderLines = [];
+	        this.checkout_orderlines.each(_.bind( function(item) {
+	            return orderLines.push([0, 0, item.export_as_JSON()]);
+	        }, this));
+	        paymentLines = [];
+	        this.checkout_paymentlines.each(_.bind( function(item) {
+	            return paymentLines.push([0, 0, item.export_as_JSON()]);
+	        }, this));
+
+	        return {
+                name : this.get_name(),
+                amount_paid: this.get_total_paid(),
+                amount_total: this.get_total_with_tax(),
+	            amount_tax: this.get_total_tax(),
+	            amount_return: this.get_change(),
+	            lines: orderLines,
+	            statement_ids: paymentLines,
+	            lounge_session_id: this.lounge_session_id,
+	            partner_id: this.get_client() ? this.get_client().id : false,
+                user_id: this.lounge.cashier ? this.lounge.cashier.id : this.lounge.user.id,
+                uid: this.uid,
+                sequence_number: this.sequence_number,
+                creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
+                fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false
+	        }
+	    },
+	    generate_unique_id: function() {
+	        function zero_pad(num,size){
+	            var s = ""+num;
+	            while (s.length < size) {
+	                s = "0" + s;
+	            }
+	            return s;
+	        }
+	        return zero_pad(this.lounge.lounge_session.id,5) +'-'+
+	               zero_pad(this.lounge.lounge_session.login_number,3) +'-'+
+	               zero_pad(this.sequence_number,4);
+	    },
+	    get_name: function() {
+	        return this.name;
 	    },
 	    get_client: function(){
 	        return this.get('client');
@@ -2248,6 +2416,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	    is_paid: function(){
 	        return this.get_due() === 0;
 	    },
+	    is_paid_with_cash: function(){
+	        return !!this.checkout_paymentlines.find( function(pl){
+	            return pl.cashregister.journal.type === 'cash';
+	        });
+	    },
+	    initialize_validation_date: function () {
+	        this.validation_date = this.validation_date || new Date();
+	    },
 	});
 
 	var CheckoutOrderCollection = Backbone.Collection.extend({
@@ -2266,16 +2442,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.init_locked    = true;
 	        this.lounge         = options.lounge;
 	        this.selected_orderline   = undefined;
-	        this.checkout_selected_orderline   = undefined;
 	        this.selected_paymentline = undefined;
 	        this.screen_data    = {};  // see Gui
-
 	        this.temporary      = options.temporary || false;
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
 	        this.flight_number  = null;
 	        this.orderlines     = new OrderlineCollection();
-	        this.checkout_orderlines = new CheckoutOrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;
 	        this.finalized      = false; // if true, cannot be modified.
@@ -2587,14 +2760,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_orderlines: function(){
 	        return this.orderlines.models;
 	    },
-	    checkout_get_orderlines: function(){
-	        return this.checkout_orderlines.models;
-	    },
 	    get_last_orderline: function(){
 	        return this.orderlines.at(this.orderlines.length -1);
-	    },
-	    checkout_get_last_orderline: function(){
-	        return this.checkout_orderlines.at(this.checkout_orderlines.length -1);
 	    },
 	    get_tip: function() {
 	        var tip_product = this.lounge.db.get_product_by_id(this.lounge.config.tip_product_id[0]);
@@ -2633,11 +2800,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.orderlines.remove(line);
 	        this.select_orderline(this.get_last_orderline());
 	    },
-	    checkout_remove_orderline: function(line){
-	        this.assert_editable();
-	        this.checkout_orderlines.remove(line);
-	        this.checkout_select_orderline(this.checkout_get_last_orderline());
-	    },
+
 	    add_product: function(product, options){
 	        if(this._printed){
 	            this.destroy();
@@ -2676,59 +2839,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        this.select_orderline(this.get_last_orderline());
 	    },
-	    checkout_add_product: function(product, options){
-            if(this._printed) {
-                this.destroy();
-                return this.lounge.get_order().checkout_add_product(product, options);
-            }
-
-            this.assert_editable();
-            options = options || {};
-            var attr = JSON.parse(JSON.stringify(product));
-            attr.lounge = this.lounge;
-	        attr.order = this;
-
-	        var line = new exports.CheckoutOrderline({}, {lounge: this.lounge, order: this, product: product});
-
-	        if(options.quantity !== undefined) {
-	            line.set_quantity(options.quantity);
-	        }
-
-	        if(options.price !== undefined){
-	            line.set_unit_price(options.price);
-	        }
-
-	        if(options.discount !== undefined){
-	            line.set_discount(options.discount);
-	        }
-
-	        if(options.extras !== undefined){
-	            for (var prop in options.extras) {
-	                line[prop] = options.extras[prop];
-	            }
-	        }
-
-	        var last_orderline = this.checkout_get_last_orderline();
-	        if( last_orderline && last_orderline.can_be_merged_with(line) && options.merge !== false){
-	            last_orderline.merge(line);
-	        }else {
-	            //add checkout orderlines
-	            this.checkout_orderlines.add(line);
-	        }
-	        this.checkout_select_orderline(this.checkout_get_last_orderline());
-	    },
 	    get_selected_orderline: function(){
 	        return this.selected_orderline;
-	    },
-	    checkout_get_selected_orderline: function(){
-	        return this.checkout_selected_orderline;
-	    },
-	    checkout_destroy() {
-	        var order_lines = this.checkout_get_orderlines();
-	        this.checkout_remove_orderline(order_lines);
-            //for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
-              //  this.trigger('set_value','remove');
-            //}
 	    },
 	    select_orderline: function(line){
 	        if(line){
@@ -2741,19 +2853,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }
 	        }else{
 	            this.selected_orderline = undefined;
-	        }
-	    },
-	    checkout_select_orderline: function(line){
-	        if(line){
-	            if(line !== this.checkout_selected_orderline){
-	                if(this.checkout_selected_orderline){
-	                    this.checkout_selected_orderline.set_selected(false);
-	                }
-	                this.checkout_selected_orderline = line;
-	                this.checkout_selected_orderline.set_selected(true);
-	            }
-	        }else{
-	            this.checkout_selected_orderline = undefined;
 	        }
 	    },
 	    deselect_orderline: function(){
@@ -2816,18 +2915,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_total_with_tax: function() {
 	        return this.get_total_without_tax() + this.get_total_tax();
 	    },
-	    checkout_get_total_with_tax: function () {
-	        return this.checkout_get_total_without_tax() + this.checkout_get_total_tax();
-	    },
 	    get_total_without_tax: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
 	            return sum + orderLine.get_price_without_tax();
 	        }), 0), this.lounge.currency.rounding);
-	    },
-	    checkout_get_total_without_tax: function() {
-            return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
-                return sum + orderLine.get_price_without_tax();
-            }),0), this.lounge.currency.rounding);
 	    },
 	    get_total_discount: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
@@ -2839,11 +2930,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return sum + orderLine.get_tax();
 	        }), 0), this.lounge.currency.rounding);
 	    },
-	    checkout_get_total_tax: function() {
-	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
-	            return sum + orderLine.get_tax();
-	        }), 0), this.lounge.currency.rounding);
-	    },
+
 	    get_total_surcharge: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
 	            return sum + orderLine.get_surcharge();

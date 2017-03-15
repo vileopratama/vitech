@@ -915,6 +915,100 @@ class lounge_order(osv.osv):
                                                              'invoice_open')
         return order_ids
 
+    def _checkout_order_fields(self, cr, uid, ui_order, context=None):
+        process_line = partial(self.pool['lounge.order.line']._order_line_fields, cr, uid, context=context)
+        # get user's timezone
+        # user_pool = self.pool.get('res.users')
+        # user = user_pool.browse(cr, SUPERUSER_ID, uid)
+        # tz = pytz.timezone(user.partner_id.tz) or pytz.utc
+
+        return {
+            'name': ui_order['name'],
+            'user_id': ui_order['user_id'] or False,
+            'session_id': ui_order['lounge_session_id'],
+            'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
+            'lounge_reference': ui_order['name'],
+            'partner_id': ui_order['partner_id'] or False,
+            'date_order': ui_order['creation_date'],
+            'fiscal_position_id': ui_order['fiscal_position_id'],
+        }
+
+    def _process_checkout_order(self, cr, uid, order, context=None):
+        prec_acc = self.pool.get('decimal.precision').precision_get(cr, uid, 'Account')
+        session = self.pool.get('lounge.session').browse(cr, uid, order['lounge_session_id'], context=context)
+
+        if session.state == 'closing_control' or session.state == 'closed':
+            session_id = self._get_valid_session(cr, uid, order, context=context)
+            session = self.pool.get('lounge.session').browse(cr, uid, session_id, context=context)
+            order['lounge_session_id'] = session_id
+
+        order_id = self.create(cr, uid, self._checkout_order_fields(cr, uid, order, context=context), context)
+        journal_ids = set()
+
+        for payments in order['statement_ids']:
+            if not float_is_zero(payments[2]['amount'], precision_digits=prec_acc):
+                self.add_checkout_payment(cr, uid, order_id, self._payment_fields(cr, uid, payments[2], context=context),
+                                 context=context)
+            journal_ids.add(payments[2]['journal_id'])
+
+        if session.sequence_number <= order['sequence_number']:
+            session.write({'sequence_number': order['sequence_number'] + 1})
+            session.refresh()
+
+        if not float_is_zero(order['amount_return'], precision_digits=prec_acc):
+            cash_journal = session.cash_journal_id.id
+            if not cash_journal:
+                cash_journal_ids = self.pool['account.journal'].search(cr, uid, [
+                    ('type', '=', 'cash'),
+                    ('id', 'in', list(journal_ids)),
+                ], limit=1, context=context)
+
+                if not cash_journal_ids:
+                    cash_journal_ids = [statement.journal_id.id for statement in session.statement_ids
+                                    if statement.journal_id.type == 'cash']
+
+                    if not cash_journal_ids:
+                        raise UserError(
+                            _("No cash statement found for this session. Unable to record returned cash."))
+
+                cash_journal = cash_journal_ids[0]
+
+            self.add_payment(cr, uid, order_id, {
+                'amount': -order['amount_return'],
+                'payment_date': time.strftime('%Y-%m-%d %H:%M:%S'),
+                'payment_name': _('return'),
+                'journal': cash_journal,
+            }, context=context)
+        return order_id
+
+    def update_from_ui(self, cr, uid, orders, context=None):
+        submitted_references = [o['data']['name'] for o in orders]
+        existing_order_ids = self.search(cr, uid, [('lounge_reference', 'in', submitted_references)],
+                                         context=context)
+        existing_orders = self.read(cr, uid, existing_order_ids, ['lounge_reference'], context=context)
+        existing_references = set([o['lounge_reference'] for o in existing_orders])
+        orders_to_save = [o for o in orders if o['data']['name'] not in existing_references]
+        order_ids = []
+
+        for tmp_order in orders_to_save:
+            order = tmp_order['data']
+            order_id = self._process_checkout_order(cr, uid, order, context=context)
+            order_ids.append(order_id)
+
+            try:
+                self.signal_workflow(cr, uid, [order_id], 'paid')
+            except psycopg2.OperationalError:
+                # do not hide transactional errors, the order(s) won't be saved!
+                raise
+            except Exception as e:
+                _logger.error('Could not fully process the Lounge Order: %s', tools.ustr(e))
+
+            #if to_invoice:
+            #    self.action_invoice(cr, uid, [order_id], context)
+            #    order_obj = self.browse(cr, uid, order_id, context)
+            #    self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [order_obj.invoice_id.id],'invoice_open')
+        return order_ids
+
     _columns = {
         'name': fields.char('Order Ref', required=True, readonly=True, copy=False),
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
@@ -1197,6 +1291,67 @@ class lounge_order(osv.osv):
             else:
                 msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (
                 order.partner_id.name, order.partner_id.id,)
+            raise UserError(msg)
+
+        context.pop('lounge_session_id', False)
+
+        for statement in order.session_id.statement_ids:
+            if statement.id == statement_id:
+                journal_id = statement.journal_id.id
+                break
+            elif statement.journal_id.id == journal_id:
+                statement_id = statement.id
+                break
+
+        if not statement_id:
+            raise UserError(_('You have to open at least one cashbox.'))
+
+        args.update({
+            'statement_id': statement_id,
+            'lounge_statement_id': order_id,
+            'journal_id': journal_id,
+            'ref': order.session_id.name,
+        })
+
+        statement_line_obj.create(cr, uid, args, context=context)
+        return statement_id
+
+    def add_checkout_payment(self, cr, uid, order_id, data, context=None):
+        """Create a new payment for the order"""
+        context = dict(context or {})
+        statement_line_obj = self.pool.get('account.bank.statement.line')
+        property_obj = self.pool.get('ir.property')
+        order = self.browse(cr, uid, order_id, context=context)
+        date = data.get('payment_date', time.strftime('%Y-%m-%d'))
+        if len(date) > 10:
+            timestamp = datetime.strptime(date, tools.DEFAULT_SERVER_DATETIME_FORMAT)
+            ts = fields.datetime.context_timestamp(cr, uid, timestamp, context)
+            date = ts.strftime(tools.DEFAULT_SERVER_DATE_FORMAT)
+        args = {
+            'amount': data['amount'],
+            'date': date,
+            'name': order.name + ': ' + (data.get('payment_name', '') or ''),
+            'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(
+                order.partner_id).id or False,
+        }
+
+        journal_id = data.get('journal', False)
+        statement_id = data.get('statement_id', False)
+        assert journal_id or statement_id, "No statement_id or journal_id passed to the method!"
+        journal = self.pool['account.journal'].browse(cr, uid, journal_id, context=context)
+        # use the company of the journal and not of the current user
+        company_cxt = dict(context, force_company=journal.company_id.id)
+        account_def = property_obj.get(cr, uid, 'property_account_receivable_id', 'res.partner', context=company_cxt)
+        args['account_id'] = (order.partner_id and order.partner_id.property_account_receivable_id \
+                              and order.partner_id.property_account_receivable_id.id) or (
+                                 account_def and account_def.id) or False
+
+        if not args['account_id']:
+            if not args['partner_id']:
+                msg = _('There is no receivable account defined to make payment.')
+            else:
+                msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (
+                    order.partner_id.name, order.partner_id.id,)
             raise UserError(msg)
 
         context.pop('lounge_session_id', False)
