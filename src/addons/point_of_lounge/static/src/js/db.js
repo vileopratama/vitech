@@ -637,7 +637,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        var checkout_order_id = checkout_order.uid;
 	        var checkout_orders  = this.load('checkout_orders',[]);
 
-	        // if the checkout order was already stored, we overwrite its data
+	        // if the checkout checkout_order was already stored, we overwrite its data
 	        for(var i = 0, len = checkout_orders.length; i < len; i++){
 	            if(checkout_orders[i].id === checkout_order_id){
 	                checkout_orders[i].data = checkout_order;
@@ -667,6 +667,9 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    remove_all_orders: function(){
 	        this.save('orders',[]);
 	    },
+	    remove_all_checkout_orders: function(){
+	        this.save('checkout_orders',[]);
+	    },
 	    get_orders: function(){
 	        return this.load('orders',[]);
 	    },
@@ -678,6 +681,15 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        for(var i = 0, len = orders.length; i < len; i++){
 	            if(orders[i].id === order_id){
 	                return orders[i];
+	            }
+	        }
+	        return undefined;
+	    },
+	    get_checkout_order: function(checkout_order_id){
+	        var checkout_orders = this.get_checkout_orders();
+	        for(var i = 0, len = checkout_orders.length; i < len; i++){
+	            if(checkout_orders[i].id === order_id){
+	                return checkout_orders[i];
 	            }
 	        }
 	        return undefined;

@@ -54,6 +54,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.user = null;
 	        this.users = [];
 	        this.partners = [];
+	        this.checkout_orders = []; //last checkout_order
 	        this.orders = []; //last order
 	        this.cashier = null;
 	        this.cashregisters = [];
@@ -1068,6 +1069,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return loungeOrderModel.call('update_from_ui',
 	            [_.map(checkout_orders, function (checkout_order) {
 	                //checkout_order.to_invoice = options.to_invoice || false;
+	                alert(checkout_order.name);
 	                return checkout_order;
 	            })],
 	            undefined,
@@ -1082,7 +1084,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            self.set('failed',false);
 	            return server_ids;
 	        }).fail(function (error, event){
-	            if(error.code === 200 ){    // Business Logic Error, not a connection problem
+	            if(error.code === 200 ) {    // Business Logic Error, not a connection problem
 	                //if warning do not need to display traceback!!
 	                if (error.data.exception_type == 'warning') {
 	                    delete error.data.debug;
@@ -1435,6 +1437,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_product_type: function(){
 	        return this.type;
 	    },
+	    // sets a discount [0,100]%
+	    set_discount: function(discount){
+	        var disc = Math.min(Math.max(parseFloat(discount) || 0, 0),100);
+	        this.discount = disc;
+	        this.discountStr = '' + disc;
+	        this.trigger('change',this);
+	    },
 	    // returns the discount [0,100]%
 	    get_discount: function(){
 	        return this.discount;
@@ -1475,6 +1484,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	    // return the quantity of product
 	    get_quantity: function(){
 	        return this.quantity;
+	    },
+	    get_quantity_str_with_unit: function(){
+	        var unit = this.get_unit();
+	        if(unit && !unit.is_unit){
+	            return this.quantityStr + ' ' + unit.name;
+	        }else{
+	            return this.quantityStr;
+	        }
 	    },
 	    get_price_without_tax: function(){
 	        return this.get_all_prices().priceWithoutTax;
@@ -2218,30 +2235,99 @@ odoo.define('point_of_lounge.models', function (require) {
 	});
 
 	exports.CheckoutOrder = Backbone.Model.extend({
-	    initialize: function(attributes,options){
-             Backbone.Model.prototype.initialize.apply(this, arguments);
-             options  = options || {};
-             this.lounge = options.lounge;
-             this.selected_checkout_orderline = undefined;
-             this.creation_date  = new Date();
-             this.checkout_orderlines = new CheckoutOrderlineCollection();
-             this.checkout_paymentlines   = new CheckoutPaymentlineCollection();
-             this.lounge_session_id = this.lounge.lounge_session.id;
-             this.finalized = false; // if true, cannot be modified.
+        initialize: function(attributes,options){
+            Backbone.Model.prototype.initialize.apply(this, arguments);
+            options  = options || {};
+            this.init_locked  = true;
+            this.lounge = options.lounge;
+            this.selected_checkout_orderline = undefined;
+            this.temporary = options.temporary || false;
+            this.creation_date  = new Date();
+            this.to_invoice     = false;
+            this.checkout_orderlines = new CheckoutOrderlineCollection();
+            this.checkout_paymentlines   = new CheckoutPaymentlineCollection();
+            this.lounge_session_id = this.lounge.lounge_session.id;
+            this.finalized = false; // if true, cannot be modified.
 
-             if (options.json) {
+            this.set({ client: null });
+
+            if (options.json) {
                 this.init_from_JSON(options.json);
-             } else {
+            } else {
                 this.sequence_number = this.lounge.lounge_session.sequence_number++;
                 this.uid  = this.generate_unique_id();
                 this.name = _t("Order ") + this.uid;
                 this.validation_date = undefined;
-             }
+            }
+
+            this.on('change',function(){this.save_to_db("checkout_order:change");}, this);
+            this.checkout_orderlines.on('change',function(){this.save_to_db("checkout_orderline:change"); },this);
+            this.checkout_orderlines.on('add',function(){ this.save_to_db("checkout_orderline:add"); },this);
+            this.checkout_orderlines.on('remove',function(){ this.save_to_db("checkout_orderline:remove");}, this);
+
+            this.checkout_paymentlines.on('change',function(){this.save_to_db("checkout_paymentline:change");},this);
+            this.checkout_paymentlines.on('add',function(){this.save_to_db("checkout_paymentline:add"); }, this);
+	        this.checkout_paymentlines.on('remove',function(){this.save_to_db("checkout_paymentline:rem"); }, this);
+
+	        this.init_locked = false;
+	        this.save_to_db();
+	        return this;
+	    },
+	    save_to_db: function() {
+	        if (!this.temporary && !this.init_locked) {
+	            this.lounge.db.save_unpaid_checkout_order(this);
+	        }
 	    },
 	    init_from_JSON: function(json) {
-	        //this.sequence_number = json.sequence_number;
-	        //this.lounge.lounge_session.sequence_number = Math.max(this.sequence_number+1,this.lounge.lounge_session.sequence_number);
-	        //this.validation_date = json.creation_date;
+	        var client;
+	        this.sequence_number = json.sequence_number;
+	        this.lounge.lounge_session.sequence_number = Math.max(this.sequence_number+1,this.lounge.lounge_session.sequence_number);
+	        this.session_id    = json.lounge_session_id;
+	        this.uid = json.uid;
+	        this.name = _t("Order ") + this.uid;
+	        this.validation_date = json.creation_date;
+
+	        if (json.fiscal_position_id) {
+	            var fiscal_position = _.find(this.pos.fiscal_positions, function (fp) {
+	                return fp.id === json.fiscal_position_id;
+	            });
+
+	            if (fiscal_position) {
+	                this.fiscal_position = fiscal_position;
+	            } else {
+	                console.error('ERROR: trying to load a fiscal position not available in the lounge');
+	            }
+	        }
+
+	        if (json.partner_id) {
+	            client = this.lounge.db.get_partner_by_id(json.partner_id);
+	            if (!client) {
+	                console.error('ERROR: trying to load a parner not available in the lounge');
+	            }
+	        } else {
+	            client = null;
+	        }
+	        this.set_client(client);
+
+	        this.temporary = false;     // FIXME
+	        this.to_invoice = false;    // FIXME
+
+	        var orderlines = json.lines;
+	        for (var i = 0; i < orderlines.length; i++) {
+	            var orderline = orderlines[i][2];
+	            this.add_orderline(new exports.CheckoutOrderline({}, {lounge: this.lounge, order: this, json: orderline}));
+	        }
+
+	        var paymentlines = json.statement_ids;
+	        for (var i = 0; i < paymentlines.length; i++) {
+	            var paymentline = paymentlines[i][2];
+	            var newpaymentline = new exports.CheckoutPaymentline({},{lounge: this.lounge, order: this, json: paymentline});
+	            this.paymentlines.add(newpaymentline);
+
+	            if (i === paymentlines.length - 1) {
+	                this.select_paymentline(newpaymentline);
+	            }
+	        }
 	    },
 	    export_as_JSON: function() {
 	        var orderLines, paymentLines;
@@ -2387,8 +2473,18 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_name: function() {
 	        return this.name;
 	    },
+	    /* ---- Client / Customer --- */
+	    // the client related to the current order.
+	    set_client: function(client){
+	        this.assert_editable();
+	        this.set('client',client);
+	    },
 	    get_client: function(){
 	        return this.get('client');
+	    },
+	    get_client_name: function(){
+	        var client = this.get('client');
+	        return client ? client.name : "";
 	    },
 	    assert_editable: function() {
 	        if (this.finalized) {
@@ -2560,6 +2656,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.checkout_orderlines.remove(line);
 	        this.select_orderline(this.get_last_orderline());
 	    },
+	    /* ---- Order Lines --- */
+	    add_orderline: function(line){
+	        this.assert_editable();
+	        if(line.order){
+	            line.order.remove_orderline(line);
+	        }
+	        line.order = this;
+	        this.checkout_orderlines.add(line);
+	        this.select_orderline(this.get_last_orderline());
+	    },
 	    get_orderlines: function(){
 	        return this.checkout_orderlines.models;
 	    },
@@ -2576,7 +2682,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            if(this.selected_checkout_paymentline){
 	                this.selected_checkout_paymentline.set_selected(true);
 	            }
-	            this.trigger('change:selected_paymentline',this.selected_checkout_paymentline);
+	            this.trigger('change:selected_checkout_paymentline',this.selected_checkout_paymentline);
 	        }
 	    },
 	    /* ---- Payment Lines --- */
@@ -2600,11 +2706,17 @@ odoo.define('point_of_lounge.models', function (require) {
 	    initialize_validation_date: function () {
 	        this.validation_date = this.validation_date || new Date();
 	    },
+	    remove_orderline: function(line){
+	        this.assert_editable();
+	        this.checkout_orderlines.remove(line);
+	        this.select_orderline(this.get_last_orderline());
+	    },
 	    finalize: function(){
 	        this.destroy();
 	    },
 	    destroy: function() {
 	        Backbone.Model.prototype.destroy.apply(this,arguments);
+	        alert("xx");
 	        this.lounge.db.remove_unpaid_checkout_order(this);
 	    },
 	});
