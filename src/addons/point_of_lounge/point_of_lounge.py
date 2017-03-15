@@ -924,6 +924,7 @@ class lounge_order(osv.osv):
 
         return {
             'name': ui_order['name'],
+            'is_checkout' : False,
             'user_id': ui_order['user_id'] or False,
             'session_id': ui_order['lounge_session_id'],
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,

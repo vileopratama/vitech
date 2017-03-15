@@ -82,7 +82,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        });
 
 	        this.get('checkout_orders').bind('remove', function(checkout_order,_unused_,options){
-	            self.on_removed_checked_order(checkout_order,options.index,options.reason);
+	            self.on_removed_checkout_order(checkout_order,options.index,options.reason);
 	        });
 
 	        // Forward the 'client' attribute on the selected order to 'selectedClient'
@@ -622,7 +622,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var checkout_order_list = this.get_checkout_order_list();
 	        if( (reason === 'abandon' || removed_checkout_order.temporary) && checkout_order_list.length > 0){
 	            // when we intentionally remove an unfinished order, and there is another existing one
-	            this.set_checkout_order(order_list[index] || checkout_order_list[checkout_order_list.length -1]);
+	            this.set_checkout_order(checkout_order_list[index] || checkout_order_list[checkout_order_list.length -1]);
 	        }else{
 	            // when the order was automatically removed after completion,
 	            // or when we intentionally delete the only concurrent order
@@ -1622,6 +1622,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }
 	        }
 	    },
+	    get_tax_details: function(){
+	        return this.get_all_prices().taxDetails;
+	    },
     });
 
     var CheckoutOrderlineCollection = Backbone.Collection.extend({
@@ -2491,6 +2494,11 @@ odoo.define('point_of_lounge.models', function (require) {
                 return sum + orderLine.get_price_without_tax();
             }),0), this.lounge.currency.rounding);
 	    },
+	    get_total_discount: function() {
+	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
+	            return sum + (orderLine.get_unit_price() * (orderLine.get_discount()/100) * orderLine.get_quantity());
+	        }), 0), this.lounge.currency.rounding);
+	    },
 	    get_total_tax: function() {
 	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine) {
 	            return sum + orderLine.get_tax();
@@ -2501,6 +2509,27 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return round_pr(this.checkout_paymentlines.reduce((function(sum, paymentLine) {
 	            return sum + paymentLine.get_amount();
 	        }), 0), this.lounge.currency.rounding);
+	    },
+	    get_tax_details: function(){
+	        var details = {};
+	        var fulldetails = [];
+
+	        this.checkout_orderlines.each(function(line){
+	            var ldetails = line.get_tax_details();
+	            for(var id in ldetails){
+	                if(ldetails.hasOwnProperty(id)){
+	                    details[id] = (details[id] || 0) + ldetails[id];
+	                }
+	            }
+	        });
+
+	        for(var id in details){
+	            if(details.hasOwnProperty(id)){
+	                fulldetails.push({amount: details[id], tax: this.lounge.taxes_by_id[id], name: this.lounge.taxes_by_id[id].name});
+	            }
+	        }
+
+	        return fulldetails;
 	    },
 	    get_subtotal : function(){
 	        return round_pr(this.checkout_orderlines.reduce((function(sum, orderLine){

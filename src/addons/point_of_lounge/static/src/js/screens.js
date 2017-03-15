@@ -2719,10 +2719,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	    },
 	    render_change: function() {
-	        this.$('.change-value').html(this.format_currency(this.lounge.get_order_checkout().get_change()));
+	        this.$('.change-value').html(this.format_currency(this.lounge.get_checkout_order().get_change()));
 	    },
 	    render_receipt: function() {
-	        var checkout_order = this.lounge.get_order_checkout();
+	        var checkout_order = this.lounge.get_checkout_order();
 	        this.$('.pos-receipt-container').html(QWeb.render('LoungePosTicket',{
 	             widget:this,
 	             order: checkout_order,

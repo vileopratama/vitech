@@ -730,7 +730,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        checkout_orders = _.filter(checkout_orders, function(o){
 	            return o.id !== checkout_order.uid;
 	        });
-	        this.save('unpaid_checkout_orders',orders);
+	        this.save('unpaid_checkout_orders',checkout_orders);
 	    },
 	    remove_all_unpaid_orders: function(){
 	        this.save('unpaid_orders',[]);
