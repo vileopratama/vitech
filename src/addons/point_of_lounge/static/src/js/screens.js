@@ -2394,8 +2394,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            event.preventDefault();
 	        };
 
-	        this.lounge.bind('change:selectedCheckoutClient', function() {
-	            self.customer_changed();
+	        this.lounge.bind('change:selectedCheckoutOrder', function() {
+	            self.checkout_order_changed();
 	        }, this);
 
         },
@@ -2418,12 +2418,15 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            //self.validate_checkout_order();
-	            self.gui.show_checkout_screen('order_receipt');
+	            self.validate_checkout_order();
 	        });
 
-	        this.$('.js_set_customer').click(function(){
-	            self.click_set_customer();
+	        this.$('.js_set_checkout_order').click(function(){
+	            self.click_set_checkout_order();
+	        });
+
+	         this.$('.js_invoice').click(function(){
+	            self.click_invoice();
 	        });
         },
         render_numpad: function() {
@@ -2444,7 +2447,7 @@ odoo.define('point_of_lounge.screens', function (require) {
                 }
             }
 
-            if (! open_paymentline) {
+            if (!open_paymentline) {
                     this.lounge.get_checkout_order().add_paymentline( this.lounge.cashregisters[0]);
                     this.render_paymentlines();
                 }
@@ -2596,10 +2599,25 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    customer_changed: function() {
 	        var client = this.lounge.get_checkout_client();
 	        this.$('.js_customer_name').text( client ? client.name : _t('Guest') );
-
+	    },
+	    checkout_order_changed: function() {
+	        var checkout_order = this.lounge.get_checkout_order();
+	        this.$('.js_checkout_order').text(checkout_order ? checkout_order.name : _t('No Order') );
 	    },
 	    click_set_customer: function(){
 	        this.gui.show_checkout_screen('clientlist');
+	    },
+	    click_set_checkout_order: function(){
+	        this.gui.show_checkout_screen('orderlist');
+	    },
+	    click_invoice: function(){
+	        var checkout_order = this.lounge.get_checkout_order();
+	        checkout_order.set_to_invoice(!checkout_order.is_to_invoice());
+	        if (checkout_order.is_to_invoice()) {
+	            this.$('.js_invoice').addClass('highlight');
+	        } else {
+	            this.$('.js_invoice').removeClass('highlight');
+	        }
 	    },
 	    validate_checkout_order: function(force_validation) {
 	        var self = this;
@@ -2672,8 +2690,47 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        checkout_order.initialize_validation_date();
-	        this.lounge.push_checkout_order(checkout_order);
-	        this.gui.show_checkout_screen('order_receipt');
+
+	        if (checkout_order.is_to_invoice()) {
+	            var invoiced = this.lounge.push_and_invoice_checkout_order(checkout_order);
+	            this.invoicing = true;
+
+	            invoiced.fail(function(error){
+	                self.invoicing = false;
+	                if (error.message === 'Missing Customer') {
+	                    self.gui.show_popup('confirm',{
+	                        'title': _t('Please select the Customer'),
+	                        'body': _t('You need to select the customer before you can invoice an checkout order.'),
+	                        confirm: function(){
+	                            self.gui.show_checkout_screen('clientlist');
+	                        },
+	                    });
+	                } else if (error.code < 0) {        // XmlHttpRequest Errors
+	                    self.gui.show_popup('error',{
+	                        'title': _t('The order could not be sent'),
+	                        'body': _t('Check your internet connection and try again.'),
+	                    });
+	                } else if (error.code === 200) {    // OpenERP Server Errors
+	                    self.gui.show_popup('error-traceback',{
+	                        'title': error.data.message || _t("Server Error"),
+	                        'body': error.data.debug || _t('The server encountered an error while receiving your order.'),
+	                    });
+	                } else {                            // ???
+	                    self.gui.show_popup('error',{
+	                        'title': _t("Unknown Error"),
+	                        'body':  _t("The order could not be sent to the server due to an unknown error"),
+	                    });
+	                }
+	            });
+
+	            invoiced.done(function(){
+	                self.invoicing = false;
+	                checkout_order.finalize();
+	            });
+	        } else {
+	            this.lounge.push_checkout_order(checkout_order);
+	            this.gui.show_checkout_screen('order_receipt');
+	        }
 
 	    },
 	    show: function(){
@@ -2776,8 +2833,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return this.lounge.config.iface_print_via_proxy && this.lounge.config.iface_print_skip_screen;
 	    },
 	    click_next: function() {
-	        this.lounge.get_order().finalize();
-	        //this.lounge.get_checkout_order().finalize();
+	        this.lounge.get_checkout_order().finalize();
 	    },
 	    click_back: function() {
 	        // Placeholder method for ReceiptScreen extensions that

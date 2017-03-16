@@ -1197,17 +1197,26 @@
                     <section class='payment-numpad'>
                     </section>
                     <div class='payment-buttons'>
-                        <div class='button js_set_customer'>
+                        <div class='button js_set_checkout_order'>
                             <i class='fa fa-ticket' />
-                            <span class='js_customer_name'>
-                                <t t-if="widget.lounge.get_client()">
-                                    <t t-esc="widget.lounge.get_client().name" />
+                            <span class='js_checkout_order'>
+                                <t t-if="widget.lounge.get_checkout_order()">
+                                    <t t-esc="widget.lounge.get_checkout_order().name" />
                                 </t>
-                                <t t-if="!widget.lounge.get_client()">
-                                    Customer
+                                <t t-if="!widget.lounge.get_checkout_order()">
+                                    No Order Number
                                 </t>
                             </span>
                         </div>
+
+                        <t t-if='widget.lounge.config.iface_invoicing'>
+                            <t t-if='widget.lounge.get_checkout_order()'>
+                                <div t-attf-class='button js_invoice #{ widget.lounge.get_checkout_order().is_to_invoice() ? "highlight" : ""} '>
+                                    <i class='fa fa-file-text-o' /> Invoice
+                                </div>
+                            </t>
+                        </t>
+
                     </div>
                 </div>
             </div>

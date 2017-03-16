@@ -992,7 +992,12 @@ class lounge_order(osv.osv):
         checkout_order_ids = []
 
         for tmp_order in checkout_orders_to_save:
+            to_invoice = tmp_order['to_invoice']
             checkout_order = tmp_order['data']
+
+            if to_invoice:
+                self._match_payment_to_invoice(cr, uid, checkout_order, context=context)
+
             checkout_order_id = self._process_checkout_order(cr, uid, checkout_order, context=context)
             checkout_order_ids.append(checkout_order_id)
 
@@ -1004,10 +1009,11 @@ class lounge_order(osv.osv):
             except Exception as e:
                 _logger.error('Could not fully process the Lounge Order: %s', tools.ustr(e))
 
-            #if to_invoice:
-            #    self.action_invoice(cr, uid, [order_id], context)
-            #    order_obj = self.browse(cr, uid, order_id, context)
-            #    self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [order_obj.invoice_id.id],'invoice_open')
+            if to_invoice:
+                self.action_invoice(cr, uid, [checkout_order_id], context)
+                checkout_order_obj = self.browse(cr, uid, checkout_order_id, context)
+                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [checkout_order_obj.invoice_id.id],'invoice_open')
+
         return checkout_order_ids
 
     _columns = {
