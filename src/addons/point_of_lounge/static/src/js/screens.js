@@ -2082,7 +2082,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            self.gui.show_checkout_screen('order_payment');
+	            if(self.lounge.get_checkout_order().get_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
+	                self.gui.show_checkout_screen('order_payment');
+	            } else {
+	                self.gui.show_checkout_screen('order_receipt');
+	            }
 	        });
 
 	        var orders = this.lounge.db.get_orders_sorted(1000);
@@ -2158,7 +2162,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    line_select: function(event,$line,id) {
 	        var order = this.lounge.db.get_order_by_id(id);
 	        this.$('.order-list .lowlight').removeClass('lowlight');
-	        if ( $line.hasClass('highlight') ){
+	        if ($line.hasClass('highlight') ){
 	            $line.removeClass('highlight');
 	            $line.addClass('lowlight');
 	            this.display_order_details('hide',order);
@@ -2182,6 +2186,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        if(visibility === 'show') {
 	            var utc = new Date();
+	            var checkout_order = self.lounge.get_checkout_order();
                 var checkin_date  = moment(order.booking_from_date);
                 var duration = moment.duration(moment(utc).diff(checkin_date));
                 var data = {
@@ -2189,6 +2194,10 @@ odoo.define('point_of_lounge.screens', function (require) {
                     'total_hours' : Math.ceil(duration.asHours()),
                     'last_payment' :  order.amount_total,
                 };
+
+                checkout_order.set_id(order.id); // add to id
+                checkout_order.set_booking_to_date(new Date()); // add to booking to date
+                checkout_order.set_booking_total(Math.ceil(duration.asHours())); // add to booking total
 
 	            contents.empty();
 	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,date:data})));
@@ -2251,8 +2260,8 @@ odoo.define('point_of_lounge.screens', function (require) {
                     this.lounge.get_checkout_order().add_product(product);
 	            }
 
-	            if(order_line.price_subtotal_incl)
-	                subtotal+=order_line.price_subtotal_incl;
+	            //if(order_line.price_subtotal_incl)
+	                //subtotal+=order_line.price_subtotal_incl;
 
 	            //alert(order_line.product_id[1]);
 	            //alert(order_line.qty);
@@ -2287,6 +2296,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            'last_payment' : data['last_payment'],
 	            'total_payment' : total_payment,
 	        };
+
+	        self.lounge.get_checkout_order().set_last_payment(data['last_payment']); // add to last payment
+            self.lounge.get_checkout_order().set_total_payment(total_payment); // add total payment
+
 	        vcontents.append($(QWeb.render('LoungeOrderDetailLineTotal',{widget:this,params:params})));
 
 	    },
