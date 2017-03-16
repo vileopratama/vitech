@@ -1548,7 +1548,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return this.get_all_prices().tax;
 	    },
 	    get_charge: function() {
-			var total_hour = this.lounge.get_checkout_order().get_booking_total();
+			var total_hour = this.checkout_order.get_booking_total();
 	        var charge_every = this.get_product().lounge_charge_every;
 			var charge_value = !this.get_product().lounge_charge ? 0 : this.get_product().lounge_charge;
 			var subtotal_hour_charge = Math.round(total_hour / charge_every);
