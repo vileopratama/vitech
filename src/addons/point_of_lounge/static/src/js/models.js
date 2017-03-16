@@ -1442,6 +1442,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            price_with_tax :    this.get_price_with_tax(),
 	            price_without_tax:  this.get_price_without_tax(),
 	            tax:                this.get_tax(),
+	            surcharge:          this.get_surcharge(),
 	            product_description:      this.get_product().description,
 	            product_description_sale: this.get_product().description_sale,
 	        };
@@ -1560,10 +1561,15 @@ odoo.define('point_of_lounge.models', function (require) {
             var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
             var taxtotal = 0;
             var product =  this.get_product();
+            var charge = !product.lounge_charge ? 0 : product.lounge_charge;
+            var total_hour = this.get_booking_total();
+            var hour_if_charge = !product.lounge_charge_every ? 0 : product.lounge_charge_every;
             var taxes_ids = product.taxes_id;
             var taxes =  this.lounge.taxes;
             var taxdetail = {};
 	        var product_taxes = [];
+	        var total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
+	        charge = (total_hour_charge <= 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
 
 	        _(taxes_ids).each(function(el){
 	            product_taxes.push(_.detect(taxes, function(t){
@@ -1571,7 +1577,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }));
 	        });
 
-	        var all_taxes = this.compute_all(product_taxes, price_unit,this.get_quantity(), this.lounge.currency.rounding);
+	        var all_taxes = this.compute_all(product_taxes, price_unit, charge,this.get_quantity(), this.lounge.currency.rounding);
 	        _(all_taxes.taxes).each(function(tax) {
 	            taxtotal += tax.amount;
 	            taxdetail[tax.id] = tax.amount;
@@ -1582,6 +1588,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            "priceWithoutTax": all_taxes.total_excluded, //28
 	            "tax": taxtotal,
 	            "taxDetails": taxdetail,
+	            "surcharge": all_taxes.total_included_without_charge, // 18 +
 	        };
 	    },
 	    get_unit_price: function() {
@@ -1612,9 +1619,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return this.get_base_price();
 	        }
 	    },
-	    compute_all: function(taxes, price_unit,quantity, currency_rounding) {
+	    get_surcharge: function(){
+	        return this.get_all_prices().surcharge;
+	    },
+	    compute_all: function(taxes, price_unit,charge,quantity, currency_rounding) {
 	        var self = this;
 	        var total_excluded = round_pr((price_unit) * quantity, currency_rounding);
+	        var total_included_without_charge = round_pr((price_unit) * quantity, currency_rounding);
 	        var total_included = total_excluded;
 	        var base = total_excluded;
 	        var list_taxes = [];
@@ -1626,10 +1637,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	        _(taxes).each(function(tax) {
 	            tax = self._map_tax_fiscal_position(tax);
 	            if (tax.amount_type === 'group'){
-	                var ret = self.compute_all(tax.children_tax_ids, price_unit, quantity, currency_rounding);
+	                var ret = self.compute_all(tax.children_tax_ids, price_unit,charge,quantity, currency_rounding);
 	                total_excluded = ret.total_excluded;
 	                base = ret.total_excluded;
 	                total_included = ret.total_included;
+	                total_included_without_charge = ret.total_included_without_charge;
 	                list_taxes = list_taxes.concat(ret.taxes);
 	            }  else {
 	                 var tax_amount = self._compute_all(tax, base, quantity);
@@ -1639,6 +1651,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	                        base -= tax_amount;
 	                    } else {
 	                        total_included += tax_amount;
+	                        total_included_without_charge += tax_amount;
 	                    }
 
 	                    if (tax.include_base_amount) {
@@ -1656,7 +1669,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        });
 
-	        return {taxes: list_taxes, total_excluded: total_excluded,total_included: total_included};
+	        return {taxes: list_taxes, total_excluded: total_excluded,total_included_without_charge: total_included_without_charge,total_included: total_included};
 
 	    },
 	    _compute_all: function(tax, base_amount, quantity) {
