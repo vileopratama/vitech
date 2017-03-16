@@ -18,10 +18,10 @@ var Gui = core.Class.extend({
     popup_classes:  [],
     init: function(options){
         var self = this;
-        this.lounge           = options.lounge;
-        this.chrome         = options.chrome;
-        this.screen_instances     = {};
-        this.popup_instances      = {};
+        this.lounge = options.lounge;
+        this.chrome = options.chrome;
+        this.screen_instances = {};
+        this.popup_instances = {};
         this.default_screen = null;
         this.startup_screen = null;
         this.current_popup  = null;
@@ -29,14 +29,29 @@ var Gui = core.Class.extend({
 
         this.chrome.ready.then(function(){
             self.close_other_tabs();
+
+            //order
             var order = self.lounge.get_order();
             if (order) {
                 self.show_saved_screen(order);
             } else {
                 self.show_screen(self.startup_screen);
             }
+
+            //order
+            var checkout_order = self.lounge.get_checkout_order();
+            if (checkout_order) {
+                self.show_saved_screen(checkout_order);
+            } else {
+                self.show_screen(self.startup_screen);
+            }
+
             self.lounge.bind('change:selectedOrder', function(){
                 self.show_saved_screen(self.lounge.get_order());
+            });
+
+            self.lounge.bind('change:selectedCheckoutOrder', function(){
+                self.show_saved_checkout_screen(self.lounge.get_checkout_order());
             });
         });
     },
@@ -79,6 +94,23 @@ var Gui = core.Class.extend({
         }
     },
 
+    // display the screen saved in an order,
+    // called when the user changes the current order
+    // no screen saved ? -> display default_screen
+    // no order ? -> display startup_screen
+    show_saved_checkout_screen:  function(checkout_order,options) {
+        options = options || {};
+        this.close_popup();
+        if (checkout_order) {
+            this.show_screen(checkout_order.get_screen_data('screen') ||
+                             options.default_screen ||
+                             this.default_screen,
+                             null,'refresh');
+        } else {
+            this.show_checkout_screen(this.startup_screen);
+        }
+    },
+
     // display a screen.
     // If there is an order, the screen will be saved in the order
     // - params: used to load a screen with parameters, for
@@ -118,9 +150,53 @@ var Gui = core.Class.extend({
         }
     },
 
+    // display a screen.
+    // If there is an order, the screen will be saved in the order
+    // - params: used to load a screen with parameters, for
+    // example loading a 'product_details' screen for a specific product.
+    // - refresh: if you want the screen to cycle trough show / hide even
+    // if you are already on the same screen.
+    show_checkout_screen: function(screen_name,params,refresh) {
+        var screen = this.screen_instances[screen_name];
+        if (!screen) {
+            console.error("ERROR: show_screen("+screen_name+") : screen not found");
+        }
+
+        this.close_popup();
+
+        var checkout_order = this.lounge.get_checkout_order();
+        if (checkout_order) {
+            var old_screen_name = checkout_order.get_screen_data('screen');
+
+            checkout_order.set_screen_data('screen',screen_name);
+
+            if(params){
+                checkout_order.set_screen_data('params',params);
+            }
+
+            if( screen_name !== old_screen_name ){
+                checkout_order.set_screen_data('previous-screen',old_screen_name);
+            }
+        }
+
+        if (refresh || screen !== this.current_screen) {
+            if (this.current_screen) {
+                this.current_screen.close();
+                this.current_screen.hide();
+            }
+            this.current_screen = screen;
+            this.current_screen.show();
+        }
+    },
+
     // returns the current screen.
     get_current_screen: function() {
         return this.lounge.get_order() ? ( this.lounge.get_order().get_screen_data('screen') || this.default_screen ) : this.startup_screen;
+    },
+
+     // returns the current screen.
+    get_current_checkout_screen: function() {
+        return this.lounge.get_checkout_order() ? ( this.lounge.get_checkout_order().get_screen_data('screen') || this.default_screen ) : this.startup_screen;
     },
 
     // goes to the previous screen (as specified in the order). The history only
@@ -132,10 +208,29 @@ var Gui = core.Class.extend({
         }
     },
 
+    // goes to the previous screen (as specified in the order). The history only
+    // goes 1 deep ...
+    back_checkout: function() {
+        var previous = this.lounge.get_checkout_order().get_screen_data('previous-screen');
+        if (previous) {
+            this.show_checkout_screen(previous);
+        }
+    },
+
     // returns the parameter specified when this screen was displayed
     get_current_screen_param: function(param) {
         if (this.lounge.get_order()) {
             var params = this.lounge.get_order().get_screen_data('params');
+            return params ? params[param] : undefined;
+        } else {
+            return undefined;
+        }
+    },
+
+     // returns the parameter specified when this screen was displayed
+    get_current_checkout_screen_param: function(param) {
+        if (this.lounge.get_checkout_order()) {
+            var params = this.lounge.get_checkout_order().get_screen_data('params');
             return params ? params[param] : undefined;
         } else {
             return undefined;
@@ -300,6 +395,7 @@ var Gui = core.Class.extend({
     close: function() {
         var self = this;
         var pending = this.lounge.db.get_orders().length;
+        var pending_checkout = this.lounge.db.get_checkout_orders().length;
 
         if (!pending) {
             this._close();
@@ -326,7 +422,10 @@ var Gui = core.Class.extend({
                     });
                 }
             });
+
         }
+
+
     },
 
     _close: function() {

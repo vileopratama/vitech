@@ -1348,7 +1348,7 @@ odoo.define('point_of_lounge.models', function (require) {
     exports.CheckoutOrderline = Backbone.Model.extend({
         initialize: function(attr,options){
             this.lounge = options.lounge;
-            this.order = options.order;
+            this.checkout_order = options.checkout_order;
             if (options.json) {
 	            this.init_from_JSON(options.json);
 	            return;
@@ -1371,7 +1371,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.price = json.price_unit;
 	        this.set_discount(json.discount);
 	        this.set_quantity(json.qty);
-	        this.id    = json.id;
+	        this.id = json.id;
 	        checkout_orderline_id = Math.max(this.id+1,checkout_orderline_id);
 	    },
 	    export_as_JSON: function() {
@@ -1416,7 +1416,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 	    merge: function(orderline){
-	        this.order.assert_editable();
+	        this.checkout_order.assert_editable();
 	        this.set_quantity(this.get_quantity() + orderline.get_quantity());
 	    },
 	    // return the checkout product of this orderline
@@ -1450,22 +1450,19 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return this.discount;
 	    },
 	    set_quantity: function(quantity){
-	        this.order.assert_editable();
+	        this.checkout_order.assert_editable();
 	        if(quantity === 'remove'){
-	            this.order.checkout_remove_orderline(this);
+	            this.checkout_order.checkout_remove_orderline(this);
 	            return;
 	        }else{
 	            var quant = parseFloat(quantity) || 0;
 	            var unit = this.get_unit();
 	            if(unit){
 	                if (unit.rounding) {
-	                    //this.quantity    = round_pr(quant, unit.rounding);
 	                    this.quantity  = quant;
 	                    var decimals = this.lounge.dp['Product Unit of Measure'];
 	                    this.quantityStr = this.quantity.toFixed(0);
-	                    //this.quantityStr = formats.format_value(round_di(this.quantity, decimals), { type: 'float', digits: [69, decimals]});
 	                } else {
-	                    //this.quantity    = round_pr(quant, 1);
 	                    this.quantity  = quant;
 	                    this.quantityStr = this.quantity.toFixed(0);
 	                }
@@ -2242,6 +2239,8 @@ odoo.define('point_of_lounge.models', function (require) {
             this.init_locked  = true;
             this.lounge = options.lounge;
             this.selected_checkout_orderline = undefined;
+            this.selected_checkout_paymentline = undefined;
+            this.screen_data = {};  // see Gui
             this.temporary = options.temporary || false;
             this.creation_date  = new Date();
             this.to_invoice     = false;
@@ -2289,7 +2288,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.validation_date = json.creation_date;
 
 	        if (json.fiscal_position_id) {
-	            var fiscal_position = _.find(this.pos.fiscal_positions, function (fp) {
+	            var fiscal_position = _.find(this.lounge.fiscal_positions, function (fp) {
 	                return fp.id === json.fiscal_position_id;
 	            });
 
@@ -2316,13 +2315,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var orderlines = json.lines;
 	        for (var i = 0; i < orderlines.length; i++) {
 	            var orderline = orderlines[i][2];
-	            this.add_orderline(new exports.CheckoutOrderline({}, {lounge: this.lounge, order: this, json: orderline}));
+	            this.add_orderline(new exports.CheckoutOrderline({}, {lounge: this.lounge, checkout_order: this, json: orderline}));
 	        }
 
 	        var paymentlines = json.statement_ids;
 	        for (var i = 0; i < paymentlines.length; i++) {
 	            var paymentline = paymentlines[i][2];
-	            var newpaymentline = new exports.CheckoutPaymentline({},{lounge: this.lounge, order: this, json: paymentline});
+	            var newpaymentline = new exports.CheckoutPaymentline({},{lounge: this.lounge, checkout_order: this, json: paymentline});
 	            this.checkout_paymentlines.add(newpaymentline);
 
 	            if (i === paymentlines.length - 1) {
@@ -2471,6 +2470,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	               zero_pad(this.lounge.lounge_session.login_number,3) +'-'+
 	               zero_pad(this.sequence_number,4);
 	    },
+	    assert_editable: function() {
+	        if (this.finalized) {
+	            throw new Error('Finalized Checkout Order cannot be modified');
+	        }
+	    },
 	    get_name: function() {
 	        return this.name;
 	    },
@@ -2487,11 +2491,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var client = this.get('client');
 	        return client ? client.name : "";
 	    },
-	    assert_editable: function() {
-	        if (this.finalized) {
-	            throw new Error('Finalized Order cannot be modified');
-	        }
-	    },
+
 	    get_last_orderline: function(){
 	        return this.checkout_orderlines.at(this.checkout_orderlines.length -1);
 	    },
@@ -2520,7 +2520,7 @@ odoo.define('point_of_lounge.models', function (require) {
             attr.lounge = this.lounge;
 	        attr.order = this;
 
-	        var line = new exports.CheckoutOrderline({}, {lounge: this.lounge, order: this, product: product});
+	        var line = new exports.CheckoutOrderline({}, {lounge: this.lounge, checkout_order: this, product: product});
 
 	        if(options.quantity !== undefined) {
 	            line.set_quantity(options.quantity);
@@ -2712,12 +2712,28 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.checkout_orderlines.remove(line);
 	        this.select_orderline(this.get_last_orderline());
 	    },
+	     /* ---- Screen Status --- */
+	    // the order also stores the screen status, as the Lounge supports
+	    // different active screens per order. This method is used to
+	    // store the screen status.
+	    set_screen_data: function(key,value){
+	        if(arguments.length === 2){
+	            this.screen_data[key] = value;
+	        }else if(arguments.length === 1){
+	            for(var key in arguments[0]){
+	                this.screen_data[key] = arguments[0][key];
+	            }
+	        }
+	    },
+	    //see set_screen_data
+	    get_screen_data: function(key){
+	        return this.screen_data[key];
+	    },
 	    finalize: function(){
 	        this.destroy();
 	    },
 	    destroy: function() {
 	        Backbone.Model.prototype.destroy.apply(this,arguments);
-	        alert("xx");
 	        this.lounge.db.remove_unpaid_checkout_order(this);
 	    },
 	});

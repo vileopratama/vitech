@@ -28,7 +28,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    barcode_product_screen:'products',     //if defined, this screen will be loaded when a product is scanned
 
 	    // what happens when a product is scanned :
-	    // it will add the product to the order and go to barcode_product_screen.
+	    // it will add the product to the and go to barcode_product_screen.
 	    barcode_product_action: function(code){
 	        var self = this;
 	        if (self.lounge.scan_product(code)) {
@@ -79,6 +79,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            last_orderline.set_discount(code.value);
 	        }
 	    },
+
 	    // What happens when an invalid barcode is scanned : shows an error popup.
 	    barcode_error_action: function(code) {
 	        var show_code;
@@ -259,7 +260,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return this.gui.get_current_screen_param('product');
 	    },
 	    order_product: function(){
-	        //alert("x");
 	        this.lounge.get_order().add_product(this.get_product(),{ quantity: this.weight });
 	    },
 	    get_product_name: function(){
@@ -456,7 +456,7 @@ odoo.define('point_of_lounge.screens', function (require) {
             this._super();
 
             this.$('.set-order').click(function(){
-                self.gui.show_screen('orderlist');
+                self.gui.show_checkout_screen('orderlist');
             });
 	    }
 	});
@@ -2078,11 +2078,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.renderElement();
 
 	        this.$('.back').click(function() {
-	            self.gui.back();
+	            self.gui.back_checkout();
 	        });
 
 	        this.$('.next').click(function(){
-	            self.gui.show_screen('order_payment');
+	            self.gui.show_checkout_screen('order_payment');
 	        });
 
 	        var orders = this.lounge.db.get_orders_sorted(1000);
@@ -2120,7 +2120,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            this.display_order_details('hide');
 
 	            if(associate_result && orders.length === 1) {
-	                this.gui.back();
+	                this.gui.back_checkout();
 	            }
 
 	            this.render_list(orders);
@@ -2418,7 +2418,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            self.validate_checkout_order();
+	            //self.validate_checkout_order();
+	            self.gui.show_checkout_screen('order_receipt');
 	        });
 
 	        this.$('.js_set_customer').click(function(){
@@ -2507,7 +2508,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 	    },
         click_back: function(){
-	        this.gui.show_screen('orderlist');
+	        this.gui.show_checkout_screen('orderlist');
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
@@ -2598,7 +2599,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	    },
 	    click_set_customer: function(){
-	        this.gui.show_screen('clientlist');
+	        this.gui.show_checkout_screen('clientlist');
 	    },
 	    validate_checkout_order: function(force_validation) {
 	        var self = this;
@@ -2671,9 +2672,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        checkout_order.initialize_validation_date();
-
 	        this.lounge.push_checkout_order(checkout_order);
-	        this.gui.show_screen('order_receipt');
+	        this.gui.show_checkout_screen('order_receipt');
 
 	    },
 	    show: function(){
@@ -2776,7 +2776,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return this.lounge.config.iface_print_via_proxy && this.lounge.config.iface_print_skip_screen;
 	    },
 	    click_next: function() {
-	        this.lounge.get_checkout_order().finalize();
+	        this.lounge.get_order().finalize();
+	        //this.lounge.get_checkout_order().finalize();
 	    },
 	    click_back: function() {
 	        // Placeholder method for ReceiptScreen extensions that

@@ -1018,7 +1018,7 @@ class lounge_order(osv.osv):
         'is_checkout': fields.boolean('Is Checkout',readonly=True),
         'flight_type': fields.selection([('domestic', 'Domestic'),
                                         ('international','International')],string='Flight Type',copy=False),
-        'flight_number': fields.char('Flight No.', required=True,copy=False),
+        'flight_number': fields.char('Flight No.',copy=True),
         'booking_total': fields.float(string="Total Hours"),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
