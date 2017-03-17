@@ -1093,7 +1093,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            //self.lounge.get_order().finalize();
 	            self.save_changes();
 	            self.gui.back();// FIXME HUH ?
 	        });
@@ -1281,6 +1280,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        fields.id           = partner.id || false;
 	        fields.country_id   = fields.country_id || false;
 	        fields.barcode      = fields.barcode || '';
+	        fileds.pic          = fields.pic || '';
+	        fields.company_type = fields.company_type || 'person';
 
 	        new Model('res.partner').call('create_from_ui',[fields]).then(function(partner_id){
 	            self.saved_client_details(partner_id);
@@ -2070,6 +2071,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this._super(parent, options);
 	        this.order_cache = new DomCache();
 	        this.order_line_cache = new DomCache();
+	        this.previous_screen = 'products';
 	    },
 	    auto_back: true,
 	    show: function(){
@@ -2078,7 +2080,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.renderElement();
 
 	        this.$('.back').click(function() {
-	            self.gui.back_checkout();
+	            self.gui.show_screen(self.previous_screen);
+	            //self.gui.show_checkout_screen('product');
 	        });
 
 	        this.$('.next').click(function(){

@@ -267,7 +267,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            if (    this.partner_write_date &&
 	                    this.partner_by_id[partner.id] &&
 	                    new Date(this.partner_write_date).getTime() + 1000 >=
-	                    new Date(partner.write_date).getTime() ) {
+	                    new Date(partner.write_date).getTime()) {
 	                // FIXME: The write_date is stored with milisec precision in the database
 	                // but the dates we get back are only precise to the second. This means when
 	                // you read partners modified strictly after time X, you get back partners that were

@@ -385,14 +385,14 @@
                 <div class='client-details-left'>
                     <div class='client-detail'>
                         <span class='label'>Type</span>
-                        <select class='detail client-type' name='company_type'>
-                            <option value='person'  t-att-value="'person'"  t-att-selected="partner.company_type ? (('person' === partner.company_type[0]) ? true : undefined) : undefined">Individual</option>
-                            <option value='company' t-att-value="'company'" t-att-selected="partner.company_type ? (('company' === partner.company_type[0]) ? true : undefined) : undefined">Company</option>
+                        <select class='detail client-customer_type' name='company_type'>
+                            <option t-att-value="'person'"  t-att-selected="partner.company_type ? (('person' === partner.company_type[0]) ? true : undefined) : undefined">Individual</option>
+                            <option t-att-value="'company'" t-att-selected="partner.company_type ? (('company' === partner.company_type[0]) ? true : undefined) : undefined">Company</option>
                         </select>
                     </div>
                     <div class='client-detail'>
                         <span class='label'>PIC</span>
-                        <input class='detail client-pic'    name='pic'          t-att-value='partner.pic' placeholder='Please Fill if Type Company'></input>
+                        <input class='detail client-pic' name='pic'  t-att-value='partner.pic' placeholder='Please Fill if Type Company'></input>
                     </div>
                     <div class='client-detail'>
                         <span class='label'>Street</span>
@@ -452,7 +452,7 @@
                 <div class='client-details-left'>
                     <div class='client-detail'>
                         <span class='label'>Type</span>
-                        <span class='detail client-type'>
+                        <span class='detail client-customer_type'>
                             <t t-if='partner.company_type === "person"'>
                                 Individual
                             </t>
