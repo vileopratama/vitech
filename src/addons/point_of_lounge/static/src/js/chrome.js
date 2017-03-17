@@ -600,7 +600,7 @@ odoo.define('point_of_lounge.chrome', function (require) {
 		loading_error: function(err){
 			var self = this;
 
-			var title = err.message;
+			var title = !err.message ? 'Error' : '';
 			var body  = err.stack;
 
 			if(err.message === 'XmlHttpRequestError '){

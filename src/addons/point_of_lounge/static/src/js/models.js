@@ -1562,7 +1562,7 @@ odoo.define('point_of_lounge.models', function (require) {
             var taxtotal = 0;
             var product =  this.get_product();
             var charge = !product.lounge_charge ? 0 : product.lounge_charge;
-            var total_hour = this.get_booking_total();
+            var total_hour = this.checkout_order.get_booking_total();
             var hour_if_charge = !product.lounge_charge_every ? 0 : product.lounge_charge_every;
             var taxes_ids = product.taxes_id;
             var taxes =  this.lounge.taxes;
@@ -2304,7 +2304,7 @@ odoo.define('point_of_lounge.models', function (require) {
         initialize: function(attributes,options){
             Backbone.Model.prototype.initialize.apply(this, arguments);
             options  = options || {};
-            this.id = null;
+            this.order_id = null;
             this.init_locked  = true;
             this.lounge = options.lounge;
             this.selected_checkout_orderline = undefined;
@@ -2414,23 +2414,22 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }, this));
 
 	        return {
-	            id : this.get_id(),
+	            id : this.get_order_id(),
                 name : this.get_name(),
-                is_checkout: true,
                 booking_to_date: this.get_booking_to_date(),
                 booking_total: this.get_booking_total(),
                 amount_paid: this.get_total_paid(),
                 amount_total: this.get_total_with_tax(),
-	            //amount_tax: this.get_total_tax(),
+	            amount_tax: this.get_total_tax(),
 	            amount_return: this.get_change(),
 	            lines: orderLines,
 	            statement_ids: paymentLines,
 	            lounge_session_id: this.lounge_session_id,
-	            //partner_id: this.get_client() ? this.get_client().id : false,
+	            partner_id: this.get_client() ? this.get_client().id : false,
                 user_id: this.lounge.cashier ? this.lounge.cashier.id : this.lounge.user.id,
                 uid: this.uid,
-                //sequence_number: this.sequence_number,
-                //creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
+                sequence_number: this.sequence_number,
+                creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
                 fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false
 	        }
 	    },
@@ -2552,11 +2551,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	            throw new Error('Finalized Checkout Order cannot be modified');
 	        }
 	    },
-	    set_id: function(id) {
-	        return this.id = id;
+	    set_order_id: function(order_id) {
+	        return this.order_id = order_id;
 	    },
-	    get_id: function() {
-	        return this.id;
+	    get_order_id: function() {
+	        return this.order_id;
 	    },
 	    get_name: function() {
 	        return this.name;

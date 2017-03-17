@@ -923,16 +923,16 @@ class lounge_order(osv.osv):
         # tz = pytz.timezone(user.partner_id.tz) or pytz.utc
 
         return {
-            'name': ui_order['name'],
-            'is_checkout': ui_order['is_checkout'],
+            #'name': ui_order['name'],
+            'is_checkout': False,
             'booking_to_date':  ui_order['booking_to_date'],
             'booking_total': ui_order['booking_total'],
-            #'user_id': ui_order['user_id'] or False,
-            #'session_id': ui_order['lounge_session_id'],
+            'user_id': ui_order['user_id'] or False,
+            'session_id': ui_order['lounge_session_id'],
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
             #'lounge_reference': ui_order['name'],
             #'partner_id': ui_order['partner_id'] or False,
-            #'date_order': ui_order['creation_date'],
+            'date_order': ui_order['creation_date'],
             #'fiscal_position_id': ui_order['fiscal_position_id'],
         }
 
@@ -945,9 +945,16 @@ class lounge_order(osv.osv):
             session = self.pool.get('lounge.session').browse(cr, uid, session_id, context=context)
             order['lounge_session_id'] = session_id
 
-        #order_id = self.create(cr, uid, self._checkout_order_fields(cr, uid, order, context=context), context)
-        order_id = self.write(cr, uid, [order['id']],self._checkout_order_fields(cr, uid, order, context=context), context=context)
+        #delete line
+        #order_line_obj = self.pool.get('lounge.order.line')
+        #order_line_ids  = order_line_obj.search(cr,uid,[('order_id', '=', order['id'])],context)
 
+        #for line in order_line_ids:
+        #    obj = order_line_obj.browse(cr,uid,line)
+        #    obj.unlink()
+
+        self.write(cr, uid,order['id'],self._checkout_order_fields(cr, uid, order, context=context), context=context)
+        order_id = order['id']
         journal_ids = set()
 
         for payments in order['statement_ids']:
@@ -1005,14 +1012,6 @@ class lounge_order(osv.osv):
 
             checkout_order_id = self._process_checkout_order(cr, uid, checkout_order, context=context)
             checkout_order_ids.append(checkout_order_id)
-
-            #try:
-            #    self.signal_workflow(cr, uid, [checkout_order_id], 'paid')
-            #except psycopg2.OperationalError:
-            #    # do not hide transactional errors, the order(s) won't be saved!
-            #    raise
-            ##except Exception as e:
-            #    _logger.error('Could not fully process the Lounge Order: %s', tools.ustr(e))
 
             if to_invoice:
                 self.action_invoice(cr, uid, [checkout_order_id], context)
@@ -1132,7 +1131,7 @@ class lounge_order(osv.osv):
                 if i == 3:
                     order.service_03 = sline.product_id.name
 
-            order.total_pax = int(math.ceil(qty / i))
+            #order.total_pax = int(math.ceil(qty / i))
 
     @api.onchange('booking_from_date')
     def _onchange_booking_from_date(self):
@@ -1154,7 +1153,7 @@ class lounge_order(osv.osv):
     def _default_pricelist(self, cr, uid, context=None):
         session_ids = self._default_session(cr, uid, context)
         if session_ids:
-            session_record = self.pool.get('lounge.session').browse(cr, uid, session_ids, context=context)
+            session_record = self.pool('lounge.session').browse(cr, uid, session_ids, context=context)
             return session_record.config_id.pricelist_id and session_record.config_id.pricelist_id.id or False
         return False
 

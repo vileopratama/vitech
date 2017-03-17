@@ -2082,7 +2082,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function(){
-	            if(self.lounge.get_checkout_order().get_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
+	            if(self.lounge.get_checkout_order().get_order_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
+	            //if(self.lounge.get_checkout_order().get_total_payment() > 0) {
 	                self.gui.show_checkout_screen('order_payment');
 	            } else {
 	                self.gui.show_checkout_screen('order_receipt');
@@ -2195,7 +2196,7 @@ odoo.define('point_of_lounge.screens', function (require) {
                     'last_payment' :  order.amount_total,
                 };
 
-                checkout_order.set_id(order.id); // add to id
+                checkout_order.set_order_id(order.id); // add to id
                 checkout_order.set_booking_to_date(new Date()); // add to booking to date
                 checkout_order.set_booking_total(Math.ceil(duration.asHours())); // add to booking total
 
@@ -2847,6 +2848,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    click_next: function() {
 	        this.lounge.get_checkout_order().finalize();
+	        //this.lounge.get_order().finalize();
 	    },
 	    click_back: function() {
 	        // Placeholder method for ReceiptScreen extensions that

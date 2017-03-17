@@ -41,9 +41,9 @@ var Gui = core.Class.extend({
             //order
             var checkout_order = self.lounge.get_checkout_order();
             if (checkout_order) {
-                self.show_saved_screen(checkout_order);
+                self.show_saved_checkout_screen(checkout_order);
             } else {
-                self.show_screen(self.startup_screen);
+                self.show_checkout_screen(self.startup_screen);
             }
 
             self.lounge.bind('change:selectedOrder', function(){
