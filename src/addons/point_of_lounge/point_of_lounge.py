@@ -924,7 +924,7 @@ class lounge_order(osv.osv):
 
         return {
             #'name': ui_order['name'],
-            'is_checkout': False,
+            'is_checkout': True,
             'booking_to_date':  ui_order['booking_to_date'],
             'booking_total': ui_order['booking_total'],
             'user_id': ui_order['user_id'] or False,
