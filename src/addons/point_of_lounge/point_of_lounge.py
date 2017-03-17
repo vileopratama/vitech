@@ -994,6 +994,9 @@ class lounge_order(osv.osv):
 
         return order_id
 
+    def update_checkout(self, cr, uid, context=None):
+        self.write(cr, uid, {'is_checkout': True}, context)
+
     def update_from_ui(self, cr, uid, checkout_orders, context=None):
         submitted_references = [o['data']['name'] for o in checkout_orders]
         existing_order_ids = self.search(cr, uid, [('lounge_reference', 'in', submitted_references)],

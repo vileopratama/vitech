@@ -1083,7 +1083,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var self = this;
 	        this._super();
 
-
 	        this.renderElement();
 	        this.details_visible = false;
 	        this.old_client = this.lounge.get_order().get_client();
@@ -1280,7 +1279,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        fields.id           = partner.id || false;
 	        fields.country_id   = fields.country_id || false;
 	        fields.barcode      = fields.barcode || '';
-	        fileds.pic          = fields.pic || '';
+	        fields.pic          = fields.pic || '';
 	        fields.company_type = fields.company_type || 'person';
 
 	        new Model('res.partner').call('create_from_ui',[fields]).then(function(partner_id){
@@ -1300,9 +1299,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.reload_partners().then(function(){
 	            var partner = self.lounge.db.get_partner_by_id(partner_id);
 	            if (partner) {
-	                self.new_client = partner;
-	                self.toggle_save_button();
-	                self.display_client_details('show',partner);
+	                //self.new_client = partner;
+	                //self.toggle_save_button();
+	                //self.display_client_details('show',partner);
 	            } else {
 	                // should never happen, because create_from_ui must return the id of the partner it
 	                // has created, and reload_partner() must have loaded the newly created partner.
@@ -2093,7 +2092,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        });
 
+            this.reload_orders();
+
 	        var orders = this.lounge.db.get_orders_sorted(1000);
+	        alert("Total = " + orders.length);
 	        this.render_list(orders);
 
 	        //click order
@@ -2113,6 +2115,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            search_timeout = setTimeout(function() {
 	                self.perform_search(query,event.which === 13);
+	                self.reload_orders();
 	            },70);
 	        });
 
@@ -2144,6 +2147,19 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.render_list(orders);
             this.$('.searchorder input')[0].value = '';
 	        this.$('.searchorder input').focus();
+	    },
+	     // This fetches partner changes on the server, and in case of changes,
+	    // rerenders the affected views
+	    reload_orders: function(){
+	        var self = this;
+	        return this.lounge.load_new_orders().then(function(){
+	            self.render_list(self.lounge.db.get_orders_sorted(1000));
+	            // update the currently assigned client if it has been changed in db.
+	            /*var curr_client = self.lounge.get_order().get_client();
+	            if (curr_client) {
+	                self.lounge.get_order().set_client(self.lounge.db.get_partner_by_id(curr_client.id));
+	            }*/
+	        });
 	    },
 	    render_list: function(orders){
 	        var contents = this.$el[0].querySelector('.order-list-contents');
@@ -2846,7 +2862,14 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        return this.lounge.config.iface_print_via_proxy && this.lounge.config.iface_print_skip_screen;
 	    },
 	    click_next: function() {
+	        this.lounge.load_new_orders().then(function(){
+
+	        });
 	        this.lounge.get_checkout_order().finalize();
+	        /*this.lounge.load_new_orders().then(function(){
+                this.lounge.get_checkout_order().finalize();
+	        });*/
+	        //this.lounge.get_checkout_order().finalize();
 	        //this.lounge.get_order().finalize();
 	    },
 	    click_back: function() {

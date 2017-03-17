@@ -603,6 +603,26 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return def;
 	    },
 
+	    // reload the list of order, returns as a deferred that resolves if there were
+	    // updated orders, and fails if not
+	    load_new_orders: function(){
+	        var self = this;
+	        var def  = new $.Deferred();
+	        var fields = _.find(this.models,function(model){ return model.model === 'lounge.order'; }).fields;
+	        new Model('lounge.order')
+	            .query(fields)
+	            .filter([['is_checkout','=',false]])
+	            .all({'timeout':3000, 'shadow': true})
+	            .then(function(orders){
+	                if (self.db.add_orders(orders)) {   // check if the orders we got were real updates
+	                    def.resolve();
+	                } else {
+	                    def.reject();
+	                }
+	            }, function(err,event){ event.preventDefault(); def.reject(); });
+	        return def;
+	    },
+
 	    // this is called when an order is removed from the order collection. It ensures that there is always an existing
 	    // order and a valid selected order
 	    on_removed_order: function(removed_order,index,reason){
@@ -2869,6 +2889,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    destroy: function() {
 	        Backbone.Model.prototype.destroy.apply(this,arguments);
+            this.lounge.db.remove_checkout_order(this.get_order_id());
 	        this.lounge.db.remove_unpaid_checkout_order(this);
 	    },
 	});
