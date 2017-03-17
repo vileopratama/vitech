@@ -2261,11 +2261,7 @@ odoo.define('point_of_lounge.screens', function (require) {
                     this.lounge.get_checkout_order().add_product(product);
 	            }
 
-	            //if(order_line.price_subtotal_incl)
-	                //subtotal+=order_line.price_subtotal_incl;
 
-	            //alert(order_line.product_id[1]);
-	            //alert(order_line.qty);
                 /**
                  * Calculation Charge
                 */
@@ -2275,7 +2271,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
 	            total_charge = (total_hour_charge <= 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
 	            order_line.total_charge = total_charge;
-	            order_line.subtotal = (qty * total_charge) + order_line.price_subtotal_incl;
+	            order_line.subtotal = (qty * total_charge) + order_line.price_unit;
 	            subtotal+=order_line.subtotal;
 
 	            if(!orderline){

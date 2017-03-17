@@ -946,12 +946,12 @@ class lounge_order(osv.osv):
             order['lounge_session_id'] = session_id
 
         #delete line
-        #order_line_obj = self.pool.get('lounge.order.line')
-        #order_line_ids  = order_line_obj.search(cr,uid,[('order_id', '=', order['id'])],context)
+        order_line_obj = self.pool.get('lounge.order.line')
+        order_line_ids  = order_line_obj.search(cr,uid,[('order_id', '=', order['id'])],context)
 
-        #for line in order_line_ids:
-        #    obj = order_line_obj.browse(cr,uid,line)
-        #    obj.unlink()
+        for line in order_line_ids:
+            obj = order_line_obj.browse(cr,uid,line)
+            obj.unlink()
 
         self.write(cr, uid,order['id'],self._checkout_order_fields(cr, uid, order, context=context), context=context)
         order_id = order['id']

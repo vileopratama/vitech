@@ -2323,6 +2323,7 @@ odoo.define('point_of_lounge.models', function (require) {
             this.finalized = false;//if true,cannot be modified.
 
             this.set({ client: null });
+            this.set({ last_order: null });
 
             if (options.json) {
                 this.init_from_JSON(options.json);
@@ -2353,6 +2354,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    init_from_JSON: function(json) {
 	        var client;
+	        var last_order;
 	        this.sequence_number = json.sequence_number;
 	        this.lounge.lounge_session.sequence_number = Math.max(this.sequence_number+1,this.lounge.lounge_session.sequence_number);
 	        this.session_id    = json.lounge_session_id;
@@ -2381,6 +2383,16 @@ odoo.define('point_of_lounge.models', function (require) {
 	            client = null;
 	        }
 	        this.set_client(client);
+
+	        if (json.id) {
+	            last_order = this.lounge.db.get_order_by_id(json.id);
+	            if (!last_order) {
+	                console.error('ERROR: trying to load a last order not available in the lounge');
+	            }
+	        } else {
+	            last_order = null;
+	        }
+	        this.set_last_order(last_order);
 
 	        this.temporary = false;     // FIXME
 	        this.to_invoice = false;    // FIXME
@@ -2448,6 +2460,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        });
 
 	        var client  = this.get('client');
+	        var last_order = this.get('last_order');
 	        var cashier = this.lounge.cashier || this.lounge.user;
 	        var company = this.lounge.company;
 	        var shop = this.lounge.shop;
@@ -2584,6 +2597,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_client_name: function(){
 	        var client = this.get('client');
 	        return client ? client.name : "";
+	    },
+	    set_last_order: function(last_order){
+	        this.assert_editable();
+	        this.set('last_order',last_order);
+	    },
+	    get_last_order: function(){
+	        return this.get('last_order');
 	    },
 	    get_last_orderline: function() {
 	        return this.checkout_orderlines.at(this.checkout_orderlines.length -1);
