@@ -1077,6 +1077,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return loungeOrderModel.call('create_from_ui',
 	            [_.map(orders, function (order) {
 	                order.to_invoice = options.to_invoice || false;
+	                //remove order
+	                _.each(orders, function (order) {
+	                    self.db.remove_order(order.id);
+	                });
 	                return order;
 	            })],
 	            undefined,
