@@ -898,6 +898,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var self = this;
 
 	        if(checkout_order){
+	            this.db.remove_orders(checkout_order.get_order_id());
 	            this.db.add_checkout_order(checkout_order.export_as_JSON());
 	        }
 
@@ -972,10 +973,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var self = this;
 	        var invoiced = new $.Deferred();
 
+
 	        if(!checkout_order.get_client()){
 	            invoiced.reject({code:400, message:'Missing Customer', data:{}});
 	            return invoiced;
 	        }
+
+            //remove db
+	        this.db.remove_orders(checkout_order.get_order_id());
 
 	        var checkout_order_id = this.db.add_checkout_order(checkout_order.export_as_JSON());
 
@@ -1137,7 +1142,6 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        var self = this;
 	        var timeout = typeof options.timeout === 'number' ? options.timeout : 7500 * checkout_orders.length;
-
 	        // we try to send the order. shadow prevents a spinner if it takes too long. (unless we are sending an invoice,
 	        // then we want to notify the user that we are waiting on something )
 	        var loungeOrderModel = new Model('lounge.order');
@@ -1154,6 +1158,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        ).then(function (server_ids) {
 	            _.each(checkout_orders, function (checkout_order) {
 	                self.db.remove_checkout_order(checkout_order.id);
+
 	            });
 	            self.set('failed',false);
 	            return server_ids;
@@ -1178,6 +1183,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	            event.preventDefault();
 	            console.error('Failed to send orders:', checkout_orders);
 	        });
+
+
 	    },
 
 	    scan_product: function(parsed_code){
@@ -1649,6 +1656,22 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_surcharge: function(){
 	        return this.get_all_prices().surcharge;
+	    },
+	    _map_tax_fiscal_position: function(tax) {
+	        var current_order = this.lounge.get_checkout_order();
+	        var order_fiscal_position = current_order && current_order.fiscal_position;
+
+	        if (order_fiscal_position) {
+	            var mapped_tax = _.find(order_fiscal_position.fiscal_position_taxes_by_id, function (fiscal_position_tax) {
+	                return fiscal_position_tax.tax_src_id[0] === tax.id;
+	            });
+
+	            if (mapped_tax) {
+	                tax = this.lounge.taxes_by_id[mapped_tax.tax_dest_id[0]];
+	            }
+	        }
+
+	        return tax;
 	    },
 	    compute_all: function(taxes, price_unit,charge,quantity, currency_rounding) {
 	        var self = this;
@@ -2455,6 +2478,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        return {
 	            id : this.get_order_id(),
+	            xid : this.get_order_id(),
                 name : this.get_name(),
                 booking_to_date: this.get_booking_to_date(),
                 booking_total: this.get_booking_total(),
@@ -2593,7 +2617,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 	    set_order_id: function(order_id) {
-	        this.lounge.set_remove_order_id(order_id);
+	        //this.lounge.set_remove_order_id(order_id);
 	        return this.order_id = order_id;
 	    },
 	    get_order_id: function() {
@@ -2898,7 +2922,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    destroy: function() {
 	        Backbone.Model.prototype.destroy.apply(this,arguments);
-            this.lounge.db.remove_checkout_order(this.get_order_id());
+            //this.lounge.db.remove_checkout_order(this.get_order_id());
 	        this.lounge.db.remove_unpaid_checkout_order(this);
 	    },
 	});

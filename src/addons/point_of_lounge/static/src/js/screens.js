@@ -2084,12 +2084,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        });
 
 	        this.$('.next').click(function() {
-	            if(self.lounge.get_checkout_order().get_order_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
+	            //if(self.lounge.get_checkout_order().get_order_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
 	            //if(self.lounge.get_checkout_order().get_total_payment() > 0) {
 	                self.gui.show_checkout_screen('order_payment');
-	            } else {
-	                self.gui.show_checkout_screen('order_receipt');
-	            }
+	            //} else {
+	              //  self.gui.show_checkout_screen('order_receipt');
+	            //}
 	        });
 
             /*this.reload_orders();
