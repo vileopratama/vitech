@@ -27,6 +27,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        this.partner_by_barcode = {};
 	        this.partner_search_string = "";
 
+            this.order_remove_id = [];
             this.order_sorted = [];
 	        this.order_by_id = {};
 	        this.order_by_barcode = {};
@@ -35,7 +36,6 @@ odoo.define('point_of_lounge.DB', function (require) {
 
 	        this.order_line_sorted = [];
 	        this.order_line_by_id = {};
-	        //this.order_line_by_order_id = {};
 	        this.order_line_by_barcode = {};
 	        this.order_line_search_string = "";
 	        this.order_line_write_date = null;
@@ -345,7 +345,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        }
 	        return results;
 	    },
-        get_orders_sorted: function(max_count){
+        get_orders_sorted: function(max_count) {
             max_count = max_count ? Math.min(this.order_sorted.length, max_count) : this.order_sorted.length;
             var orders = [];
             for (var i = 0; i < max_count; i++) {
@@ -377,6 +377,16 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    get_order_by_id: function(id){
 	        return this.order_by_id[id];
 	    },
+	    remove_old_order: function(order_id) {
+            var order = this.get_order_by_id(order_id);
+            order = _.without(order, _.findWhere(order, {
+                id: order.id
+            }));
+
+	    },
+	    remove_orders: function(id) {
+	    },
+
         add_orders: function(orders){
 	        var updated_count = 0;
 	        var new_write_date = '';
@@ -435,6 +445,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        }
 	        return results;
 	    },
+
 	    get_order_lines_sorted: function(max_count){
             max_count = max_count ? Math.min(this.order_line_sorted.length, max_count) : this.order_line_sorted.length;
             var order_lines = [];

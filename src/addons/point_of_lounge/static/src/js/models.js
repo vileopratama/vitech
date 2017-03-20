@@ -47,6 +47,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        // Business data; loaded from the server at launch
 	        this.company_logo = null;
+	        this.remove_order_id = 0;
 	        this.company_logo_base64 = '';
 	        this.currency = null;
 	        this.shop = null;
@@ -779,6 +780,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return null;
 	    },
 
+	    get_remove_order_id : function() {
+	        return this.remove_order_id;
+	    },
+	    set_remove_order_id : function(id) {
+            return this.remove_order_id = id;
+	    },
 	    get_flight_type: function() {
 	        var order = this.get_order();
 	        if (order) {
@@ -1077,10 +1084,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return loungeOrderModel.call('create_from_ui',
 	            [_.map(orders, function (order) {
 	                order.to_invoice = options.to_invoice || false;
-	                //remove order
-	                _.each(orders, function (order) {
-	                    self.db.remove_order(order.id);
-	                });
+
 	                return order;
 	            })],
 	            undefined,
@@ -2589,6 +2593,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 	    set_order_id: function(order_id) {
+	        this.lounge.set_remove_order_id(order_id);
 	        return this.order_id = order_id;
 	    },
 	    get_order_id: function() {

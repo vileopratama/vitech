@@ -1299,9 +1299,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.reload_partners().then(function(){
 	            var partner = self.lounge.db.get_partner_by_id(partner_id);
 	            if (partner) {
-	                //self.new_client = partner;
-	                //self.toggle_save_button();
-	                //self.display_client_details('show',partner);
+	                self.new_client = partner;
+	                self.toggle_save_button();
+	                self.display_client_details('show',partner);
 	            } else {
 	                // should never happen, because create_from_ui must return the id of the partner it
 	                // has created, and reload_partner() must have loaded the newly created partner.
@@ -2083,7 +2083,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            //self.gui.show_checkout_screen('product');
 	        });
 
-	        this.$('.next').click(function(){
+	        this.$('.next').click(function() {
 	            if(self.lounge.get_checkout_order().get_order_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
 	            //if(self.lounge.get_checkout_order().get_total_payment() > 0) {
 	                self.gui.show_checkout_screen('order_payment');
@@ -2092,12 +2092,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        });
 
-            this.reload_orders();
+            /*this.reload_orders();
 
 	        var orders = this.lounge.db.get_orders_sorted(1000);
-	        alert("Total = " + orders.length);
 	        this.render_list(orders);
-
+	        this.$('#' + self.lounge.get_remove_order_id()).remove(); //remove last order
+            */
 	        //click order
             this.$('.order-list-contents').delegate('.order-line','click',function(event){
 	            self.line_select(event,$(this),parseInt($(this).data('id')));
@@ -2152,7 +2152,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    // rerenders the affected views
 	    reload_orders: function(){
 	        var self = this;
-	        return this.lounge.load_new_orders().then(function(){
+	        return this.lounge.load_new_orders().then(function() {
 	            self.render_list(self.lounge.db.get_orders_sorted(1000));
 	            // update the currently assigned client if it has been changed in db.
 	            /*var curr_client = self.lounge.get_order().get_client();

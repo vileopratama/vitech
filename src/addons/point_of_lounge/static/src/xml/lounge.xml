@@ -691,7 +691,7 @@
     </t>
 
     <t t-name="LoungeOrderLine">
-        <tr class='order-line' t-att-data-id='order.id'>
+        <tr class='order-line'  t-att-id="order.id" t-att-data-id='order.id'>
             <td><t t-esc='order.name' /></td>
             <td><t t-esc='order.partner_id' /></td>
             <td><t t-esc='order.booking_from_date' /></td>
