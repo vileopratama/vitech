@@ -698,9 +698,9 @@
 
     <t t-name="LoungeOrderLine">
         <tr class='order-line'  t-att-id="order.id" t-att-data-id='order.id'>
-            <td><t t-esc='order.name' /></td>
-            <td><t t-esc='order.partner_id' /></td>
-            <td><t t-esc='order.booking_from_date' /></td>
+            <td><t t-esc='order.lounge_reference' /></td>
+            <td><t t-esc='moment(order.booking_from_date).format("DD/MM/YYYY hh:mm")' /></td>
+            <td><t t-esc='moment(order.booking_to_date).format("DD/MM/YYYY hh:mm")' /></td>
             <td>
                 <t t-if="order.flight_type=='domestic'">
                      Domestic

@@ -577,7 +577,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.lounge.bind('change:selectedOrder', this.change_selected_order, this);
 
 	        this.line_click_handler = function(event){
-	            //alert("x");
 	            self.click_line(this.orderline, event);
 	        };
 

@@ -366,9 +366,9 @@ class product_template(osv.osv):
                                            help="Check if the product should be weighted using the hardware scale integration"),
         'lounge_categ_id': fields.many2one('lounge.category', 'Lounge Service Category',
                                            help="Those categories are used to group similar products for lounge."),
-        'lounge_charge': fields.float('In Charge', digits=(16,0),
+        'lounge_charge': fields.float('In Charge', digits=(16, 0),
                                       help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
-        'discount_company' : fields.float('Disc (Company)',digits=(16,0)),
+        'discount_company': fields.float('Disc (Company)', digits=(16, 0)),
         'lounge_charge_every': fields.integer('In Charge Every',
                                               help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
     }
@@ -675,7 +675,7 @@ class lounge_session(osv.osv):
                                                                          "point_of_lounge.group_lounge_manager"):
                         raise UserError(_(
                             "Your ending balance is too different from the theoretical cash closing (%.2f), the maximum allowed is: %.2f. You can contact your manager to force it.") % (
-                                        st.difference, st.journal_id.amount_authorized_diff_lounge))
+                                            st.difference, st.journal_id.amount_authorized_diff_lounge))
                 if (st.journal_id.type not in ['bank', 'cash']):
                     raise UserError(_("The type of the journal for your payment method should be bank or cash "))
                 self.pool['account.bank.statement'].button_confirm_bank(cr, SUPERUSER_ID, [st.id],
@@ -923,17 +923,17 @@ class lounge_order(osv.osv):
         # tz = pytz.timezone(user.partner_id.tz) or pytz.utc
 
         return {
-            #'name': ui_order['name'],
+            # 'name': ui_order['name'],
             'is_checkout': True,
-            'booking_to_date':  ui_order['booking_to_date'],
+            'booking_to_date': ui_order['booking_to_date'],
             'booking_total': ui_order['booking_total'],
             'user_id': ui_order['user_id'] or False,
             'session_id': ui_order['lounge_session_id'],
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
-            #'lounge_reference': ui_order['name'],
-            #'partner_id': ui_order['partner_id'] or False,
+            # 'lounge_reference': ui_order['name'],
+            # 'partner_id': ui_order['partner_id'] or False,
             'date_order': ui_order['creation_date'],
-            #'fiscal_position_id': ui_order['fiscal_position_id'],
+            # 'fiscal_position_id': ui_order['fiscal_position_id'],
         }
 
     def _process_checkout_order(self, cr, uid, order, context=None):
@@ -945,25 +945,26 @@ class lounge_order(osv.osv):
             session = self.pool.get('lounge.session').browse(cr, uid, session_id, context=context)
             order['lounge_session_id'] = session_id
 
-        #delete line
+        # delete line
         order_line_obj = self.pool.get('lounge.order.line')
-        order_line_ids  = order_line_obj.search(cr,uid,[('order_id', '=', order['id'])],context)
+        order_line_ids = order_line_obj.search(cr, uid, [('order_id', '=', order['id'])], context)
 
         for line in order_line_ids:
-            obj = order_line_obj.browse(cr,uid,line)
+            obj = order_line_obj.browse(cr, uid, line)
             obj.unlink()
 
-        self.write(cr, uid,order['id'],self._checkout_order_fields(cr, uid, order, context=context), context=context)
+        self.write(cr, uid, order['id'], self._checkout_order_fields(cr, uid, order, context=context), context=context)
         order_id = order['id']
         journal_ids = set()
 
         for payments in order['statement_ids']:
             if not float_is_zero(payments[2]['amount'], precision_digits=prec_acc):
-                self.add_checkout_payment(cr, uid, order_id, self._payment_fields(cr, uid, payments[2], context=context),
-                                 context=context)
+                self.add_checkout_payment(cr, uid, order_id,
+                                          self._payment_fields(cr, uid, payments[2], context=context),
+                                          context=context)
             journal_ids.add(payments[2]['journal_id'])
 
-        #if session.sequence_number <= order['sequence_number']:
+        # if session.sequence_number <= order['sequence_number']:
         #    session.write({'sequence_number': order['sequence_number'] + 1})
         #    session.refresh()
 
@@ -977,7 +978,7 @@ class lounge_order(osv.osv):
 
                 if not cash_journal_ids:
                     cash_journal_ids = [statement.journal_id.id for statement in session.statement_ids
-                                    if statement.journal_id.type == 'cash']
+                                        if statement.journal_id.type == 'cash']
 
                     if not cash_journal_ids:
                         raise UserError(
@@ -1019,7 +1020,8 @@ class lounge_order(osv.osv):
             if to_invoice:
                 self.action_invoice(cr, uid, [checkout_order_id], context)
                 checkout_order_obj = self.browse(cr, uid, checkout_order_id, context)
-                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [checkout_order_obj.invoice_id.id],'invoice_open')
+                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [checkout_order_obj.invoice_id.id],
+                                                             'invoice_open')
 
         return checkout_order_ids
 
@@ -1028,10 +1030,10 @@ class lounge_order(osv.osv):
         'date_order': fields.datetime('Order Date', readonly=False, select=True),
         'booking_from_date': fields.datetime('Booking From', readonly=False, select=True),
         'booking_to_date': fields.datetime('Booking To', readonly=False, select=True),
-        'is_checkout': fields.boolean('Is Checkout',readonly=True),
+        'is_checkout': fields.boolean('Is Checkout', readonly=True),
         'flight_type': fields.selection([('domestic', 'Domestic'),
-                                        ('international','International')],string='Flight Type',copy=False),
-        'flight_number': fields.char('Flight No.',copy=True),
+                                         ('international', 'International')], string='Flight Type', copy=False),
+        'flight_number': fields.char('Flight No.', copy=True),
         'booking_total': fields.float(string="Total Hours"),
         'session_id': fields.many2one('lounge.session', 'Session',
                                       required=True,
@@ -1070,12 +1072,12 @@ class lounge_order(osv.osv):
                                           type='many2one', relation='stock.picking.type'),
         'config_id': fields.related('session_id', 'config_id', string="Lounge", type='many2one',
                                     relation='lounge.config'),
-        'service_01': fields.char(compute='_compute_amount_all',string='Service 1',size=100,store=True),
-        'service_02': fields.char(compute='_compute_amount_all',string='Service 2', size=100,store=True),
-        'service_03': fields.char(compute='_compute_amount_all',string='Service 3', size=100,store=True),
-        'journal_id': fields.many2one('account.journal','Payment Method'),
-        'total_pax': fields.integer(compute='_compute_amount_all',string='No.Pax',size=3,store=True),
-        'company_type': fields.related('partner_id','company_type',string='Type',type='char',store=False),
+        'service_01': fields.char(compute='_compute_amount_all', string='Service 1', size=100, store=True),
+        'service_02': fields.char(compute='_compute_amount_all', string='Service 2', size=100, store=True),
+        'service_03': fields.char(compute='_compute_amount_all', string='Service 3', size=100, store=True),
+        'journal_id': fields.many2one('account.journal', 'Payment Method'),
+        'total_pax': fields.integer(compute='_compute_amount_all', string='No.Pax', size=3, store=True),
+        'company_type': fields.related('partner_id', 'company_type', string='Type', type='char', store=False),
     }
 
     """
@@ -1090,8 +1092,8 @@ class lounge_order(osv.osv):
         price = price + line.charge
         cur = line.order_id.pricelist_id.currency_id
         taxes = \
-        taxes.compute_all(price, cur, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)[
-            'taxes']
+            taxes.compute_all(price, cur, line.qty, product=line.product_id, partner=line.order_id.partner_id or False)[
+                'taxes']
         val = 0.0
         for c in taxes:
             val += c.get('amount', 0.0)
@@ -1121,20 +1123,25 @@ class lounge_order(osv.osv):
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
             order.amount_total = order.amount_tax + amount_untaxed
 
-            i = 0
+            i = 1
             qty = 0
-            for sline in order.lines:
-                i = i + 1
-                qty = qty + sline.qty
-
+            for line in order.lines:
+                qty += line.qty
                 if i == 1:
-                    order.service_01 = sline.product_id.name
+                    order.service_01 = line.product_id.name
                 if i == 2:
-                    order.service_02 = sline.product_id.name
+                    order.service_02 = line.product_id.name
                 if i == 3:
-                    order.service_03 = sline.product_id.name
+                    order.service_03 = line.product_id.name
 
-            #order.total_pax = int(math.ceil(qty / i))
+                i += 1
+
+            if qty > 0:
+                pax = int(math.ceil(qty / i))
+            else:
+                pax = 1
+
+            order.total_pax = pax
 
     @api.onchange('booking_from_date')
     def _onchange_booking_from_date(self):
@@ -1165,8 +1172,8 @@ class lounge_order(osv.osv):
     _defaults = {
         'user_id': lambda self, cr, uid, context: uid,
         'state': 'draft',
-        'flight_type':'domestic',
-        'flight_number':'-',
+        'flight_type': 'domestic',
+        'flight_number': '-',
         'name': '/',
         'date_order': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'booking_from_date': lambda *a: datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -1304,7 +1311,7 @@ class lounge_order(osv.osv):
                 msg = _('There is no receivable account defined to make payment.')
             else:
                 msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (
-                order.partner_id.name, order.partner_id.id,)
+                    order.partner_id.name, order.partner_id.id,)
             raise UserError(msg)
 
         context.pop('lounge_session_id', False)
@@ -1857,8 +1864,9 @@ class lounge_order_line(osv.osv):
         'order_id': fields.many2one('lounge.order', 'Order Ref', ondelete='cascade'),
         'product_id': fields.many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], required=True,
                                       change_default=True),
-        'lounge_charge': fields.related('product_id','lounge_charge',string='Charge',type='float'),
-        'lounge_charge_every': fields.related('product_id', 'lounge_charge_every', string='Charge Every', type='integer'),
+        'lounge_charge': fields.related('product_id', 'lounge_charge', string='Charge', type='float'),
+        'lounge_charge_every': fields.related('product_id', 'lounge_charge_every', string='Charge Every',
+                                              type='integer'),
         'qty': fields.float('Pax(s)', digits_compute=dp.get_precision('Product Unit of Measure')),
         'charge': fields.float('Charge', digits=0),
         'discount': fields.float('Discount (%)', digits=0),
