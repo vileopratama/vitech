@@ -817,13 +817,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return null;
 	    },
 
-	    get_diff_hours: function(date_from,date_to) {
+	    /*get_diff_hours: function(date_from,date_to) {
 	        var order = this.get_order();
 	        if (order) {
 	            return order.get_diff_hours(date_from,date_to);
 	        }
 	        return null;
-	    },
+	    },*/
 
 	    get_booking_total: function() {
 	        var order = this.get_order();
@@ -1834,10 +1834,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 
 	    get_charge: function() {
-			var total_hour = this.get_booking_total();
+			var total_hour = this.lounge.get_booking_total();
 	        var charge_every = this.get_product().lounge_charge_every;
 			var charge_value = !this.get_product().lounge_charge ? 0 : this.get_product().lounge_charge;
-			var subtotal_hour_charge = Math.round(total_hour / charge_every);
+			var subtotal_hour_charge = charge_every > 0 ? Math.round(total_hour / charge_every) : 0;
 			var total_hour_charge = subtotal_hour_charge > 1  ? subtotal_hour_charge - 1 : 0;
 			var total_charge = charge_value * total_hour_charge;
 			return Math.round(total_charge);
@@ -2004,6 +2004,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var rounding = this.lounge.currency.rounding;
 	        return round_pr(this.get_unit_price() * this.get_quantity() * (1 - this.get_discount()/100), rounding);
 	    },
+	    get_base_price_with_charge:    function(){
+	        var rounding = this.lounge.currency.rounding;
+	        return round_pr((this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100), rounding);
+	    },
 	    get_display_price: function(){
 	        if (this.lounge.config.iface_tax_included) {
 	            return this.get_price_with_tax();
@@ -2011,11 +2015,22 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return this.get_base_price();
 	        }
 	    },
+	    get_display_price_with_charge: function(){
+	        if (this.lounge.config.iface_tax_included) {
+	            return this.get_price_with_tax_and_charge();
+	        } else {
+	            return this.get_base_price_with_charge();
+	        }
+	    },
 	    get_price_without_tax: function(){
+	        //this.trigger('change',this);
 	        return this.get_all_prices().priceWithoutTax;
 	    },
 	    get_price_with_tax: function(){
 	        return this.get_all_prices().priceWithTax;
+	    },
+	     get_price_with_tax_and_charge: function(){
+	        return this.get_all_prices().surcharge;
 	    },
 	    get_tax: function(){
 	        return this.get_all_prices().tax;
@@ -2140,52 +2155,19 @@ odoo.define('point_of_lounge.models', function (require) {
             return str;
 	    },
 	    get_booking_total: function() {
-	        var time_total = this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date());
-
-	        if(!time_total) {
-	            return 0;
-	        }
-
+	        var time_total = this.order.get_booking_total();
 	        return time_total;
-	        /*self = this;
-            var booking_from_date = this.lounge.get_booking_from_date();
-            var booking_to_date = this.lounge.get_booking_to_date();
-            var time_total = 0;
-
-            if(booking_from_date && booking_to_date) {
-                booking_from_date = this.get_all_replace(booking_from_date," ","");
-                booking_to_date = this.get_all_replace(booking_to_date," ","");
-                booking_from_date = this.get_all_replace(booking_from_date,":","");
-                booking_to_date = this.get_all_replace(booking_to_date,":","");
-
-                var hour_booking_from_date = !booking_from_date ?  0 : Number(parseInt(booking_from_date.substr(0,2)));
-                var minute_booking_from_date = !booking_from_date ?  0 : Number(parseInt(booking_from_date.substr(2,2)));
-
-                var hour_booking_to_date = !booking_to_date ?  0 : Number(parseInt(booking_to_date.substr(0,2)));
-                var minute_booking_to_date = !booking_to_date ?  0 : Number(parseInt(booking_to_date.substr(2,2)));
-
-                var total_booking_from_date = (hour_booking_from_date * 3600) + (minute_booking_from_date * 60);
-                var total_booking_to_date = (hour_booking_to_date * 3600) + (minute_booking_to_date * 60);
-                var time_total = (total_booking_to_date/3600) - (total_booking_from_date/3600);
-            }
-
-            return time_total;*/
-
 	    },
 	    get_all_prices: function(){
 	        var self = this;
 	        var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
 	        var taxtotal = 0;
 	        var product =  this.get_product();
-	        var charge = !product.lounge_charge ? 0 : product.lounge_charge;
-	        var total_hour = this.get_booking_total();
-	        var hour_if_charge = !product.lounge_charge_every ? 0 : product.lounge_charge_every;
 	        var taxes_ids = product.taxes_id;
 	        var taxes =  this.lounge.taxes;
 	        var taxdetail = {};
 	        var product_taxes = [];
-            var total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
-            charge = (total_hour_charge <= 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
+            var charge = this.get_charge();
 
 	        _(taxes_ids).each(function(el){
 	            product_taxes.push(_.detect(taxes, function(t){
@@ -2630,9 +2612,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return this.booking_to_date;
 	    },
 	    set_booking_total: function(booking_total) {
+	        this.assert_editable();
+	        //this.set('booking_total',booking_total);
 	        return this.booking_total = booking_total;
 	    },
 	    get_booking_total: function() {
+	        //return this.get('booking_total');
 	        return this.booking_total;
 	    },
 	    /* ---- Client / Customer --- */
@@ -2946,6 +2931,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
 	        this.flight_number  = null;
+	        this.booking_from_date = moment().format("DD/MM/YYYY HH:MM");
+	        this.booking_total  = 2;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;
@@ -3206,37 +3193,27 @@ odoo.define('point_of_lounge.models', function (require) {
             return this.lounge.get_flight_number();
 	    },
 	    get_booking_from_date_local: function() {
-			if(this.lounge.get_booking_from_date()) {
-				var date_from = this.lounge.get_booking_from_date();
+			if(this.get_booking_from_date()) {
+				var date_from = this.get_booking_from_date();
 				var dd_from = date_from.substr(0,2);
 				var mm_from = date_from.substr(3,2);
 				var yy_from = date_from.substr(6,4);
 				var hour_from = date_from.substr(11,5);
-				var date = new Date(mm_from + '/' + dd_from + '/' + yy_from + ' ' + hour_from+':00').toUTCString();
-				return date;
-				//return yy_from + '-' + mm_from + '-' + dd_from + ' ' + hour_from + ':00';
+				return new Date(mm_from + '/' + dd_from + '/' + yy_from + ' ' + hour_from+':00').toUTCString();
 			}
 			return this.creation_date;
 	    },
 	    get_booking_to_date_local: function() {
 	        if(this.get_booking_from_date_local() && this.get_booking_total()) {
-	            var end_date =  moment(this.get_booking_from_date_local()).add(this.lounge.get_booking_total(),'hours');
-	            alert(end_date);
-	            return end_date;
-	        }
-	        return this.creation_date;
-			/*if(this.lounge.get_booking_to_date()) {
-				var date_to = this.lounge.get_booking_to_date();
-				var dd_to = date_to.substr(0,2);
+	            var date_to =  moment(this.get_booking_from_date_local()).add(this.get_booking_total(),'hours').format("DD/MM/YYYY HH:MM");
+	            var dd_to = date_to.substr(0,2);
 				var mm_to = date_to.substr(3,2);
 				var yy_to = date_to.substr(6,4);
-				var hour_to= date_to.substr(11,5);
-				//return yy_to + '-' + mm_to + '-' + dd_to + ' ' + hour_to + ':00';
-				var date = new Date(mm_to + '/' + dd_to + '/' + yy_to + ' ' + hour_to+':00').toUTCString();
-				return date;
-				//return date.toString();
-			}
-			return this.creation_date;*/
+				var hour_to = date_to.substr(11,5);
+				return new Date(mm_to + '/' + dd_to + '/' + yy_to + ' ' + hour_to+':00').toUTCString();
+	        }
+
+	        return this.creation_date;
 	    },
 	    assert_editable: function() {
 	        if (this.finalized) {
@@ -3597,24 +3574,32 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    set_booking_from_date: function(booking_from_date) {
 	        this.assert_editable();
-            this.set('booking_from_date',booking_from_date);
+	        this.booking_from_date = booking_from_date;
+            //this.set('booking_from_date',booking_from_date);
 	    },
 	    get_booking_from_date: function() {
-	        return this.get('booking_from_date');
+	        //return this.get('booking_from_date');
+	         return this.booking_from_date;
 	    },
 	    set_booking_to_date: function(booking_to_date) {
 	        this.assert_editable();
             this.set('booking_to_date',booking_to_date);
 	    },
 	    get_booking_to_date: function() {
-	        return this.get('booking_to_date');
+	        //return this.get('booking_to_date');
+	         return this.booking_total;
 	    },
 	    set_booking_total: function (booking_total) {
 	        this.assert_editable();
-	        return this.get('booking_total',booking_total);
+	        this.booking_total = booking_total;
+	        this.trigger('change',this);
+	        this.select_orderline(this.orderlines);
+	        //this.trigger('change:selected_orderline',this.orderlines);
+	        //this.set('booking_total',booking_total);
 	    },
 	    get_booking_total: function() {
-	        return this.get('booking_total');
+	        return this.booking_total;
+	        //return this.get('booking_total');
 	    },
 	    get_diff_hours: function(date_from , date_to) {
 	        if(date_from && date_to) {

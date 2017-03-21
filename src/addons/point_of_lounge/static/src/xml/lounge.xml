@@ -135,7 +135,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class='input-group date' id='from_date'>
-                                <input  type='text' t-att-value="widget.name" id="booking_from_date" class="booking_from_date timepicker form-control" name="booking_from_date" placeholder="Start times"></input>
+                                <input  type='text' t-att-value="widget.booking_from_date" id="booking_from_date" class="booking_from_date timepicker form-control" name="booking_from_date" placeholder="Start times"></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
                                 </span>
@@ -150,8 +150,8 @@
                                     <span class="fa-hourglass"></span>
                                 </span>
                             </div>-->
-                            <div class='input-group booking_total' id='booking_total'>
-                                <input type='text' t-att-value="widget.name" class="booking_total form-control text-right" id="booking_total" name="booking_total" placeholder="Total hour's"></input>
+                            <div class='input-group' id='booking_total'>
+                                <input type='text' t-att-value="widget.booking_total" class="booking_total form-control text-right" id="booking_total" name="booking_total" placeholder="Total hour's"></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-hourglass"></span>
                                 </span>
@@ -934,13 +934,13 @@
                             </span>
                         </div>
 
-                        <t t-if='widget.lounge.config.iface_invoicing'>
+                        <!--<t t-if='widget.lounge.config.iface_invoicing'>
                             <t t-if='widget.lounge.get_order()'>
                                 <div t-attf-class='button js_invoice #{ widget.lounge.get_order().is_to_invoice() ? "highlight" : ""} '>
                                     <i class='fa fa-file-text-o' /> Invoice
                                 </div>
                             </t>
-                        </t>
+                        </t>-->
 
                          <div class='button js_booking'>
                              <i class="fa fa-plane"></i>
@@ -1874,8 +1874,11 @@
             <span class="product-name">
                 <t t-esc="line.get_product().display_name"/>
             </span>
-            <span class="price">
+            <!---<span class="price">
                 <t t-esc="widget.format_currency(line.get_display_price())"/>
+            </span>-->
+            <span class="price">
+                <t t-esc="widget.format_currency(line.get_display_price_with_charge())"/>
             </span>
             <ul class="info-list">
                 <t t-if="line.get_quantity_str() !== '1' || line.selected ">
@@ -1889,7 +1892,15 @@
                         /
                         <t t-esc="line.get_unit().name" />
                     </li>
+                    <li class="info">
+                        Charge
+                        <em>
+                           <t t-esc="widget.format_currency(line.get_charge())" />
+                        </em>
+
+                    </li>
                 </t>
+
                 <t t-if="line.get_discount_str() !== '0'">
                     <li class="info">
                         With a

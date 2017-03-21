@@ -402,13 +402,13 @@ odoo.define('point_of_lounge.screens', function (require) {
             var self = this;
             this._super(parent);
             self.renderElement();
-            //this.time_changed();
+            self.time_changed();
         },
         renderElement: function() {
             var self = this;
             this._super();
 
-            /*this.$(".booking_total").keydown(function (e) {
+            this.$(".booking_total").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
                      // Allow: Ctrl+A, Command+A
@@ -422,20 +422,16 @@ odoo.define('point_of_lounge.screens', function (require) {
                 if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                     e.preventDefault();
                 }
-            });*/
+            });
 
             this.$('.booking_from_date').change(function(){
                 var booking_from_date = $(this).val();
-                alert("Booking From date : " + booking_from_date);
                 self.lounge.get_order().set_booking_from_date(booking_from_date);
-                alert(self.lounge.get_booking_from_date());
             });
 
             this.$('.booking_total').change(function(){
                 var booking_total = $(this).val();
-                alert("Booking Total : " + booking_total);
                 self.lounge.get_order().set_booking_total(booking_total);
-                alert(self.lounge.get_order().get_booking_total());
             });
         },
 	    start: function() {
@@ -461,19 +457,22 @@ odoo.define('point_of_lounge.screens', function (require) {
         /*booking_to_date_changed: function() {
             var val = this.$('.booking_to_date').val();
             this.lounge.get_order().set_booking_to_date(val);
-        },*/
-        /*booking_total_changed: function() {
+        },
+        booking_total_changed: function() {
             var val = this.$('.booking_total').val();
             this.lounge.get_order().set_booking_total(val);
-        },
+        },*/
         time_changed: function() {
+	        this.booking_from_date = this.lounge.get_order().get_booking_from_date();
+	        this.booking_total = this.lounge.get_order().get_booking_total();
+	        //this.$('.booking_to_date').val(booking_total);
 	        //var booking_from_date = this.lounge.get_booking_from_date();
 	        //var booking_to_date = this.lounge.get_booking_to_date();
 	        //this.$('.booking_from_date').val(booking_from_date ? booking_from_date : _t('') );
 	        //this.$('.booking_to_date').val(booking_to_date ? booking_to_date : _t('') );
 	        //this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
 	        //this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
-	    },*/
+	    },
 
 	});
 	/* ---------- The Action Time  ---------- */
@@ -578,6 +577,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.lounge.bind('change:selectedOrder', this.change_selected_order, this);
 
 	        this.line_click_handler = function(event){
+	            //alert("x");
 	            self.click_line(this.orderline, event);
 	        };
 
