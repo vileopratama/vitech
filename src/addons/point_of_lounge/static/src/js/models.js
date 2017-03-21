@@ -1824,6 +1824,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.discountStr = '' + disc;
 	        this.trigger('change',this);
 	    },
+	     // sets a refresh
+	    set_refresh: function() {
+	         this.trigger('change',this);
+	    },
 	    // returns the discount [0,100]%
 	    get_discount: function(){
 	        return this.discount;
@@ -3593,9 +3597,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.assert_editable();
 	        this.booking_total = booking_total;
 	        this.trigger('change',this);
-	        this.select_orderline(this.orderlines);
-	        //this.trigger('change:selected_orderline',this.orderlines);
-	        //this.set('booking_total',booking_total);
+
+            this.orderlines.map(function (orderLine) {
+	            return orderLine.set_refresh();
+	         });
+
 	    },
 	    get_booking_total: function() {
 	        return this.booking_total;
