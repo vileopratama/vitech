@@ -2175,10 +2175,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_all_prices: function(){
 	        var self = this;
 	        var price_unit = this.get_unit_price() * (1.0 - (this.get_discount() / 100.0));
-	        //var price_unit  = 100;
 	        var taxtotal = 0;
 	        var product =  this.get_product();
-	        //var charge = !product.lounge_charge ? 0 : ((product.lounge_charge/100) * price_unit);
 	        var charge = !product.lounge_charge ? 0 : product.lounge_charge;
 	        var total_hour = this.get_booking_total();
 	        var hour_if_charge = !product.lounge_charge_every ? 0 : product.lounge_charge_every;
@@ -2617,7 +2615,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 	    set_order_id: function(order_id) {
-	        //this.lounge.set_remove_order_id(order_id);
 	        return this.order_id = order_id;
 	    },
 	    get_order_id: function() {
@@ -3062,7 +3059,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	            flight_number : flight_number,
 	            booking_from_date : this.get_booking_from_date_local(),
 	            booking_to_date :  this.get_booking_to_date_local(),
-	            booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),
+	            //booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),
+	            booking_total : this.get_booking_total(),
 	            amount_surcharge : this.get_total_surcharge(), //add line for write surcharge
 	            amount_paid: this.get_total_paid(),
 	            amount_total: this.get_total_with_tax(),
@@ -3221,7 +3219,13 @@ odoo.define('point_of_lounge.models', function (require) {
 			return this.creation_date;
 	    },
 	    get_booking_to_date_local: function() {
-			if(this.lounge.get_booking_to_date()) {
+	        if(this.get_booking_from_date_local() && this.get_booking_total()) {
+	            var end_date =  moment(this.get_booking_from_date_local()).add(this.lounge.get_booking_total(),'hours');
+	            alert(end_date);
+	            return end_date;
+	        }
+	        return this.creation_date;
+			/*if(this.lounge.get_booking_to_date()) {
 				var date_to = this.lounge.get_booking_to_date();
 				var dd_to = date_to.substr(0,2);
 				var mm_to = date_to.substr(3,2);
@@ -3232,7 +3236,7 @@ odoo.define('point_of_lounge.models', function (require) {
 				return date;
 				//return date.toString();
 			}
-			return this.creation_date;
+			return this.creation_date;*/
 	    },
 	    assert_editable: function() {
 	        if (this.finalized) {
@@ -3559,7 +3563,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.assert_editable();
 	        this.to_invoice = to_invoice;
 	    },
-	    is_to_invoice: function(){
+	    is_to_invoice: function() {
 	        return this.to_invoice;
 	    },
 	    /* ---- Client / Customer --- */
@@ -3586,12 +3590,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	    //fligh type
 	    set_flight_number : function (flight_number) {
 	        this.assert_editable();
-	        //this.flight_number = flight_number;
 	        this.set('flight_number',flight_number);
 	    },
-	    get_flight_number: function(){
+	    get_flight_number: function() {
 	        return this.get('flight_number');
-	        //return this.flight_number;
 	    },
 	    set_booking_from_date: function(booking_from_date) {
 	        this.assert_editable();
@@ -3606,6 +3608,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_booking_to_date: function() {
 	        return this.get('booking_to_date');
+	    },
+	    set_booking_total: function (booking_total) {
+	        this.assert_editable();
+	        return this.get('booking_total',booking_total);
+	    },
+	    get_booking_total: function() {
+	        return this.get('booking_total');
 	    },
 	    get_diff_hours: function(date_from , date_to) {
 	        if(date_from && date_to) {
@@ -3635,7 +3644,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    // the order also stores the screen status, as the Lounge supports
 	    // different active screens per order. This method is used to
 	    // store the screen status.
-	    set_screen_data: function(key,value){
+	    set_screen_data: function(key,value) {
 	        if(arguments.length === 2){
 	            this.screen_data[key] = value;
 	        }else if(arguments.length === 1){

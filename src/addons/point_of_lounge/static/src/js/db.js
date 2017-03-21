@@ -323,7 +323,12 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        for (var i = 0; i < max_count; i++) {
 	            partners.push(this.partner_by_id[this.partner_sorted[i]]);
 	        }
-	        return partners;
+
+            return partners.sort();
+	        //return partners;
+
+	        //return _.sortBy(partners, function (name) {return name})
+            //.reverse();
 	    },
 	    search_partner: function(query){
 	        try {
@@ -343,7 +348,10 @@ odoo.define('point_of_lounge.DB', function (require) {
 	                break;
 	            }
 	        }
-	        return results;
+	        //return results;
+	        //return _.sortBy(results, function (name) {return name})
+            //.reverse();
+            return results.sort();
 	    },
         get_orders_sorted: function(max_count) {
             max_count = max_count ? Math.min(this.order_sorted.length, max_count) : this.order_sorted.length;

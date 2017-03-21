@@ -135,7 +135,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <div class='input-group date' id='from_date'>
-                                <input  type='text' t-att-value="widget.name" id="booking_from_date" class="booking_from_date timepicker form-control" name="booking_from_date" ></input>
+                                <input  type='text' t-att-value="widget.name" id="booking_from_date" class="booking_from_date timepicker form-control" name="booking_from_date" placeholder="Start times"></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-clock-o"></span>
                                 </span>
@@ -144,10 +144,16 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <div class='input-group date' id='to_date'>
+                            <!--<div class='input-group date' id='to_date'>
                                 <input type='text' t-att-value="widget.name" class="booking_to_date timepicker form-control " id="booking_to_date" name="booking_to_date" ></input>
                                 <span class="input-group-addon">
-                                    <span class="fa fa-clock-o"></span>
+                                    <span class="fa-hourglass"></span>
+                                </span>
+                            </div>-->
+                            <div class='input-group booking_total' id='booking_total'>
+                                <input type='text' t-att-value="widget.name" class="booking_total form-control text-right" id="booking_total" name="booking_total" placeholder="Total hour's"></input>
+                                <span class="input-group-addon">
+                                    <span class="fa fa-hourglass"></span>
                                 </span>
                             </div>
                         </div>

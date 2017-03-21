@@ -186,7 +186,7 @@ var Apps = Widget.extend({
                 self.$ifr.appendTo(self.$el).css(css).addClass('apps-client');
             }).
             fail(function(client) {
-                self.do_warn(_t('Odoo Apps will be available soon'), _t('Showing locally available modules'), true);
+                self.do_warn(_t('Vitech Apps will be available soon'), _t('Showing locally available modules'), true);
                 self.rpc('/web/action/load', {action_id: self.failback_action_id}).done(function(action) {
                     self.do_action(action);
                     web_client.menu.open_action(action.id);
