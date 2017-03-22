@@ -535,7 +535,8 @@ odoo.define('point_of_lounge.screens', function (require) {
                 var client =  self.lounge.get_order().get_client();
 
                 if (booking_from_date && booking_total && client) {
-                    self.gui.show_screen('payment');
+                    self.gui.show_screen('receipt');
+                    //self.gui.show_screen('payment');
                 } else {
                     self.gui.show_popup('error',{
 	                    'title': _t('Error: Field'),
