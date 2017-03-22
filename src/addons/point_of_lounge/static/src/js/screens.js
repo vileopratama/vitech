@@ -462,8 +462,20 @@ odoo.define('point_of_lounge.screens', function (require) {
             var val = this.$('.booking_total').val();
             this.lounge.get_order().set_booking_total(val);
         },*/
+        current_time : function () {
+            var date = moment(new Date())
+            this.$('.booking_to_date').val(date.tz(this.lounge.config.tz).format('DD/MM/YYYY,HH:mm'));
+        },
         time_changed: function() {
-	        this.booking_from_date = this.lounge.get_order().get_booking_from_date();
+            this.current_time();
+            setInterval(this.current_time(), 1000);
+            //var order = this.lounge.get_order();
+            //setInterval(function() {
+                //this.$('.booking_from_date').val(order.get_booking_from_date());
+                //this.booking_from_date = order.get_booking_from_date();
+                //alert(order.get_booking_from_date());
+            //}, 1000);
+
 	        this.booking_total = this.lounge.get_order().get_booking_total();
 	        //this.$('.booking_to_date').val(booking_total);
 	        //var booking_from_date = this.lounge.get_booking_from_date();
@@ -2260,14 +2272,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var checkout_order = self.lounge.get_checkout_order();
                 //var checkin_date  = moment(order.booking_from_date);
                 var current_date = moment().tz(this.lounge.config.tz);
-                var checkin_date = moment(order.booking_from_date).utc().zone(-1560);
-                //alert(current_date);
-                //var ms = moment(moment(),"DD/MM/YYYY HH:mm:ss").diff(moment(order.booking_from_date,"DD/MM/YYYY HH:mm"));
-                //var duration = moment.duration(ms);
-                //alert("Awal :" +  checkin_date + " Akhir :" + moment() + " Total = " + duration.asHours());
-                //var duration = moment.duration(current_date.diff(checkin_date));
-                //Math.ceil(duration.asHours())
-                var total_hour = 1;
+                var checkin_date = moment(order.booking_from_date).utc().zone(-840);
+                var total_hour = self.lounge.get_diff_hours(checkin_date.format("DD/MM/YYYY HH:mm"),current_date.format("DD/MM/YYYY HH:mm"));
+
                 var data = {
                     'current_date': current_date,
                     'total_hours' : total_hour,
@@ -2344,8 +2351,8 @@ odoo.define('point_of_lounge.screens', function (require) {
                  * Calculation Charge
                 */
                 charge = !order_line.lounge_charge ? 0 : order_line.lounge_charge;
-	            //total_hour = data['total_hours'];
-	            total_hour = 3;
+	            total_hour = data['total_hours'];
+	            //total_hour = 2;
 	            hour_if_charge = !order_line.lounge_charge_every ? 0 : order_line.lounge_charge_every;
 	            total_hour_charge = (hour_if_charge != 0 && total_hour > hour_if_charge) ? Math.round(total_hour / hour_if_charge) : 1;
 	            total_charge = (total_hour_charge - 1) * charge;

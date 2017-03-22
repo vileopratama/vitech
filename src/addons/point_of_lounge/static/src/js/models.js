@@ -754,6 +754,31 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },
 
+	    get_diff_hours: function(date_from , date_to) {
+	        if(date_from && date_to) {
+				//date 01/02/2017 22:00
+				var dd_from = date_from.substr(0,2);
+				var mm_from = date_from.substr(3,2);
+				var yy_from = date_from.substr(6,4);
+				var hour_from = date_from.substr(11,5);
+
+				var dd_to = date_to.substr(0,2);
+				var mm_to = date_to.substr(3,2);
+				var yy_to = date_to.substr(6,4);
+				var hour_to = date_to.substr(11,5);
+
+				var dt1 = new Date("" + mm_from + " " + dd_from + ", " + yy_from + " " + hour_from + ":00");
+				//dt1.setHours(dt1.getHours() - 7);
+				var dt2 = new Date("" + mm_to + " " + dd_to + ", " + yy_to + " " + hour_to + ":00");
+				//dt2.setHours(dt2.getHours() - 7);
+				var diff =(dt2.getTime() - dt1.getTime()) / 1000;
+	            diff /= (60 * 60);
+	            return Math.abs(Math.round(diff));
+            } else {
+                return 0;
+            }
+	    },
+
 	    // return the current order
 	    get_order: function(){
 	        return this.get('selectedOrder');
@@ -2935,7 +2960,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
 	        this.flight_number  = null;
-	        this.booking_from_date = moment().tz(this.lounge.config.tz).format("DD/MM/YYYY hh:mm");
+	        this.booking_from_date = moment().tz(this.lounge.config.tz).format("DD/MM/YYYY HH:mm");
 	        this.booking_total  = 2;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
@@ -3607,30 +3632,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return this.booking_total;
 	        //return this.get('booking_total');
 	    },
-	    get_diff_hours: function(date_from , date_to) {
-	        if(date_from && date_to) {
-				//date 01/02/2017 22:00
-				var dd_from = date_from.substr(0,2);
-				var mm_from = date_from.substr(3,2);
-				var yy_from = date_from.substr(6,4);
-				var hour_from = date_from.substr(11,5);
 
-				var dd_to = date_to.substr(0,2);
-				var mm_to = date_to.substr(3,2);
-				var yy_to = date_to.substr(6,4);
-				var hour_to = date_to.substr(11,5);
-
-				var dt1 = new Date("" + mm_from + " " + dd_from + ", " + yy_from + " " + hour_from + ":00");
-				//dt1.setHours(dt1.getHours() - 7);
-				var dt2 = new Date("" + mm_to + " " + dd_to + ", " + yy_to + " " + hour_to + ":00");
-				//dt2.setHours(dt2.getHours() - 7);
-				var diff =(dt2.getTime() - dt1.getTime()) / 1000;
-	            diff /= (60 * 60);
-	            return Math.abs(Math.round(diff));
-            } else {
-                return 0;
-            }
-	    },
 	    /* ---- Screen Status --- */
 	    // the order also stores the screen status, as the Lounge supports
 	    // different active screens per order. This method is used to
