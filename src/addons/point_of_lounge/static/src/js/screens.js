@@ -2258,20 +2258,28 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        if(visibility === 'show') {
 	            var utc = new Date();
 	            var checkout_order = self.lounge.get_checkout_order();
-                var checkin_date  = moment(order.booking_from_date);
-                var duration = moment.duration(moment(utc).diff(checkin_date));
+                //var checkin_date  = moment(order.booking_from_date);
+                var current_date = moment().tz(this.lounge.config.tz);
+                var checkin_date = moment(order.booking_from_date).utc().zone(-1560);
+                //alert(current_date);
+                //var ms = moment(moment(),"DD/MM/YYYY HH:mm:ss").diff(moment(order.booking_from_date,"DD/MM/YYYY HH:mm"));
+                //var duration = moment.duration(ms);
+                //alert("Awal :" +  checkin_date + " Akhir :" + moment() + " Total = " + duration.asHours());
+                //var duration = moment.duration(current_date.diff(checkin_date));
+                //Math.ceil(duration.asHours())
+                var total_hour = 1;
                 var data = {
-                    'current_date': moment(utc).format('YYYY-MM-DD hh:mm:ss'),
-                    'total_hours' : Math.ceil(duration.asHours()),
-                    'last_payment' :  order.amount_total,
+                    'current_date': current_date,
+                    'total_hours' : total_hour,
+                    'last_payment' :  order.amount_paid,
                 };
 
                 checkout_order.set_order_id(order.id); // add to id
                 checkout_order.set_booking_to_date(new Date()); // add to booking to date
-                checkout_order.set_booking_total(Math.ceil(duration.asHours())); // add to booking total
+                checkout_order.set_booking_total(total_hour); // add to booking total
 
 	            contents.empty();
-	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,date:data})));
+	            contents.append($(QWeb.render('LoungeOrderDetails',{widget:this,order:order,data:data})));
 	            var new_height   = contents.height();
 
 	            if(!this.details_visible){
@@ -2336,12 +2344,14 @@ odoo.define('point_of_lounge.screens', function (require) {
                  * Calculation Charge
                 */
                 charge = !order_line.lounge_charge ? 0 : order_line.lounge_charge;
-	            total_hour = data['total_hours'];
+	            //total_hour = data['total_hours'];
+	            total_hour = 3;
 	            hour_if_charge = !order_line.lounge_charge_every ? 0 : order_line.lounge_charge_every;
-	            total_hour_charge = total_hour == 0 ? 0 : Math.round(total_hour / hour_if_charge);
-	            total_charge = (total_hour_charge <= 1 || !total_hour_charge) ? 0 : (Math.round(charge * (total_hour_charge - 1)));
+	            total_hour_charge = (hour_if_charge != 0 && total_hour > hour_if_charge) ? Math.round(total_hour / hour_if_charge) : 1;
+	            total_charge = (total_hour_charge - 1) * charge;
 	            order_line.total_charge = total_charge;
-	            order_line.subtotal = (qty * total_charge) + order_line.price_unit;
+	            order_line.subtotal = (qty * total_charge) + (order_line.price_unit * qty);
+
 	            subtotal+=order_line.subtotal;
 
 	            if(!orderline){

@@ -140,6 +140,11 @@ class lounge_config(osv.osv):
         else:
             return False
 
+    @api.model
+    def _tz_get(self):
+        # put POSIX 'Etc/*' entries at the end to avoid confusing users - see bug 1086728
+        return [(tz, tz) for tz in sorted(pytz.all_timezones, key=lambda tz: tz if not tz.startswith('Etc/') else '_')]
+
     _columns = {
         'name': fields.char('Lounge Name', select=1, required=True,
                             help="An internal identification of the point of lounge"),
@@ -207,6 +212,7 @@ class lounge_config(osv.osv):
         'last_session_closing_date': fields.function(_get_last_session, multi="last_session", type='date'),
         'last_session_closing_cash': fields.function(_get_last_session, multi="last_session", type='float'),
         'current_session_state': fields.function(_get_current_session, multi="session", type='char'),
+        'tz' : fields.selection(_tz_get, string='Timezone', size=64,required=True)
 
     }
 
@@ -233,6 +239,7 @@ class lounge_config(osv.osv):
         'barcode_nomenclature_id': _get_default_nomenclature,
         'group_lounge_manager_id': _get_group_lounge_manager,
         'group_lounge_user_id': _get_group_lounge_user,
+        'tz' : 'Asia/Jakarta',
     }
 
     def set_active(self, cr, uid, ids, context=None):

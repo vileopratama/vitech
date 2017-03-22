@@ -8,9 +8,8 @@
 	        <link rel="stylesheet" href="/web/static/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" />
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/lounge.css" id="lounge-stylesheet"/>
             <link rel="stylesheet" href="/point_of_lounge/static/src/css/keyboard.css" />
-            <!--<link rel="stylesheet" href="/point_of_lounge/static/src/lib/bootstrap/css/bootstrap.min.css" />
-            <link rel="stylesheet" href="/point_of_lounge/static/src/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
-			-->
+
+            <script type="text/javascript" src="/point_of_lounge/static/lib/moment-timezone-with-data-2010-2020.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/lib/fastclick.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/lib/waitfont.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/src/js/main.js"></script>
@@ -24,7 +23,6 @@
             <script type="text/javascript" src="/point_of_lounge/static/src/js/popups.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/src/js/screens.js"></script>
             <script type="text/javascript" src="/point_of_lounge/static/src/js/tests.js"></script>
-
 
         </template>
     </data>

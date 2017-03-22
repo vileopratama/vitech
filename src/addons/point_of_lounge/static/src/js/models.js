@@ -2935,7 +2935,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.creation_date  = new Date();
 	        this.to_invoice     = false;
 	        this.flight_number  = null;
-	        this.booking_from_date = moment().format("DD/MM/YYYY HH:MM");
+	        this.booking_from_date = moment().tz(this.lounge.config.tz).format("DD/MM/YYYY hh:mm");
 	        this.booking_total  = 2;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
