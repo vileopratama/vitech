@@ -2190,19 +2190,19 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        if ($line.hasClass('highlight') ){
 	            $line.removeClass('highlight');
 	            $line.addClass('lowlight');
-	            this.display_order_details('hide',order);
+	            this.display_order_details('hide',order,event);
 	            this.toggle_save_button();
 
 	        } else {
 	            this.$('.order-list .highlight').removeClass('highlight');
 	            $line.addClass('highlight');
 	            var y = event.pageY - $line.parent().offset().top;
-	            this.display_order_details('show',order,y);
+	            this.display_order_details('show',order,event,y);
 	            this.toggle_save_button();
 
 	        }
 	    },
-	    display_order_details: function(visibility,order,clickpos) {
+	    display_order_details: function(visibility,order,event,clickpos) {
 	        var self = this;
 	        var contents = this.$('.order-details-contents');
 	        var parent   = this.$('.order-list').parent();
@@ -2243,8 +2243,18 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 
 	            this.details_visible = true;
-	            var order_lines = this.lounge.db.get_order_line_by_order_id(order.id,1000);
-	            this.render_line_list(order_lines,data);
+
+                //load orderline
+                var search_timeout = null;
+	            clearTimeout(search_timeout);
+	            var order_id = order.id;
+	            search_timeout = setTimeout(function() {
+	                self.perform_order_line(order_id,data,event.which === 13);
+	                self.reload_order_lines();
+	            },100);
+
+	            //var order_lines = this.lounge.db.get_order_line_by_order_id(order.id,1000);
+	            //this.render_line_list(order_lines,data);
 
 	        } else if (visibility === 'hide') {
 	            contents.empty();
@@ -2259,6 +2269,18 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            this.details_visible = false;
 	        }
+	    },
+	    perform_order_line: function(order_id,data, associate_result){
+	        var order_lines;
+	        if(order_id){
+	            order_lines = this.lounge.db.get_order_line_by_order_id(order_id,1000);
+	            this.render_line_list(order_lines,data);
+
+	        } else {
+	           order_lines = this.lounge.db.get_orders_sorted();
+	           this.render_line_list(order_lines,data);
+	        }
+
 	    },
 	    render_line_list: function(order_lines,data){
 	        var self = this;
