@@ -700,7 +700,7 @@
         <tr class='order-line'  t-att-id="order.id" t-att-data-id='order.id'>
             <td><t t-esc='order.lounge_reference' /></td>
             <td><t t-esc='order.partner_id' /></td>
-            <td><t t-esc='moment(order.booking_from_date).utc().zone(-840).format("DD/MM/YYYY HH:mm")' /></td>
+            <td><t t-esc='moment(order.booking_from_date).utc().zone(-900).format("DD/MM/YYYY HH:mm")' /></td>
             <td>
                 <t t-if="order.flight_type=='domestic'">
                      Domestic
@@ -740,7 +740,7 @@
                      </div>
                      <div class='order-detail'>
                         <span class='label'>Checkin</span>
-                        <span class='detail order-checkin'><t t-esc='moment(order.booking_from_date).utc().zone(-840).format("DD/MM/YYYY HH:mm")' /></span>
+                        <span class='detail order-checkin'><t t-esc='moment(order.booking_from_date).utc().zone(-900).format("DD/MM/YYYY HH:mm")' /></span>
                     </div>
                       <div class='order-detail'>
                         <span class='label'>No.Pax</span>

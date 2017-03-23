@@ -2207,7 +2207,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var checkout_order = self.lounge.get_checkout_order();
                 //var checkin_date  = moment(order.booking_from_date);
                 var current_date = moment().tz(this.lounge.config.tz);
-                var checkin_date = moment(order.booking_from_date).utc().zone(-840);
+                var checkin_date = moment(order.booking_from_date).utc().zone(-900);
                 var total_hour = self.lounge.get_diff_hours(checkin_date.format("DD/MM/YYYY HH:mm"),current_date.format("DD/MM/YYYY HH:mm"));
 
                 var data = {
