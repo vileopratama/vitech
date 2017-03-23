@@ -2118,6 +2118,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            search_timeout = setTimeout(function() {
 	                self.perform_search(query,event.which === 13);
 	                self.reload_orders();
+	                self.reload_order_lines(0);
 	            },70);
 	        });
 
