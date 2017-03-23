@@ -2244,13 +2244,13 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            this.details_visible = true;
 
-                //var search_timeout = null;
-	            //clearTimeout(search_timeout);
+                var search_timeout = null;
+	            clearTimeout(search_timeout);
 	            var order_id = order.id;
-	            //search_timeout = setTimeout(function() {
-	            self.perform_order_line(order_id,data,event);
-	            self.reload_order_lines(order_id);
-	            //},100);
+	            search_timeout = setTimeout(function() {
+	                self.reload_order_lines(order_id);
+	                self.perform_order_line(order_id,data,event);
+	            },100);
 
 	        } else if (visibility === 'hide') {
 	            contents.empty();
