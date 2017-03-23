@@ -2244,17 +2244,13 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            this.details_visible = true;
 
-                //load orderline
                 var search_timeout = null;
 	            clearTimeout(search_timeout);
 	            var order_id = order.id;
 	            search_timeout = setTimeout(function() {
-	                self.perform_order_line(order_id,data,event.which === 13);
+	                self.perform_order_line(order_id,data,event);
 	                self.reload_order_lines();
 	            },100);
-
-	            //var order_lines = this.lounge.db.get_order_line_by_order_id(order.id,1000);
-	            //this.render_line_list(order_lines,data);
 
 	        } else if (visibility === 'hide') {
 	            contents.empty();
@@ -2272,15 +2268,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    perform_order_line: function(order_id,data, associate_result){
 	        var order_lines;
-	        if(order_id){
-	            order_lines = this.lounge.db.get_order_line_by_order_id(order_id,1000);
-	            this.render_line_list(order_lines,data);
-
-	        } else {
-	           order_lines = this.lounge.db.get_orders_sorted();
-	           this.render_line_list(order_lines,data);
-	        }
-
+	        order_lines = this.lounge.db.get_order_line_by_order_id(order_id,1000);
+	        this.render_line_list(order_lines,data);
 	    },
 	    render_line_list: function(order_lines,data){
 	        var self = this;
