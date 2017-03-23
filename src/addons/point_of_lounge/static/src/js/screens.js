@@ -2162,7 +2162,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    reload_order_lines: function(order_id){
 	        var self = this;
 	        return this.lounge.load_new_order_lines().then(function() {
-	            //self.render_list(self.lounge.db.get_order_lines_sorted(1000));
 	            self.lounge.db.get_order_line_by_order_id(order_id,1000);
 	        });
 	    },
@@ -2242,15 +2241,15 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                parent.scrollTop(parent.scrollTop() - height + new_height);
 	            }
 
-	            this.details_visible = true;
-
                 var search_timeout = null;
 	            clearTimeout(search_timeout);
 	            var order_id = order.id;
 	            search_timeout = setTimeout(function() {
+	                self.perform_order_line(order_id,data,event.which === 13);
 	                self.reload_order_lines(order_id);
-	                self.perform_order_line(order_id,data);
-	            },20);
+	            },70);
+
+	             this.details_visible = true;
 
 	        } else if (visibility === 'hide') {
 	            contents.empty();
@@ -2266,10 +2265,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            this.details_visible = false;
 	        }
 	    },
-	    perform_order_line: function(order_id,data){
+	    perform_order_line: function(order_id,data,event){
 	        var order_lines;
 	        order_lines = this.lounge.db.get_order_line_by_order_id(order_id,1000);
-	        //order_lines = this.lounge.db.search_order_line(order_id);
 	        this.render_line_list(order_lines,data);
 	    },
 	    render_line_list: function(order_lines,data){
