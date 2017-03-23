@@ -2159,6 +2159,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        });
 	    },
+	    reload_order_lines: function(){
+	        var self = this;
+	        return this.lounge.load_new_order_lines().then(function() {
+	            self.render_list(self.lounge.db.get_order_lines_sorted(1000));
+	        });
+	    },
 	    render_list: function(orders){
 	        var contents = this.$el[0].querySelector('.order-list-contents');
 	        contents.innerHTML = "";
@@ -2203,11 +2209,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var height   = contents.height();
 
 	        if(visibility === 'show') {
-	            var utc = new Date();
+	            //var utc = new Date();
 	            var checkout_order = self.lounge.get_checkout_order();
-                //var checkin_date  = moment(order.booking_from_date);
                 var current_date = moment().tz(this.lounge.config.tz);
-                var checkin_date = moment(order.booking_from_date).utc().zone(-900);
+                var checkin_date = moment(order.booking_from_date).zone(-900);
                 var total_hour = self.lounge.get_diff_hours(checkin_date.format("DD/MM/YYYY HH:mm"),current_date.format("DD/MM/YYYY HH:mm"));
 
                 var data = {
@@ -2216,7 +2221,9 @@ odoo.define('point_of_lounge.screens', function (require) {
                     'last_payment' :  order.amount_paid,
                 };
 
+                checkout_order.set(order);
                 checkout_order.set_order_id(order.id); // add to id
+                checkout_order.set_name(order.lounge_reference); // add to name
                 checkout_order.set_booking_to_date(new Date()); // add to booking to date
                 checkout_order.set_booking_total(total_hour); // add to booking total
 
@@ -2798,7 +2805,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_receipt: function() {
 	        var checkout_order = this.lounge.get_checkout_order();
-	        this.$('.pos-receipt-container').html(QWeb.render('LoungePosTicket',{
+	        this.$('.pos-receipt-container').html(QWeb.render('LoungeOrderPosTicket',{
 	             widget:this,
 	             order: checkout_order,
 	             receipt: checkout_order.export_for_printing(),

@@ -1478,6 +1478,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            this.init_from_JSON(options.json);
 	            return;
 	        }
+
             this.product = options.product;
             this.price   = options.product.price;
             this.set_quantity(1);
@@ -1487,6 +1488,21 @@ odoo.define('point_of_lounge.models', function (require) {
             this.selected = false;
             this.id  = checkout_orderline_id++;
         },
+        clone: function(){
+	        var checkout_orderline = new exports.CheckoutOrderline({},{
+	            lounge: this.lounge,
+	            checkout_order: this.checkout_order,
+	            product: this.product,
+	            price: this.price,
+	        });
+	        checkout_orderline.order = null;
+	        checkout_orderline.quantity = this.quantity;
+	        checkout_orderline.quantityStr = this.quantityStr;
+	        checkout_orderline.discount = this.discount;
+	        checkout_orderline.type = this.type;
+	        checkout_orderline.selected = false;
+	        return checkout_orderline;
+	    },
         init_from_JSON: function(json) {
 	        this.product = this.lounge.db.get_product_by_id(json.product_id);
 	        if (!this.product) {
@@ -1610,6 +1626,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_quantity: function(){
 	        return this.quantity;
 	    },
+	    get_quantity_str: function(){
+	        return this.quantityStr;
+	    },
 	    get_quantity_str_with_unit: function(){
 	        var unit = this.get_unit();
 	        if(unit && !unit.is_unit){
@@ -1623,6 +1642,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_price_with_tax: function(){
 	        return this.get_all_prices().priceWithTax;
+	    },
+	    get_price_with_tax_and_charge: function(){
+	        return this.get_all_prices().surcharge;
 	    },
 	    get_tax: function(){
 	        return this.get_all_prices().tax;
@@ -1681,6 +1703,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var rounding = this.lounge.currency.rounding;
 	        return round_pr(this.get_unit_price() * this.get_quantity() * (1 - this.get_discount()/100), rounding);
 	    },
+	    get_base_price_with_charge:    function(){
+	        var rounding = this.lounge.currency.rounding;
+	        return round_pr((this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100), rounding);
+	    },
 	    get_unit_display_price: function(){
 	        if (this.lounge.config.iface_tax_included) {
 	            var quantity = this.quantity;
@@ -1697,6 +1723,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	            return this.get_price_with_tax();
 	        } else {
 	            return this.get_base_price();
+	        }
+	    },
+	    get_display_price_with_charge: function(){
+	        if (this.lounge.config.iface_tax_included) {
+	            return this.get_price_with_tax_and_charge();
+	        } else {
+	            return this.get_base_price_with_charge();
 	        }
 	    },
 	    get_surcharge: function(){
@@ -2078,7 +2111,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_price_with_tax: function(){
 	        return this.get_all_prices().priceWithTax;
 	    },
-	     get_price_with_tax_and_charge: function(){
+	    get_price_with_tax_and_charge: function(){
 	        return this.get_all_prices().surcharge;
 	    },
 	    get_tax: function(){
@@ -2385,12 +2418,14 @@ odoo.define('point_of_lounge.models', function (require) {
             Backbone.Model.prototype.initialize.apply(this, arguments);
             options  = options || {};
             this.order_id = null;
+            this.checkout_order = null;
             this.init_locked  = true;
             this.lounge = options.lounge;
             this.selected_checkout_orderline = undefined;
             this.selected_checkout_paymentline = undefined;
             this.screen_data = {};  // see Gui
             this.temporary = options.temporary || false;
+            this.name = null;
             this.creation_date  = new Date();
             this.booking_to_date = null;
             this.booking_total = 0;
@@ -2410,7 +2445,7 @@ odoo.define('point_of_lounge.models', function (require) {
             } else {
                 this.sequence_number = this.lounge.lounge_session.sequence_number++;
                 this.uid  = this.generate_unique_id();
-                this.name = _t("Order ") + this.uid;
+                //this.name = _t("Order ") + this.uid;
                 this.validation_date = undefined;
             }
 
@@ -2645,11 +2680,21 @@ odoo.define('point_of_lounge.models', function (require) {
 	            throw new Error('Finalized Checkout Order cannot be modified');
 	        }
 	    },
+	    set:function(checkout_order) {
+	        this.assert_editable();
+	        return this.checkout_order = checkout_order;
+	    },
+	    get: function(){
+	        return this.checkout_order;
+	    },
 	    set_order_id: function(order_id) {
 	        return this.order_id = order_id;
 	    },
 	    get_order_id: function() {
 	        return this.order_id;
+	    },
+	    set_name: function(name) {
+	        return this.name = name;
 	    },
 	    get_name: function() {
 	        return this.name;

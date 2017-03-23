@@ -1354,12 +1354,11 @@
                 Cashier : <t t-esc="widget.lounge.cashier ? widget.lounge.cashier.name : widget.lounge.user.name"/>
             </div>
             <br />
-            Order No : <t t-esc="order.name"/><br />
-            Book Date: <t t-esc="moment().tz(widget.lounge.config.tz).format('DD/MM/YYYY HH:mm')"/><br />
-            Customer : <t t-esc="order.get_client().name"/><br />
-            Check-in : <t t-esc="order.get_booking_from_date()"/><br />
+            Order No : <t t-esc="order.get().lounge_reference"/><br />
+            Customer : <t t-esc="order.get().partner_id[1]"/><br />
+            Check-in : <t t-esc="order.get().booking_from_date"/><br />
+            Check-out: <t t-esc="order.get_booking_to_date()"/><br />
             Book-Hour: <t t-esc="order.get_booking_total()"/> Hour('s)<br />
-            Check-out: .............. <br />
             <br />
              <br />
             <t t-if="receipt.header">
@@ -1373,7 +1372,6 @@
                 <colgroup>
                     <col width='50%' />
                     <col width='50%' />
-                    <!--<col width='25%' />-->
                 </colgroup>
                 <tr t-foreach="orderlines" t-as="orderline">
                     <td>
@@ -1391,9 +1389,7 @@
 
 
                     </td>
-                    <!--<td class="pos-right-align">
-                        <t t-esc="orderline.get_quantity_str_with_unit()"/>
-                    </td>-->
+
                     <td class="pos-right-align">
                         <t t-esc="widget.format_currency(orderline.get_display_price_with_charge(),0)"/>
                     </td>
