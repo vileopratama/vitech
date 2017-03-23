@@ -1355,6 +1355,7 @@
             </div>
             <br />
             Order No : <t t-esc="order.get().lounge_reference"/><br />
+            Book Date: <t t-esc="moment(order.get().date_order).zone(-900).format('DD/MM/YYYY HH:mm')"/><br />
             Customer : <t t-esc="order.get().partner_id[1]"/><br />
             Check-in : <t t-esc="moment(order.get().booking_from_date).zone(-900).format('DD/MM/YYYY HH:mm')"/><br />
             Check-out: <t t-esc="moment(order.get_booking_to_date()).tz(widget.lounge.config.tz).format('DD/MM/YYYY HH:mm')"/><br />
