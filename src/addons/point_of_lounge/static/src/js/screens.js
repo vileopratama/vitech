@@ -2093,7 +2093,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                if(self.lounge.get_checkout_order().get_total_payment() > 0) {
 	                    self.gui.show_checkout_screen('order_payment');
 	                } else {
-	                    self.gui.show_checkout_screen('order_receipt');
+	                    //self.gui.show_checkout_screen('order_receipt');
+	                    self.validate_checkout_order();
 	                }
 	            } else {
 	                return;
@@ -2339,6 +2340,63 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            return !!this.old_order !== !!this.new_order;
 	        }*/
 	        return true;
+	    },
+	    validate_checkout_order: function(force_validation) {
+	        var self = this;
+	        var checkout_order = this.lounge.get_checkout_order();
+
+	        // FIXME: this check is there because the backend is unable to
+	        // process empty orders. This is not the right place to fix it.
+	        if (checkout_order.get_orderlines().length === 0) {
+                 this.gui.show_popup('error',{
+	                'title': _t('Empty Order'),
+	                'body':  _t('There must be at least one product sale in your order before it can be validated'),
+	            });
+	        }
+
+	        checkout_order.initialize_validation_date();
+
+	        if (checkout_order.is_to_invoice()) {
+	            var invoiced = this.lounge.push_and_invoice_non_charge_checkout_order(checkout_order);
+	            this.invoicing = true;
+
+	            invoiced.fail(function(error){
+	                self.invoicing = false;
+	                if (error.message === 'Missing Customer') {
+	                    self.gui.show_popup('confirm',{
+	                        'title': _t('Please select the Customer'),
+	                        'body': _t('You need to select the customer before you can invoice an checkout order.'),
+	                        confirm: function(){
+	                            self.gui.show_checkout_screen('clientlist');
+	                        },
+	                    });
+	                } else if (error.code < 0) {        // XmlHttpRequest Errors
+	                    self.gui.show_popup('error',{
+	                        'title': _t('The order could not be sent'),
+	                        'body': _t('Check your internet connection and try again.'),
+	                    });
+	                } else if (error.code === 200) {    // OpenERP Server Errors
+	                    self.gui.show_popup('error-traceback',{
+	                        'title': error.data.message || _t("Server Error"),
+	                        'body': error.data.debug || _t('The server encountered an error while receiving your order.'),
+	                    });
+	                } else {                            // ???
+	                    self.gui.show_popup('error',{
+	                        'title': _t("Unknown Error"),
+	                        'body':  _t("The order could not be sent to the server due to an unknown error"),
+	                    });
+	                }
+	            });
+
+	            invoiced.done(function(){
+	                self.invoicing = false;
+	                checkout_order.finalize();
+	            });
+	        } else {
+	            this.lounge.push_non_charge_checkout_order(checkout_order);
+	            this.gui.show_checkout_screen('order_receipt');
+	        }
+
 	    },
 	    hide: function () {
 	        this._super();

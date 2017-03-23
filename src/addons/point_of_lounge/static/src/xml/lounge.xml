@@ -1356,8 +1356,8 @@
             <br />
             Order No : <t t-esc="order.get().lounge_reference"/><br />
             Customer : <t t-esc="order.get().partner_id[1]"/><br />
-            Check-in : <t t-esc="order.get().booking_from_date"/><br />
-            Check-out: <t t-esc="order.get_booking_to_date()"/><br />
+            Check-in : <t t-esc="moment(order.get().booking_from_date).zone(-900).format('DD/MM/YYYY HH:mm')"/><br />
+            Check-out: <t t-esc="moment(order.get_booking_to_date()).tz(widget.lounge.config.tz).format('DD/MM/YYYY HH:mm')"/><br />
             Book-Hour: <t t-esc="order.get_booking_total()"/> Hour('s)<br />
             <br />
              <br />
@@ -1421,7 +1421,8 @@
                 <tr>
                     <td>Surcharge:</td>
                     <td class="pos-right-align">
-                        <t t-esc="widget.format_currency(order.get_total_with_tax() - order.get_total_surcharge())"/>
+                        <!--<t t-esc="widget.format_currency(order.get_total_with_tax() - order.get_total_surcharge())"/>-->
+                        <t t-esc="widget.format_currency(order.get_total_surcharge())"/>
                     </td>
                 </tr>
                 <tr class="emph">

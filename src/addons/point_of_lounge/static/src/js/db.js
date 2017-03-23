@@ -408,10 +408,10 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        var orders = this.order_remove_id;
 	        orders.push(id);
 	        var order;
-	        alert("total " + this.order_remove_id.length);
+	        //alert("total " + this.order_remove_id.length);
 	        for(var i=0; i < this.order_remove_id.length; i++){
 	            order = this.order_remove_id;
-	            alert(order[i]);
+	            //alert(order[i]);
 	        }
 	    },
         add_orders: function(orders){

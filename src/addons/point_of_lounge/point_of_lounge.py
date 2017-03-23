@@ -1002,8 +1002,17 @@ class lounge_order(osv.osv):
 
         return order_id
 
-    def update_checkout(self, cr, uid, context=None):
-        self.write(cr, uid, {'is_checkout': True}, context)
+
+    def _process_non_charge_checkout_order(self, cr, uid, order, context=None):
+        session = self.pool.get('lounge.session').browse(cr, uid, order['lounge_session_id'], context=context)
+        if session.state == 'closing_control' or session.state == 'closed':
+            session_id = self._get_valid_session(cr, uid, order, context=context)
+            order['lounge_session_id'] = session_id
+
+        self.write(cr, uid, order['id'],{'is_checkout':True}, context=context)
+
+        return order['id']
+
 
     def update_from_ui(self, cr, uid, checkout_orders, context=None):
         submitted_references = [o['data']['name'] for o in checkout_orders]
@@ -1022,6 +1031,34 @@ class lounge_order(osv.osv):
                 self._match_payment_to_invoice(cr, uid, checkout_order, context=context)
 
             checkout_order_id = self._process_checkout_order(cr, uid, checkout_order, context=context)
+            checkout_order_ids.append(checkout_order_id)
+
+            if to_invoice:
+                self.action_invoice(cr, uid, [checkout_order_id], context)
+                checkout_order_obj = self.browse(cr, uid, checkout_order_id, context)
+                self.pool['account.invoice'].signal_workflow(cr, SUPERUSER_ID, [checkout_order_obj.invoice_id.id],
+                                                             'invoice_open')
+
+        return checkout_order_ids
+
+
+    def update_non_charge_from_ui(self, cr, uid, checkout_orders, context=None):
+        submitted_references = [o['data']['name'] for o in checkout_orders]
+        existing_order_ids = self.search(cr, uid, [('lounge_reference', 'in', submitted_references)],
+                                         context=context)
+        existing_orders = self.read(cr, uid, existing_order_ids, ['lounge_reference'], context=context)
+        existing_references = set([o['lounge_reference'] for o in existing_orders])
+        checkout_orders_to_save = [o for o in checkout_orders if o['data']['name'] not in existing_references]
+        checkout_order_ids = []
+
+        for tmp_order in checkout_orders_to_save:
+            to_invoice = tmp_order['to_invoice']
+            checkout_order = tmp_order['data']
+
+            if to_invoice:
+                self._match_payment_to_invoice(cr, uid, checkout_order, context=context)
+
+            checkout_order_id = self._process_non_charge_checkout_order(cr, uid, checkout_order, context=context)
             checkout_order_ids.append(checkout_order_id)
 
             if to_invoice:
