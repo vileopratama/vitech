@@ -624,6 +624,26 @@ odoo.define('point_of_lounge.models', function (require) {
 	        return def;
 	    },
 
+	    // reload the list of order, returns as a deferred that resolves if there were
+	    // updated orders, and fails if not
+	    load_new_order_lines: function(){
+	        var self = this;
+	        var def  = new $.Deferred();
+	        var fields = _.find(this.models,function(model){ return model.model === 'lounge.order.line'; }).fields;
+	        new Model('lounge.order.line')
+	            .query(fields)
+	            .filter([['order.id.is_checkout','=',false]])
+	            .all({'timeout':3000, 'shadow': true})
+	            .then(function(order_lines){
+	                if (self.db.add_order_lines(order_lines)) {   // check if the orders we got were real updates
+	                    def.resolve();
+	                } else {
+	                    def.reject();
+	                }
+	            }, function(err,event){ event.preventDefault(); def.reject(); });
+	        return def;
+	    },
+
 	    // this is called when an order is removed from the order collection. It ensures that there is always an existing
 	    // order and a valid selected order
 	    on_removed_order: function(removed_order,index,reason){

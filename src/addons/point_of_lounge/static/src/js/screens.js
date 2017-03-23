@@ -436,7 +436,6 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.renderComponent();
         },
         show:function() {
-			alert("x");
 			this._super(parent);
 
         },
@@ -2236,11 +2235,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 
 	            this.details_visible = true;
-	            var query = '';
-	            alert(order.id);
-	            //var order_lines = this.lounge.db.search_order_line(query);
 	            var order_lines = this.lounge.db.get_order_line_by_order_id(order.id,1000);
-	            alert(order_lines.length);
 	            this.render_line_list(order_lines,data);
 
 	        } else if (visibility === 'hide') {
@@ -2271,7 +2266,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var total_charge;
 
 	        //remove order line
-           //this.lounge.get_checkout_order().remove_orderlines();
+           this.lounge.get_checkout_order().remove_orderlines();
 
 	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
 	            var order_line = order_lines[i];
@@ -2285,7 +2280,6 @@ odoo.define('point_of_lounge.screens', function (require) {
                     this.lounge.get_checkout_order().add_product(product);
 	            }
 
-
                 /**
                  * Calculation Charge
                 */
@@ -2297,13 +2291,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            total_charge = (total_hour_charge - 1) * charge;
 	            order_line.total_charge = total_charge;
 	            order_line.subtotal = (qty * total_charge) + (order_line.price_unit * qty);
-
 	            subtotal+=order_line.subtotal;
 
-	            //alert("xid" + orderline.length);
-
 	            if(!orderline){
-	                alert("Total" + order_line.product_id);
 	                var orderline_html = QWeb.render('LoungeOrderDetailLine',{widget: this, order_line:order_line});
 	                var orderline = document.createElement('tbody');
 	                orderline.innerHTML = orderline_html;

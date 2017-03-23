@@ -509,11 +509,11 @@ odoo.define('point_of_lounge.DB', function (require) {
             var order_lines = [];
             for (var i = 0; i < max_count; i++) {
                 var order_line = this.order_line_by_id[this.order_line_sorted[i]];
-                alert("Alep" + order_line.order_id);
-                order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
+                var orderline_order_id = order_line.order_id[0];
+                if(orderline_order_id == order_id) {
+                    order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
+                }
             }
-
-            //order_lines = _.where(order_lines, {id: order_id});
             return order_lines;
 	    },
 	    add_order_lines: function(order_lines){
