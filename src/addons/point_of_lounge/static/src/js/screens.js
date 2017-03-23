@@ -394,19 +394,17 @@ odoo.define('point_of_lounge.screens', function (require) {
 	/* ---------- The Action Time ---------- */
 	var ActiontimeWidget = PosBaseWidget.extend({
 	    template: "LoungeActiontimeWidget",
-	    /*events: {
-            'blur .booking_from_date': 'booking_from_date_changed',
-            'blur .booking_total': 'booking_total_changed'
-        },*/
 	    init: function(parent) {
             var self = this;
             this._super(parent);
             self.renderElement();
-            self.time_changed();
+
         },
         renderElement: function() {
             var self = this;
             this._super();
+
+            //this.time_changed();
 
             this.$(".booking_total").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
@@ -438,8 +436,9 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.renderComponent();
         },
         show:function() {
+			alert("x");
 			this._super(parent);
-			//this.time_changed();
+
         },
         renderComponent:function() {
 	        this.$('.timepicker').datetimepicker({
@@ -450,41 +449,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            use24hours: true
 	        });
 		},
-        /*booking_from_date_changed: function() {
-            var val = this.$('.booking_from_date').val();
-            this.lounge.get_order().set_booking_from_date(val);
-        },
-        /*booking_to_date_changed: function() {
-            var val = this.$('.booking_to_date').val();
-            this.lounge.get_order().set_booking_to_date(val);
-        },
-        booking_total_changed: function() {
-            var val = this.$('.booking_total').val();
-            this.lounge.get_order().set_booking_total(val);
-        },*/
-        current_time : function () {
-            var date = moment(new Date())
-            this.$('.booking_to_date').val(date.tz(this.lounge.config.tz).format('DD/MM/YYYY,HH:mm'));
-        },
-        time_changed: function() {
-            this.current_time();
-            setInterval(this.current_time(), 1000);
-            //var order = this.lounge.get_order();
-            //setInterval(function() {
-                //this.$('.booking_from_date').val(order.get_booking_from_date());
-                //this.booking_from_date = order.get_booking_from_date();
-                //alert(order.get_booking_from_date());
-            //}, 1000);
-
-	        this.booking_total = this.lounge.get_order().get_booking_total();
-	        //this.$('.booking_to_date').val(booking_total);
-	        //var booking_from_date = this.lounge.get_booking_from_date();
-	        //var booking_to_date = this.lounge.get_booking_to_date();
-	        //this.$('.booking_from_date').val(booking_from_date ? booking_from_date : _t('') );
-	        //this.$('.booking_to_date').val(booking_to_date ? booking_to_date : _t('') );
-	        //this.$('.js_booking_from_date').text( booking_from_date ? booking_from_date : _t('None') );
-	        //this.$('.js_booking_to_date').text( booking_to_date ? booking_to_date : _t('None') );
-	    },
 
 	});
 	/* ---------- The Action Time  ---------- */
@@ -497,7 +461,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    init: function(parent, options) {
             var self = this;
             this._super(parent, options);
-            this.lounge.bind('change:selectedClient', function() {
+            this.lounge.bind('change:selectedCheckoutOrder', function() {
                 self.renderElement();
             });
 	    },
@@ -535,8 +499,7 @@ odoo.define('point_of_lounge.screens', function (require) {
                 var client =  self.lounge.get_order().get_client();
 
                 if (booking_from_date && booking_total && client) {
-                    self.gui.show_screen('receipt');
-                    //self.gui.show_screen('payment');
+                    self.gui.show_screen('payment');
                 } else {
                     self.gui.show_popup('error',{
 	                    'title': _t('Error: Field'),
@@ -544,28 +507,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                });
 	                return;
                 }
-                //var booking_from_date = self.lounge.get_booking_from_date();
-                //var booking_to_date = self.lounge.get_booking_to_date();
 
-                /*if(!booking_from_date) {
-                     self.gui.show_popup('error',{
-	                    'title': _t('Error: Field'),
-	                    'body': _t('Time from is required.'),
-	                });
-	                return;
-                }*/
-
-                /*if(!booking_to_date) {
-                     self.gui.show_popup('error',{
-	                    'title': _t('Error: Field'),
-	                    'body': _t('Time To is required.'),
-	                });
-	                return;
-                }*/
-
-				/*if(booking_from_date && booking_to_date) {
-                    self.gui.show_screen('payment');
-                }*/
             });
             this.$('.set-customer').click(function(){
                 self.gui.show_screen('clientlist');
@@ -2144,24 +2086,21 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	        this.$('.back').click(function() {
 	            self.gui.show_screen(self.previous_screen);
-	            //self.gui.show_checkout_screen('product');
+
 	        });
 
 	        this.$('.next').click(function() {
-	            //if(self.lounge.get_checkout_order().get_order_id() &&  self.lounge.get_checkout_order().get_total_payment() > 0) {
-	            //if(self.lounge.get_checkout_order().get_total_payment() > 0) {
-	                self.gui.show_checkout_screen('order_payment');
-	            //} else {
-	              //  self.gui.show_checkout_screen('order_receipt');
-	            //}
+	            if(self.lounge.get_checkout_order().get_order_id()) {
+	                if(self.lounge.get_checkout_order().get_total_payment() > 0) {
+	                    self.gui.show_checkout_screen('order_payment');
+	                } else {
+	                    self.gui.show_checkout_screen('order_payment');
+	                }
+	            } else {
+	                return;
+	            }
 	        });
 
-            /*this.reload_orders();
-
-	        var orders = this.lounge.db.get_orders_sorted(1000);
-	        this.render_list(orders);
-	        this.$('#' + self.lounge.get_remove_order_id()).remove(); //remove last order
-            */
 	        //click order
             this.$('.order-list-contents').delegate('.order-line','click',function(event){
 	            self.line_select(event,$(this),parseInt($(this).data('id')));
@@ -2218,11 +2157,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var self = this;
 	        return this.lounge.load_new_orders().then(function() {
 	            self.render_list(self.lounge.db.get_orders_sorted(1000));
-	            // update the currently assigned client if it has been changed in db.
-	            /*var curr_client = self.lounge.get_order().get_client();
-	            if (curr_client) {
-	                self.lounge.get_order().set_client(self.lounge.db.get_partner_by_id(curr_client.id));
-	            }*/
+
 	        });
 	    },
 	    render_list: function(orders){
@@ -2301,8 +2236,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 
 	            this.details_visible = true;
-	            var query = order.name;
-	            var order_lines = this.lounge.db.search_order_line(query);
+	            var query = '';
+	            alert(order.id);
+	            //var order_lines = this.lounge.db.search_order_line(query);
+	            var order_lines = this.lounge.db.get_order_line_by_order_id(order.id,1000);
+	            alert(order_lines.length);
 	            this.render_line_list(order_lines,data);
 
 	        } else if (visibility === 'hide') {
@@ -2333,7 +2271,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var total_charge;
 
 	        //remove order line
-           this.lounge.get_checkout_order().remove_orderlines();
+           //this.lounge.get_checkout_order().remove_orderlines();
 
 	        for(var i = 0, len = Math.min(order_lines.length,1000); i < len; i++) {
 	            var order_line = order_lines[i];
@@ -2362,8 +2300,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            subtotal+=order_line.subtotal;
 
+	            //alert("xid" + orderline.length);
+
 	            if(!orderline){
-	                var orderline_html = QWeb.render('LoungeOrderDetailLine',{widget: this, order_line:order_lines[i]});
+	                alert("Total" + order_line.product_id);
+	                var orderline_html = QWeb.render('LoungeOrderDetailLine',{widget: this, order_line:order_line});
 	                var orderline = document.createElement('tbody');
 	                orderline.innerHTML = orderline_html;
 	                orderline = orderline.childNodes[1];
@@ -2390,18 +2331,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    toggle_save_button: function(){
 	        var $button = this.$('.button.next');
-	        /*if (this.editing_order) {
-	            $button.addClass('oe_hidden');
-	            return;
-	        } else if(this.new_order){
-	            if(!this.old_order){
-	                $button.text(_t('Set This Order'));
-	            }else{
-	                $button.text(_t('Change Order'));
-	            }
-	        }else{
-	            $button.text(_t('Payment'));
-	        }*/
+
 	        $button.text(_t('Payment'));
 	        $button.toggleClass('oe_hidden',!this.has_order_changed());
 	    },

@@ -714,7 +714,7 @@
     </t>
 
     <t t-name="LoungeOrderDetails">
-        <section class='order-details'>
+        <section class='order-details' style="min-height:400px;">
             <div class='order-name'><t t-esc='order.lounge_reference'/></div>
             <div class='edit-buttons'>
                 <div class='button edit'><i class='fa fa-pencil-square' /> Set Checkout</div>
@@ -2166,19 +2166,7 @@
                 </tr>
             </table>
 
-            <!--<table class='receipt-footer'>
-                <tr>
-                    <td>
-                        <div style='text-align:center'>
-                            <div>
-                                <br/>
-                                <br/>
-                                More than 2 hours to booking time are subject to an additional charge Rp.100.000/2 hours
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </table>-->
+
             <t t-if="receipt.footer">
                 <br />
                 <div style='text-align:center'>

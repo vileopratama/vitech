@@ -504,8 +504,17 @@ odoo.define('point_of_lounge.DB', function (require) {
 	    get_order_line_by_id: function(id){
 	        return this.order_line_by_id[id];
 	    },
-	    get_order_line_by_order_id: function(order_id){
-	        return this.order_line_by_order_id[order_id];
+	    get_order_line_by_order_id: function(order_id,max_count){
+	        max_count = max_count ? Math.min(this.order_line_sorted.length, max_count) : this.order_line_sorted.length;
+            var order_lines = [];
+            for (var i = 0; i < max_count; i++) {
+                var order_line = this.order_line_by_id[this.order_line_sorted[i]];
+                alert("Alep" + order_line.order_id);
+                order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
+            }
+
+            //order_lines = _.where(order_lines, {id: order_id});
+            return order_lines;
 	    },
 	    add_order_lines: function(order_lines){
 	        var updated_count = 0;
