@@ -2093,7 +2093,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                if(self.lounge.get_checkout_order().get_total_payment() > 0) {
 	                    self.gui.show_checkout_screen('order_payment');
 	                } else {
-	                    //self.gui.show_checkout_screen('order_receipt');
 	                    self.validate_checkout_order();
 	                }
 	            } else {
@@ -2119,6 +2118,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            search_timeout = setTimeout(function() {
 	                self.perform_search(query,event.which === 13);
 	                self.reload_orders();
+	                self.reload_order_lines();
 	            },70);
 	        });
 
@@ -2269,6 +2269,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    perform_order_line: function(order_id,data, associate_result){
 	        var order_lines;
 	        order_lines = this.lounge.db.get_order_line_by_order_id(order_id,1000);
+	        //order_lines = this.lounge.db.search_order_line(order_id);
 	        this.render_line_list(order_lines,data);
 	    },
 	    render_line_list: function(order_lines,data){

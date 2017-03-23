@@ -471,7 +471,6 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            }
 	        }
 
-            //var res = [];
             var order_id;
             var orders = this.order_remove_id;
             for(var i = 0, len = Math.min(orders.length,1000); i < len; i++){
@@ -487,7 +486,6 @@ odoo.define('point_of_lounge.DB', function (require) {
             var order_lines = [];
             for (var i = 0; i < max_count; i++) {
                 order_lines.push(this.order_line_by_id[this.order_line_sorted[i]]);
-                //order_lines.push(this.order_line_by_order_id[this.order_line_sorted[i]]);
             }
             return order_lines;
         },
@@ -566,7 +564,7 @@ odoo.define('point_of_lounge.DB', function (require) {
 	        }
 	        return updated_count;
 	    },
-	    search_order_line: function(query){
+	    search_order_line: function(order_id){
 	        try {
 	            query = query.replace(/[\[\]\(\)\+\*\?\.\-\!\&\^\$\|\~\_\{\}\:\,\\\/]/g,'.');
 	            query = query.replace(' ','.+');
@@ -579,7 +577,9 @@ odoo.define('point_of_lounge.DB', function (require) {
 	            var r = re.exec(this.order_line_search_string);
 	            if(r){
 	                var id = Number(r[1]);
-	                results.push(this.get_order_line_by_id(id));
+	                //if(this.get_order_line_by_id(id).order_id == order_id) {
+	                    results.push(this.get_order_line_by_id(id));
+	                //}
 	            }else{
 	                break;
 	            }

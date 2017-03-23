@@ -632,7 +632,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var fields = _.find(this.models,function(model){ return model.model === 'lounge.order.line'; }).fields;
 	        new Model('lounge.order.line')
 	            .query(fields)
-	            .filter([['order.id.is_checkout','=',false]])
+	            .filter([['order_id.is_checkout','=',false]])
 	            .all({'timeout':3000, 'shadow': true})
 	            .then(function(order_lines){
 	                if (self.db.add_order_lines(order_lines)) {   // check if the orders we got were real updates
