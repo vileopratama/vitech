@@ -2093,7 +2093,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                if(self.lounge.get_checkout_order().get_total_payment() > 0) {
 	                    self.gui.show_checkout_screen('order_payment');
 	                } else {
-	                    self.gui.show_checkout_screen('order_payment');
+	                    self.gui.show_checkout_screen('order_receipt');
 	                }
 	            } else {
 	                return;
