@@ -2954,9 +2954,9 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_due: function(checkout_paymentline) {
 	        if (!checkout_paymentline) {
-	            var due = this.get_total_with_tax() - this.get_total_paid();
+	            var due = this.get_total_payment() - this.get_total_paid();
 	        } else {
-	            var due = this.get_total_with_tax();
+	            var due = this.get_total_payment();
 	            var lines = this.checkout_paymentlines.models;
 	            for (var i = 0; i < lines.length; i++) {
 	                if (lines[i] === checkout_paymentline) {
@@ -2966,13 +2966,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	                }
 	            }
 	        }
+
 	        return round_pr(Math.max(0,due), this.lounge.currency.rounding);
 	    },
 	    get_change: function(checkout_paymentline) {
 	        if (!checkout_paymentline) {
-	            var change = this.get_total_paid() - this.get_total_with_tax();
+	            var change = this.get_total_paid() - this.get_total_payment();
 	        } else {
-	            var change = -this.get_total_with_tax();
+	            var change = -this.get_total_payment();
 	            var lines  = this.checkout_paymentlines.models;
 	            for (var i = 0; i < lines.length; i++) {
 	                change += lines[i].get_amount();
@@ -2981,6 +2982,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	                }
 	            }
 	        }
+
 	        return round_pr(Math.max(0,change), this.lounge.currency.rounding);
 	    },
 	    get_total_with_tax: function() {
@@ -3021,9 +3023,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }), 0), this.lounge.currency.rounding);
 	    },
 	    get_total_paid: function() {
+	        return round_pr(this.get_last_payment() + this.get_total_charge_paid(),this.lounge.currency.rounding);
+	    },
+	    get_total_charge_paid: function() {
 	        return round_pr(this.checkout_paymentlines.reduce((function(sum, paymentLine) {
 	            return sum + paymentLine.get_amount();
-	        }), 0), this.lounge.currency.rounding);
+	        }),0),this.lounge.currency.rounding);
 	    },
 	    get_tax_details: function(){
 	        var details = {};
@@ -3804,6 +3809,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	    set_client: function(client){
 	        this.assert_editable();
 	        this.set('client',client);
+	        this.trigger('change',this);
+
+            this.orderlines.map(function (orderLine) {
+	            return orderLine.set_refresh();
+	         });
 	    },
 	    get_client: function(){
 	        return this.get('client');

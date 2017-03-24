@@ -2213,7 +2213,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            //var utc = new Date();
 	            var checkout_order = self.lounge.get_checkout_order();
                 var current_date = moment().tz(this.lounge.config.tz);
-                var checkin_date = moment(order.booking_from_date).zone(-900);
+                var checkin_date = moment(order.booking_from_date).zone(-840);
                 var total_hour = self.lounge.get_diff_hours(checkin_date.format("DD/MM/YYYY HH:mm"),current_date.format("DD/MM/YYYY HH:mm"));
 
                 var data = {
@@ -2744,7 +2744,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	         // The exact amount must be paid if there is no cash payment method defined.
-	        if (Math.abs(checkout_order.get_total_with_tax() - checkout_order.get_total_paid()) > 0.00001) {
+	        //if (Math.abs(checkout_order.get_total_with_tax() - checkout_order.get_total_paid()) > 0.00001) {
+	        if (Math.abs(checkout_order.get_total_payment() - checkout_order.get_total_charge_paid()) > 0.00001) {
 	            var cash = false;
 	            for (var i = 0; i < this.lounge.cashregisters.length; i++) {
 	                cash = cash || (this.lounge.cashregisters[i].journal.type === 'cash');
@@ -2759,16 +2760,17 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        // if the change is too large, it's probably an input error, make the user confirm.
-	        if (!force_validation && (checkout_order.get_total_with_tax() * 1000 < checkout_order.get_total_paid())) {
+	        //if (!force_validation && (checkout_order.get_total_with_tax() * 1000 < checkout_order.get_total_paid())) {
+	        if (!force_validation && (checkout_order.get_total_payment() * 1000 < checkout_order.get_total_charge_paid())) {
 	            this.gui.show_popup('confirm',{
 	                title: _t('Please Confirm Large Amount'),
 	                body:  _t('Are you sure that the customer wants to  pay') +
 	                       ' ' +
-	                       this.format_currency(checkout_order.get_total_paid()) +
+	                       this.format_currency(checkout_order.get_total_charge_paid()) +
 	                       ' ' +
 	                       _t('for an order of') +
 	                       ' ' +
-	                       this.format_currency(checkout_order.get_total_with_tax()) +
+	                       this.format_currency(checkout_order.get_total_payment()) +
 	                       ' ' +
 	                       _t('? Clicking "Confirm" will validate the payment.'),
 	                confirm: function() {
@@ -2789,13 +2791,13 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            var invoiced = this.lounge.push_and_invoice_checkout_order(checkout_order);
 	            this.invoicing = true;
 
-	            invoiced.fail(function(error){
+	            invoiced.fail(function(error) {
 	                self.invoicing = false;
 	                if (error.message === 'Missing Customer') {
 	                    self.gui.show_popup('confirm',{
 	                        'title': _t('Please select the Customer'),
 	                        'body': _t('You need to select the customer before you can invoice an checkout order.'),
-	                        confirm: function(){
+	                        confirm: function() {
 	                            self.gui.show_checkout_screen('clientlist');
 	                        },
 	                    });
