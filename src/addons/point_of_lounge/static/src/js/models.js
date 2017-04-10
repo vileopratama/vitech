@@ -3193,7 +3193,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.to_invoice     = false;
 	        this.flight_number  = null;
 	        this.booking_from_date = null;
-	        this.booking_total  = null;
+	        this.booking_total  = 2;
 	        this.orderlines     = new OrderlineCollection();
 	        this.paymentlines   = new PaymentlineCollection();
 	        this.lounge_session_id = this.lounge.lounge_session.id;

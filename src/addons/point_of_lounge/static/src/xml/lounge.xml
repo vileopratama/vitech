@@ -151,7 +151,7 @@
                                 </span>
                             </div>-->
                             <div class='input-group' id='booking_total'>
-                                <input type='text' t-att-value="widget.booking_total" class="booking_total form-control text-right" id="booking_total" name="booking_total" placeholder="Total hour's"></input>
+                                <input type='text' readonly="True" t-att-value="widget.booking_total" class="booking_total form-control text-right" id="booking_total" name="booking_total" placeholder="Total hour's"></input>
                                 <span class="input-group-addon">
                                     <span class="fa fa-hourglass"></span>
                                 </span>
@@ -201,12 +201,15 @@
             <button class="input-button number-char">4</button>
             <button class="input-button number-char">5</button>
             <button class="input-button number-char">6</button>
-            <button class="mode-button" data-mode='discount'>Disc</button>
+            <button></button>
+            <!--<button class="mode-button" data-mode='discount'>Disc</button>-->
+
             <br />
             <button class="input-button number-char">7</button>
             <button class="input-button number-char">8</button>
             <button class="input-button number-char">9</button>
-            <button class="mode-button" data-mode='price'>Price</button>
+            <!--<button class="mode-button" data-mode='price'>Price</button>-->
+            <button></button>
             <br />
             <button class="input-button numpad-minus" >+/-</button>
             <button class="input-button number-char">0</button>

@@ -404,7 +404,7 @@ odoo.define('point_of_lounge.screens', function (require) {
             var self = this;
             this._super();
 
-            //this.time_changed();
+            self.time_changed();
 
             this.$(".booking_total").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
@@ -447,6 +447,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            format: 'DD/MM/YYYY HH:mm',
 	            use24hours: true
 	        });
+		},
+		time_changed:function() {
+		    self = this;
+		    this.booking_total = self.lounge.get_order().get_booking_total();
 		},
 
 	});
