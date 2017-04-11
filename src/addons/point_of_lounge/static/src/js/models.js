@@ -378,7 +378,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        },
 	    },{
 	        model:  'account.journal',
-	        fields: ['type', 'sequence'],
+	        fields: ['type', 'sequence','name','journal_change_amount','amount_fixed_price','max_pax'],
 	        domain: function(self,tmp){ return [['id','in',tmp.journals]]; },
 	        loaded: function(self, journals){
 	            var i;
@@ -2448,16 +2448,26 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        this.cashregister = options.cashregister;
 	        this.name = this.cashregister.journal_id[1];
+	        this.journal_change_amount = this.cashregister.journal.journal_change_amount;
+	        this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
+	        this.max_pax = this.cashregister.journal.max_pax;
 	    },
 	    init_from_JSON: function(json){
 	        this.amount = json.amount;
 	        this.cashregister = this.lounge.cashregisters_by_id[json.statement_id];
 	        this.name = this.cashregister.journal_id[1];
+	        this.journal_change_amount = this.cashregister.journal.journal_change_amount;
+	        this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
 	    },
 	    //sets the amount of money on this payment line
 	    set_amount: function(value){
+	        console.log('value :'  + this.get_change_amount());
 	        this.order.assert_editable();
-	        this.amount = round_di(parseFloat(value) || 0, this.lounge.currency.decimals);
+	        if(this.get_change_amount() == true) {this
+	            this.amount = round_di(parseFloat(this.get_amount_fixed_price()) || 0, this.lounge.currency.decimals);
+	        } else {
+	            this.amount = round_di(parseFloat(value) || 0, this.lounge.currency.decimals);
+	        }
 	        this.trigger('change',this);
 	    },
 	    // returns the amount of money on this paymentline
@@ -2474,6 +2484,17 @@ odoo.define('point_of_lounge.models', function (require) {
 	            this.selected = selected;
 	            this.trigger('change',this);
 	        }
+	    },
+	    // returns the payment change : 'true' | 'false'
+	    get_change_amount: function(){
+	        return this.cashregister.journal.journal_change_amount;
+	    },
+	    // returns the payment with fixed price
+	    get_amount_fixed_price: function(){
+	        return this.cashregister.journal.amount_fixed_price;
+	    },
+	    get_max_pax: function() {
+	        return this.cashregister.journal.max_pax;
 	    },
 	    // returns the payment type: 'cash' | 'bank'
 	    get_type: function(){
@@ -3199,7 +3220,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.lounge_session_id = this.lounge.lounge_session.id;
 	        this.finalized      = false; // if true, cannot be modified.
 
-	        this.set({ client: null });
+	        this.set({
+	            client: null,
+	            payment_method :null
+	         });
 
 	        if (options.json) {
 	            this.init_from_JSON(options.json);
@@ -3231,6 +3255,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    init_from_JSON: function(json) {
 	        var client;
+	        var payment_method;
 	        this.sequence_number = json.sequence_number;
 	        this.lounge.lounge_session.sequence_number = Math.max(this.sequence_number+1,this.lounge.lounge_session.sequence_number);
 	        this.session_id    = json.lounge_session_id;
@@ -3258,7 +3283,20 @@ odoo.define('point_of_lounge.models', function (require) {
 	        } else {
 	            client = null;
 	        }
+
+	        if (json.payment_method_id) {
+	            payment_method = this.lounge.cashregisters_by_id[json.payment_method_id];
+	            if (!payment_method) {
+	                console.error('ERROR: trying to load a payment method not available in the lounge');
+	            }
+	        } else {
+	            payment_method = null;
+	        }
+
+
+
 	        this.set_client(client);
+	        this.set_payment_method(payment_method);
 
 	        this.temporary = false;     // FIXME
 	        this.to_invoice = false;    // FIXME
@@ -3318,12 +3356,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	            statement_ids: paymentLines,
 	            lounge_session_id: this.lounge_session_id,
 	            partner_id: this.get_client() ? this.get_client().id : false,
+	            payment_method_id: this.get_payment_method() ? this.get_payment_method().id : false,
 	            user_id: this.lounge.cashier ? this.lounge.cashier.id : this.lounge.user.id,
 	            uid: this.uid,
 	            sequence_number: this.sequence_number,
 	            creation_date: this.validation_date || this.creation_date, // todo: rename creation_date in master
 	            fiscal_position_id: this.fiscal_position ? this.fiscal_position.id : false
-
 	        };
 	    },
 	    export_for_printing: function(){
@@ -3339,6 +3377,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            paymentlines.push(paymentline.export_for_printing());
 	        });
 	        var client  = this.get('client');
+	        var payment_method  = this.get('payment_method');
 	        var cashier = this.lounge.cashier || this.lounge.user;
 	        var company = this.lounge.company;
 	        var shop    = this.lounge.shop;
@@ -3376,6 +3415,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            change: this.get_change(),
 	            name : this.get_name(),
 	            client: client ? client.name : null ,
+	            payment_method: payment_method ? payment_method.name : null ,
 	            invoice_id: null,   //TODO
 	            cashier: cashier ? cashier.name : null,
 	            precision: {
@@ -3609,8 +3649,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.assert_editable();
 	        var newPaymentline = new exports.Paymentline({},{order: this, cashregister:cashregister, lounge: this.lounge});
 	        if(cashregister.journal.type !== 'cash' || this.lounge.config.iface_precompute_cash){
+	            console.log('not cash');
 	            newPaymentline.set_amount( Math.max(this.get_due(),0) );
 	        }
+
 	        this.paymentlines.add(newPaymentline);
 	        this.select_paymentline(newPaymentline);
 
@@ -3821,6 +3863,24 @@ odoo.define('point_of_lounge.models', function (require) {
 	    get_client_name: function(){
 	        var client = this.get('client');
 	        return client ? client.name : "";
+	    },
+	    /* ---- Payment method / Payment --- */
+	    // the payment related to the current order.
+	    set_payment_method: function(payment_method){
+	        this.assert_editable();
+	        this.set('payment_method',payment_method);
+	        this.trigger('change',this);
+
+            this.orderlines.map(function (orderLine) {
+	            return orderLine.set_refresh();
+	         });
+	    },
+	    get_payment_method: function(){
+	        return this.get('payment_method');
+	    },
+	    get_payment_method_name: function(){
+	        var payment_method = this.get('payment_method');
+	        return payment_method ? payment_method.name : "";
 	    },
 	    //fligh type
 	    set_flight_type : function (flight_type) {

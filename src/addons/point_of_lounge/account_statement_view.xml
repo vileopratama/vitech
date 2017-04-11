@@ -9,6 +9,7 @@
                 <field name="type" position="after">
                     <field name="journal_change_amount" />
                     <field name="amount_fixed_price" attrs="{'invisible': [('journal_change_amount', '=', False)]}" />
+                    <field name="max_pax" attrs="{'invisible': [('journal_change_amount', '=', False)]}" />
                 </field>
                 <xpath expr="//notebook[last()]" position="inside">
                     <page string="Lounge Configuration" attrs="{'invisible': [('type','not in',['bank','cash'])]}">

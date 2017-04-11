@@ -9,6 +9,7 @@ class account_journal(osv.osv):
                                               help="Check this box if this journal define a payment method that can be used in a point of sale."),
         'journal_change_amount' : fields.boolean(string='Change amount with fixed price'),
         'amount_fixed_price' : fields.float(string='With Fixed Price'),
+        'max_pax': fields.integer(string='Maximal Pax',size=2),
         'amount_authorized_diff_lounge': fields.float('Amount Authorized Difference',
                                                       help="This field depicts the maximum difference allowed between the ending balance and the theoretical cash when closing a session, for non-POS managers. If this maximum is reached, the user will have an error message at the closing of his session saying that he needs to contact his manager."),
     }

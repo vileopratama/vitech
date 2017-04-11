@@ -772,7 +772,8 @@ td {
     border-bottom-left-radius: 4px;
 }
 .pos .actionpad .button.pay {
-    height: 162px;
+    /*height: 162px;*/
+    height:108px;
 }
 .pos .actionpad .button.pay .pay-circle {
     display: block;
@@ -793,15 +794,15 @@ td {
     left: 3px;
 }
 
-.pos .actionpad .button.set-customer{
+.pos .actionpad .button.set-customer,.pos .actionpad .button.set-payment{
     padding-left: 40px;
     padding-right: 40px;
 }
-.pos .actionpad .button.set-customer.decentered {
+.pos .actionpad .button.set-customer.decentered,.pos .actionpad .button.set-payment.decentered {
     padding-left: 40px;
     padding-right: 5px;
 }
-.pos .actionpad .button .fa-user {
+.pos .actionpad .button .fa-user,.pos .actionpad .button .fa-money {
     position: absolute;
     left: 13px;
     top: 13px;
@@ -1865,6 +1866,156 @@ td {
     left: 50%;
     margin-left: 120px;
 }
+
+/* e) The Payment method List Screen */
+
+.pos .paymentmethodlist-screen .paymentmethod-list{
+    font-size: 16px;
+    width: 100%;
+    line-height: 40px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-list th,
+.pos .paymentmethodlist-screen .paymentmethod-list td {
+    padding: 0px 8px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-list tr {
+    transition: all 150ms linear;
+    background: rgb(230,230,230);
+}
+.pos .paymentmethodlist-screen .paymentmethod-list thead > tr,
+.pos .paymentmethodlist-screen .paymentmethod-list tfoot > tr,
+.pos .paymentmethodlist-screen .paymentmethod-list tr:nth-child(even) {
+    background: rgb(247,247,247);
+}
+.pos .paymentmethodlist-screen .paymentmethod-list tr.highlight{
+    transition: all 150ms linear;
+    background: rgb(110,200,155) !important;
+    color: white;
+}
+.pos .paymentmethodlist-screen .paymentmethod-list tr.lowlight{
+    transition: all 150ms linear;
+    background: rgb(216, 238, 227);
+}
+.pos .paymentmethodlist-screen .paymentmethod-list tr.lowlight:nth-child(even){
+    transition: all 150ms linear;
+    background: rgb(227, 246, 237);
+}
+.pos .paymentmethodlist-screen .paymentmethod-details{
+    padding: 16px;
+    border-bottom: solid 5px rgb(110,200,155);
+}
+.pos .paymentmethodlist-screen .paymentmethod-picture{
+    height: 64px;
+    width: 64px;
+    border-radius: 32px;
+    overflow: hidden;
+    text-align: center;
+    float: left;
+    margin-right: 16px;
+    background: white;
+    position: relative;
+}
+.pos .paymentmethodlist-screen .paymentmethod-picture > img {
+    position: absolute;
+    top: -9999px;
+    bottom: -9999px;
+    right: -9999px;
+    left: -9999px;
+    max-height: 64px;
+    margin: auto;
+}
+.pos .paymentmethodlist-screen .paymentmethod-picture > .fa {
+    line-height: 64px;
+    font-size: 32px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-picture .image-uploader {
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.pos .paymentmethodlist-screen .paymentmethod-name {
+    font-size: 32px;
+    line-height: 64px;
+    margin-bottom:16px;
+}
+.pos .paymentmethodlist-screen .edit-buttons {
+    position: absolute;
+    right: 16px;
+    top: 10px;
+}
+.pos .paymentmethodlist-screen .edit-buttons .button{
+    display: inline-block;
+    margin-left: 16px;
+    color: rgb(128,128,128);
+    cursor: pointer;
+    font-size: 36px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-details-box{
+    position: relative;
+    font-size: 16px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-details-left{
+    width: 50%;
+    float: left;
+}
+.pos paymentmethodlist-screen .paymentmethod-details-right{
+    width: 50%;
+    float: right;
+}
+.pos .paymentmethodlist-screen .paymentmethod-detail{
+    line-height: 24px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-detail > .label{
+    font-weight: bold;
+    display: inline-block;
+    width: 75px;
+    text-align: right;
+    margin-right: 8px;
+    color:#333;
+}
+.pos .paymentmethodlist-screen .paymentmethod-details input,
+.pos .paymentmethodlist-screen .paymentmethod-details select
+{
+    padding: 4px;
+    border-radius: 3px;
+    border: solid 1px #cecbcb;
+    margin-bottom: 4px;
+    background: white;
+    font-family: "Lato","Lucida Grande", Helvetica, Verdana, Arial;
+    color: #555555;
+    width: 340px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.pos .paymentmethodlist-screen .paymentmethod-details input.paymentmethod-name {
+    font-size: 24px;
+    line-height: 24px;
+    margin: 18px 6px;
+    width: 340px;
+}
+.pos .paymentmethodlist-screen .paymentmethod-detail > .empty{
+    opacity: 0.3;
+}
+.pos .paymentmethodlist-screen .searchbox{
+    right: auto;
+    margin-left: -90px;
+    margin-top:8px;
+    left: 50%;
+
+}
+.pos .paymentmethodlist-screen .searchbox input{
+    width: 200px;
+}
+.pos .paymentmethodlist-screen .button.new-payment {
+    left: 50%;
+    margin-left: 120px;
+}
+
 
 /* e) The Last Order List Screen */
 .pos .orderlist-screen .order-list{

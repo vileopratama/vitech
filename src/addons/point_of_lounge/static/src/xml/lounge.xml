@@ -182,6 +182,15 @@
                     Guest
                 </t>
             </button>
+             <button t-attf-class='button set-payment #{ ( widget.lounge.get_client() and widget.lounge.get_client().name.length > 10) ? "decentered" : "" }' >
+                <i class='fa fa-money' />
+                <t t-if="widget.lounge.get_client()">
+                    <t t-esc="widget.lounge.get_client().name" />
+                </t>
+                <t t-if="!widget.lounge.get_client()">
+                    Cash
+                </t>
+            </button>
             <button class='button pay'>
                 <div class='pay-circle'>
                     <i class='fa fa-chevron-right' />
@@ -374,6 +383,22 @@
         </tr>
     </t>
 
+    <t t-name="LoungePaymentMethodLine">
+        <tr class='paymentmethod-line' t-att-data-id='row.journal_id[0]'>
+            <td><t t-esc='row.journal_id[1]' /></td>
+            <td>
+                <t t-if='row.journal.journal_change_amount'>
+                    Yes
+                </t>
+                <t t-if='!row.journal.journal_change_amount'>
+                    No
+                </t>
+            </td>
+            <td><t t-esc='row.journal.amount_fixed_price or "0"' /></td>
+            <td><t t-esc='row.journal.max_pax or "0"' /></td>
+        </tr>
+    </t>
+
     <t t-name="LoungeClientDetailsEdit">
         <section class='client-details edit'>
             <div class='client-picture'>
@@ -559,6 +584,56 @@
                                             </tr>
                                         </thead>
                                         <tbody class='client-list-contents'>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="LoungePaymentMethodListScreenWidget">
+        <div class="paymentmethodlist-screen screen">
+            <div class="screen-content">
+                <section class="top-content">
+                    <span class='button back'>
+                        <i class='fa fa-angle-double-left'></i>
+                        Back
+                    </span>
+                    <span class='searchbox'>
+                        <input placeholder='Search Payment method' />
+                        <span class='search-clear'></span>
+                    </span>
+                    <span class='searchbox'></span>
+                    <span class='button next oe_hidden highlight'>
+                        Select
+                        <i class='fa fa-angle-double-right'></i>
+                    </span>
+                </section>
+                <section class="full-content">
+                    <div class='window'>
+                        <section class='subwindow collapsed'>
+                            <div class='subwindow-container collapsed'>
+                                <div class='subwindow-container-fix paymentmethod-details-contents'>
+                                </div>
+                            </div>
+                        </section>
+                        <section class='subwindow'>
+                            <div class='subwindow-container'>
+                                <div class='subwindow-container-fix touch-scrollable scrollable-y'>
+                                    <table class='paymentmethod-list'>
+                                        <thead>
+                                            <tr>
+                                                <th>Payment/Card Name</th>
+                                                <th>Discount</th>
+                                                <th>Amount Price</th>
+                                                <th>Max Pax</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class='paymentmethod-list-contents'>
                                         </tbody>
                                     </table>
                                 </div>

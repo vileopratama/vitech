@@ -487,7 +487,6 @@ odoo.define('point_of_lounge.screens', function (require) {
             var self = this;
             this._super(parent, options);
 
-
             this.lounge.bind('change:selectedClient', function() {
                 self.renderElement();
             });
@@ -512,9 +511,15 @@ odoo.define('point_of_lounge.screens', function (require) {
                 }
 
             });
+
             this.$('.set-customer').click(function(){
                 self.gui.show_screen('clientlist');
             });
+
+            this.$('.set-payment').click(function(){
+                self.gui.show_screen('paymentmethodlist');
+            });
+
         }
 	});
 
@@ -1464,6 +1469,90 @@ odoo.define('point_of_lounge.screens', function (require) {
 	});
 	gui.define_screen({name:'clientlist', widget: ClientListScreenWidget});
 
+
+	/*--------------------------------------*\
+	 |         THE CLIENT LIST              |
+	\*======================================*/
+
+	// The clientlist displays the list of customer,
+	// and allows the cashier to create, edit and assign
+	// customers.
+
+	var PaymentMethodListScreenWidget = ScreenWidget.extend({
+	    template: 'LoungePaymentMethodListScreenWidget',
+	    init: function(parent, options){
+	        this._super(parent, options);
+	        this.payment_method_cache = new DomCache();
+	    },
+	    auto_back: true,
+	    show: function() {
+	        var self = this;
+	        this._super();
+	        this.renderElement();
+	        this.details_visible = false;
+	        this.old_payment_method = this.lounge.get_order().get_payment_method();
+            //back button
+	        this.$('.back').click(function(){
+	            self.gui.back();
+	        });
+            //next to accept payment
+	        this.$('.next').click(function(){
+	            self.save_changes();
+	            self.gui.back();// FIXME HUH ?
+	        });
+
+	        //load payments
+	        var payment_methods = this.lounge.cashregisters;
+	        this.render_list(payment_methods);
+
+	        if( this.old_payment_method ){
+	            //this.display_payment_method_details('show',this.old_client,0);
+	        }
+
+	        this.$('.paymentmethod-list-contents').delegate('.paymentmethod-line','click',function(event){
+	            self.line_select(event,$(this),parseInt($(this).data('id')));
+	        });
+
+	    },
+	    save_changes: function(){
+	        if( this.has_client_changed() ){
+	            this.lounge.get_order().set_client(this.new_client);
+	        }
+	    },
+	    has_client_changed: function(){
+	        if( this.old_client && this.new_client ){
+	            return this.old_client.id !== this.new_client.id;
+	        }else{
+	            return !!this.old_client !== !!this.new_client;
+	        }
+	    },
+	    render_list: function(payment_methods) {
+	        var contents = this.$el[0].querySelector('.paymentmethod-list-contents');
+	        contents.innerHTML = "";
+	        for(var i = 0, len = Math.min(payment_methods.length,1000); i < len; i++) {
+	            var payment_method = payment_methods[i];
+	            //console.log('payment list :' + payment_method.journal.type);
+	            var payment_method_line = this.payment_method_cache.get_node(payment_method.journal_id[0]);
+	            if(!payment_method_line) {
+	                var payment_method_line_html = QWeb.render('LoungePaymentMethodLine',{widget: this, row:payment_method});
+	                var payment_method_line = document.createElement('tbody');
+	                payment_method_line.innerHTML = payment_method_line_html;
+	                payment_method_line = payment_method_line.childNodes[1];
+	                this.payment_method_cache.cache_node(payment_method.journal_id[0],payment_method_line);
+	            }
+
+	            if( payment_method === this.old_payment_method ){
+	                payment_method_line.classList.add('highlight');
+	            }else{
+	                payment_method_line.classList.remove('highlight');
+	            }
+
+	            contents.appendChild(payment_method_line);
+	        }
+	    },
+	});
+	gui.define_screen({name:'paymentmethodlist', widget: PaymentMethodListScreenWidget});
+
 	/*--------------------------------------*\
 	 |         THE RECEIPT SCREEN           |
 	\*======================================*/
@@ -1801,12 +1890,15 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    click_paymentmethods: function(id) {
 	        var cashregister = null;
 	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
-	            if ( this.lounge.cashregisters[i].journal_id[0] === id ){
+	            if (this.lounge.cashregisters[i].journal_id[0] === id ){
 	                cashregister = this.lounge.cashregisters[i];
 	                break;
 	            }
 	        }
-	        this.lounge.get_order().add_paymentline( cashregister );
+
+	        console.log("name :" + cashregister);
+
+	        this.lounge.get_order().add_paymentline(cashregister);
 	        this.reset_input();
 	        this.render_paymentlines();
 	    },
@@ -3014,6 +3106,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    ProductScreenWidget: ProductScreenWidget,
 	    ProductListWidget: ProductListWidget,
 	    ClientListScreenWidget: ClientListScreenWidget,
+	    PaymentMethodListScreenWidget: PaymentMethodListScreenWidget,
 	    ActionflightWidget: ActionflightWidget,
 	    ActiontimeWidget: ActiontimeWidget,
 	    ActioncheckoutWidget: ActioncheckoutWidget,
