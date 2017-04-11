@@ -524,9 +524,7 @@ odoo.define('point_of_lounge.screens', function (require) {
             this.$('.set-payment').click(function(){
                 self.gui.show_screen('paymentmethodlist');
             });
-
         },
-
 	});
 
 	/* --------- The Order Widget --------- */
