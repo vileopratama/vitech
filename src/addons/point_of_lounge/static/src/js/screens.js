@@ -492,7 +492,7 @@ odoo.define('point_of_lounge.screens', function (require) {
             },this);
 
             this.lounge.bind('change:selectedPaymentMethod', function() {
-	            self.payment_method_changed();
+	            self.renderElement();
 	        },this);
 
         },
@@ -521,14 +521,12 @@ odoo.define('point_of_lounge.screens', function (require) {
                 self.gui.show_screen('clientlist');
             });
 
-
-
-        },
-        payment_method_changed: function() {
-             this.$('.set-payment').click(function(){
+            this.$('.set-payment').click(function(){
                 self.gui.show_screen('paymentmethodlist');
             });
+
         },
+
 	});
 
 	/* --------- The Order Widget --------- */

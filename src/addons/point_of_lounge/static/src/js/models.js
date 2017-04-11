@@ -76,6 +76,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            'selectedOrder':    null,
 	            'selectedCheckoutOrder': null,
 	            'selectedClient':   null,
+	            'selectedPaymentMethod':   null,
 	            'selectedCheckoutClient' : null,
 	        });
 
@@ -96,15 +97,23 @@ odoo.define('point_of_lounge.models', function (require) {
 	        //this.bind('change:selectedOrder', update_client, this);
 
 	        // Forward the 'client' attribute on the selected order to 'selectedClient'
+	        function update_payment_method() {
+	            var order = self.get_order();
+	            this.set('selectedPaymentMethod', order ? order.get_payment_method() : null );
+	        }
+
+	        // Forward the 'client' attribute on the selected order to 'selectedClient'
 	        function update_checkout_client() {
 	            var checkout_order = self.get_checkout_order();
 	            this.set('selectedCheckoutClient', checkout_order ? checkout_order.get_client() : null );
 	        }
 
 	        this.get('orders').bind('add remove change', update_client, this);
+	        this.get('orders').bind('add remove change', update_payment_method, this);
 	        this.get('checkout_orders').bind('add remove change', update_checkout_client, this);
 
 	        this.bind('change:selectedOrder', update_client, this);
+	        this.bind('change:selectedOrder', update_payment_method, this);
 	        this.bind('change:selectedCheckoutOrder', update_checkout_client, this);
 
 
