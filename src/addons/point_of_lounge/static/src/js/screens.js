@@ -487,11 +487,14 @@ odoo.define('point_of_lounge.screens', function (require) {
             var self = this;
             this._super(parent, options);
 
-            self.renderElement();
+            this.lounge.bind('change:selectedClient', function() {
+                self.renderElement();
+            },this);
 
-            //this.lounge.bind('change:selectedClient', function() {
-              //  self.renderElement();
-            //});
+            this.lounge.bind('change:selectedPaymentMethod', function() {
+	            self.payment_method_changed();
+	        },this);
+
         },
         renderElement: function() {
             var self = this;
@@ -518,11 +521,14 @@ odoo.define('point_of_lounge.screens', function (require) {
                 self.gui.show_screen('clientlist');
             });
 
-            this.$('.set-payment').click(function(){
+
+
+        },
+        payment_method_changed: function() {
+             this.$('.set-payment').click(function(){
                 self.gui.show_screen('paymentmethodlist');
             });
-
-        }
+        },
 	});
 
 	/* --------- The Order Widget --------- */
