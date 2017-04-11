@@ -389,7 +389,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            var ilen = cashregisters.length;
 	            for(i = 0; i < ilen; i++){
 	                for(var j = 0, jlen = journals.length; j < jlen; j++){
-	                    if(cashregisters[i].journal_id[0] === journals[j].id){
+	                    if(cashregisters[i].journal_id[0] === journals[j].id) {
 	                        cashregisters[i].journal = journals[j];
 	                    }
 	                }
@@ -816,7 +816,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        return null;
 	    },
-
+	    get_payment_method: function() {
+	        var order = this.get_order();
+	        if (order) {
+	            return order.get_payment_method();
+	        }
+	        return null;
+	    },
         get_checkout_client: function() {
 	        var checkout_order = this.get_checkout_order();
 	        if (checkout_order) {
@@ -3880,7 +3886,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_payment_method_name: function(){
 	        var payment_method = this.get('payment_method');
-	        return payment_method ? payment_method.name : "";
+	        return payment_method ? payment_method.journal_id[1] : "";
 	    },
 	    //fligh type
 	    set_flight_type : function (flight_type) {

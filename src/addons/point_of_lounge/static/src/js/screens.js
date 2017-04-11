@@ -487,9 +487,11 @@ odoo.define('point_of_lounge.screens', function (require) {
             var self = this;
             this._super(parent, options);
 
-            this.lounge.bind('change:selectedClient', function() {
-                self.renderElement();
-            });
+            self.renderElement();
+
+            //this.lounge.bind('change:selectedClient', function() {
+              //  self.renderElement();
+            //});
         },
         renderElement: function() {
             var self = this;
@@ -1471,7 +1473,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 
 	/*--------------------------------------*\
-	 |         THE CLIENT LIST              |
+	 |         THE PAYMENT METHOD LIST              |
 	\*======================================*/
 
 	// The clientlist displays the list of customer,
@@ -1505,25 +1507,21 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var payment_methods = this.lounge.cashregisters;
 	        this.render_list(payment_methods);
 
-	        if( this.old_payment_method ){
-	            //this.display_payment_method_details('show',this.old_client,0);
-	        }
-
 	        this.$('.paymentmethod-list-contents').delegate('.paymentmethod-line','click',function(event){
 	            self.line_select(event,$(this),parseInt($(this).data('id')));
 	        });
 
 	    },
 	    save_changes: function(){
-	        if( this.has_client_changed() ){
-	            this.lounge.get_order().set_client(this.new_client);
+	        if( this.has_payment_method_changed() ){
+	            this.lounge.get_order().set_payment_method(this.new_payment_method);
 	        }
 	    },
-	    has_client_changed: function(){
-	        if( this.old_client && this.new_client ){
-	            return this.old_client.id !== this.new_client.id;
+	    has_payment_method_changed: function() {
+	        if( this.old_payment_method && this.new_payment_method ){
+	            return this.old_payment_method.journal_id[0] !== this.new_payment_method.journal_id[0];
 	        }else{
-	            return !!this.old_client !== !!this.new_client;
+	            return !!this.old_payment_method !== !!this.new_payment_method;
 	        }
 	    },
 	    render_list: function(payment_methods) {
@@ -1549,6 +1547,50 @@ odoo.define('point_of_lounge.screens', function (require) {
 
 	            contents.appendChild(payment_method_line);
 	        }
+	    },
+	    line_select: function(event,$line,id) {
+	        var cashregister = null;
+	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
+	            if ( this.lounge.cashregisters[i].journal_id[0] === id ){
+	                cashregister = this.lounge.cashregisters[i];
+	                break;
+	            }
+	        }
+
+	        this.$('.paymentmethod-list .lowlight').removeClass('lowlight');
+
+	        if ($line.hasClass('highlight')) {
+	            $line.removeClass('highlight');
+	            $line.addClass('lowlight');
+	            //this.display_client_details('hide',partner);
+	            this.new_payment_method = null;
+	            this.toggle_save_button();
+	        }else{
+	            this.$('.paymentmethod-list .highlight').removeClass('highlight');
+	            $line.addClass('highlight');
+	            var y = event.pageY - $line.parent().offset().top;
+	            //this.display_client_details('show',partner,y);
+	            this.new_payment_method = cashregister;
+	            this.toggle_save_button();
+	        }
+	    },
+	    toggle_save_button: function() {
+	        var $button = this.$('.button.next');
+	        if (this.editing_client) {
+	            $button.addClass('oe_hidden');
+	            return;
+	        } else if(this.new_payment_method) {
+	            if(!this.old_payment_method) {
+	                $button.text(_t('Set This Payment Method'));
+	            }else {
+	                $button.text(_t('Change Payment Method'));
+	            }
+
+	        } else {
+	                $button.text(_t('Deselect Payment Method'));
+	        }
+
+	        $button.toggleClass('oe_hidden',!this.has_payment_method_changed());
 	    },
 	});
 	gui.define_screen({name:'paymentmethodlist', widget: PaymentMethodListScreenWidget});
@@ -1881,13 +1923,15 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.click_delete_paymentline($(this).data('cid'));
 	        });
 
-	        lines.on('click','.paymentline',function(){
+	        lines.on('click','.paymentline',function() {
+
 	            self.click_paymentline($(this).data('cid'));
 	        });
 
 	        lines.appendTo(this.$('.paymentlines-container'));
 	    },
 	    click_paymentmethods: function(id) {
+	        //console.log('click payment :' + id);
 	        var cashregister = null;
 	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
 	            if (this.lounge.cashregisters[i].journal_id[0] === id ){
@@ -1896,7 +1940,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        }
 
-	        console.log("name :" + cashregister);
+	        //console.log("name :" + cashregister.journal.type);
 
 	        this.lounge.get_order().add_paymentline(cashregister);
 	        this.reset_input();

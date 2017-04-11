@@ -182,12 +182,12 @@
                     Guest
                 </t>
             </button>
-             <button t-attf-class='button set-payment #{ ( widget.lounge.get_client() and widget.lounge.get_client().name.length > 10) ? "decentered" : "" }' >
+             <button t-attf-class='button set-payment #{ ( widget.lounge.get_payment_method() and widget.lounge.get_payment_method().journal_id[1].length > 10) ? "decentered" : "" }' >
                 <i class='fa fa-money' />
-                <t t-if="widget.lounge.get_client()">
-                    <t t-esc="widget.lounge.get_client().name" />
+                <t t-if="widget.lounge.get_payment_method()">
+                    <t t-esc="widget.lounge.get_payment_method().journal_id[1]" />
                 </t>
-                <t t-if="!widget.lounge.get_client()">
+                <t t-if="!widget.lounge.get_payment_method()">
                     Cash
                 </t>
             </button>
