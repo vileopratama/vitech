@@ -2003,6 +2003,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 
             this.lounge.get_order().remove_paymentline(cashregister);
 	        this.lounge.get_order().add_paymentline(cashregister);
+	        console.log('click');
 	        this.reset_input();
 	        this.render_paymentlines();
 	    },
