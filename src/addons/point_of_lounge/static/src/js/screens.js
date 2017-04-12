@@ -2001,7 +2001,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        }
 
-            this.lounge.get_order().remove_paymentline(cashregister);
+	        var lines = this.lounge.get_order().get_paymentlines();
+	        for(var i = 0; i < lines.length; i++ ) {
+                this.lounge.get_order().remove_paymentline(lines[i]);
+	        }
+
+            //this.click_delete_paymentline(id);
 	        this.lounge.get_order().add_paymentline(cashregister);
 	        console.log('click');
 	        this.reset_input();
