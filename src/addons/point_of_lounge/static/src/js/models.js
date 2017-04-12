@@ -3759,7 +3759,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.paymentlines.remove(line);
 	    },
 	    remove_all_paymentlines:function (){
-	        this.clean_empty_paymentlines();
+	        var lines = this.get_paymentlines();
+	        for(var i=0; i<lines.length;i++) {
+	            this.remove_paymentline(lines[i]);
+	        }
 	        this.trigger('change:selected_paymentline',true);
 	    },
 	    clean_empty_paymentlines: function() {
