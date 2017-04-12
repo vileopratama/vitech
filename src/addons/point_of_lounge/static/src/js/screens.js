@@ -2837,8 +2837,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    click_paymentmethods: function(id) {
 	        var cashregister = null;
+	        var last_cashregister = this.lounge.get_payment_method() ? this.lounge.get_payment_method().journal_id[0] : null;
 	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
-	            if ( this.lounge.cashregisters[i].journal_id[0] === id ){
+	            if(this.lounge.cashregisters[i].journal_id[0] === id  && this.lounge.cashregisters[i].journal_id[0] != last_cashregister ){
 	                cashregister = this.lounge.cashregisters[i];
 	                break;
 	            }
