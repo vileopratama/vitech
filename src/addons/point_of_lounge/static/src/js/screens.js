@@ -1578,6 +1578,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        }
 
+            //this.lounge.get_order().remove_all_paymentlines();
 	        this.lounge.get_order().add_paymentline(cashregister);
 
 	        this.$('.paymentmethod-list .lowlight').removeClass('lowlight');
@@ -1860,6 +1861,10 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.customer_changed();
 	        }, this);
 
+	        this.lounge.bind('change:selectedPaymentMethod', function() {
+	            self.payment_method_changed();
+	        }, this);
+
 
 	    },
 	    // resets the current input buffer
@@ -1984,7 +1989,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        lines.appendTo(this.$('.paymentlines-container'));
 	    },
 	    click_paymentmethods: function(id) {
-	        //console.log('click payment :' + id);
 	        var cashregister = null;
 	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
 	            if (this.lounge.cashregisters[i].journal_id[0] === id ){
@@ -2040,6 +2044,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
 
 	    },
+	    payment_method_changed: function() {
+	        var payment_method = this.lounge.get_payment_method();
+	        this.$('.js_payment_method_name').text( payment_method ? payment_method.journal_id[1] : _t('No Payment Method') );
+
+	    },
 	    time_changed: function() {
 	        var booking_from_date = this.lounge.get_order().get_booking_from_date();
 	        var booking_to_date = this.lounge.get_order().get_booking_to_date();
@@ -2050,6 +2059,12 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    click_set_customer: function(){
 	        this.gui.show_screen('clientlist');
+	    },
+	    click_set_payment_method: function(){
+	        this.lounge.get_order().remove_all_paymentlines();
+	        this.reset_input();
+	        this.render_paymentlines();
+	        this.gui.show_screen('paymentmethodlist');
 	    },
 	    click_back: function(){
 	        this.gui.show_screen('products');
@@ -2079,6 +2094,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.$('.js_set_customer').click(function(){
 	            self.click_set_customer();
 	        });
+
+	        this.$('.js_set_payment_method').click(function(){
+	            self.click_set_payment_method();
+	        });
+
 
 	        this.$('.js_tip').click(function(){
 	            self.click_tip();

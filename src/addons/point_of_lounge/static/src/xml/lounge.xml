@@ -990,6 +990,18 @@
                             </span>
                         </div>
 
+                        <div class='button js_set_payment_method'>
+                            <i class='fa fa-money' />
+                            <span class='js_payment_method_name'>
+                                <t t-if="widget.lounge.get_payment_method()">
+                                    <t t-esc="widget.lounge.get_payment_method().journal_id[1]" />
+                                </t>
+                                <t t-if="!widget.lounge.get_payment_method()">
+                                    No Payment Method
+                                </t>
+                            </span>
+                        </div>
+
                         <div class='button js_booking'>
                              <i class="fa fa-clock-o"></i>
 	                        <span class='js_booking_from_date'>

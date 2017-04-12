@@ -2291,8 +2291,7 @@ odoo.define('point_of_lounge.models', function (require) {
                         unit_price = amount_fixed_price/this.order.get_total_items();
                         quantity = 1;
                         subtotal = (unit_price + this.get_charge()) * quantity * (1 - this.get_discount()/100);
-                        console.log('unit price :' + unit_price);
-	                    console.log('subtotal  :' + subtotal);
+
                     }
 	            } else {
 	                subtotal = (this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100);
@@ -2551,7 +2550,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    //sets the amount of money on this payment line
 	    set_amount: function(value){
-	        console.log('value :'  + this.get_change_amount());
 	        this.order.assert_editable();
 	        this.amount = round_di(parseFloat(value) || 0, this.lounge.currency.decimals);
 	        /*if(this.get_change_amount() == true) {this
@@ -3739,14 +3737,15 @@ odoo.define('point_of_lounge.models', function (require) {
 	    add_paymentline: function(cashregister) {
 	        this.assert_editable();
 	        var newPaymentline = new exports.Paymentline({},{order: this, cashregister:cashregister, lounge: this.lounge});
-	        if(cashregister.journal.type !== 'cash' || this.lounge.config.iface_precompute_cash){
-	            console.log('not cash');
+	        newPaymentline.set_amount( Math.max(this.get_due(),0) );
+	        /*if(cashregister.journal.type !== 'cash' || this.lounge.config.iface_precompute_cash){
 	            newPaymentline.set_amount( Math.max(this.get_due(),0) );
-	        }
+	        } else {
+	            newPaymentline.set_amount(10.00);
+	        }*/
 
 	        this.paymentlines.add(newPaymentline);
 	        this.select_paymentline(newPaymentline);
-	        //console.log('pay');
 
 	    },
 	    get_paymentlines: function(){
@@ -3759,6 +3758,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        this.paymentlines.remove(line);
 	    },
+	    remove_all_paymentlines:function (){
+	        this.clean_empty_paymentlines();
+	        this.trigger('change:selected_paymentline',true);
+	    },
 	    clean_empty_paymentlines: function() {
 	        var lines = this.paymentlines.models;
 	        var empty = [];
@@ -3770,6 +3773,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        for ( var i = 0; i < empty.length; i++) {
 	            this.remove_paymentline(empty[i]);
 	        }
+
 	    },
 	    select_paymentline: function(line){
 	        if(line !== this.selected_paymentline){
