@@ -2001,6 +2001,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        }
 
+            this.lounge.get_order().remove_paymentline(cashregister);
 	        this.lounge.get_order().add_paymentline(cashregister);
 	        this.reset_input();
 	        this.render_paymentlines();
@@ -2837,9 +2838,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    click_paymentmethods: function(id) {
 	        var cashregister = null;
-	        var last_cashregister = this.lounge.get_payment_method() ? this.lounge.get_payment_method().journal_id[0] : null;
+
 	        for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
-	            if(this.lounge.cashregisters[i].journal_id[0] === id  && this.lounge.cashregisters[i].journal_id[0] != last_cashregister ){
+	            if(this.lounge.cashregisters[i].journal_id[0] === id ){
 	                cashregister = this.lounge.cashregisters[i];
 	                break;
 	            }
