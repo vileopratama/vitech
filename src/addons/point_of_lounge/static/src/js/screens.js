@@ -1578,6 +1578,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        }
 
+	        this.lounge.get_order().add_paymentline(cashregister);
+
 	        this.$('.paymentmethod-list .lowlight').removeClass('lowlight');
 
 	        if ($line.hasClass('highlight')) {
@@ -1909,7 +1911,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 		    }
 		}
 
-		if (! open_paymentline) {
+		if (!open_paymentline) {
 	            this.lounge.get_order().add_paymentline( this.lounge.cashregisters[0]);
 	            this.render_paymentlines();
 	        }
@@ -1954,6 +1956,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        var lines = order.get_paymentlines();
+	        //var lines = [];
 	        var due   = order.get_due();
 	        var extradue = 0;
 	        if (due && lines.length  && due !== order.get_due(lines[lines.length-1])) {
@@ -1989,8 +1992,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	                break;
 	            }
 	        }
-
-	        //console.log("name :" + cashregister.journal.type);
 
 	        this.lounge.get_order().add_paymentline(cashregister);
 	        this.reset_input();

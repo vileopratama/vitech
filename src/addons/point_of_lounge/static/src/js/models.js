@@ -3746,6 +3746,7 @@ odoo.define('point_of_lounge.models', function (require) {
 
 	        this.paymentlines.add(newPaymentline);
 	        this.select_paymentline(newPaymentline);
+	        //console.log('pay');
 
 	    },
 	    get_paymentlines: function(){
