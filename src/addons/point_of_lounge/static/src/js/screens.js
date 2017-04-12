@@ -504,13 +504,14 @@ odoo.define('point_of_lounge.screens', function (require) {
                 var booking_from_date = self.lounge.get_order().get_booking_from_date();
                 var booking_total = self.lounge.get_order().get_booking_total();
                 var client =  self.lounge.get_order().get_client();
+                var payment_method =  self.lounge.get_order().get_payment_method();
 
-                if (booking_from_date && booking_total && client) {
+                if (booking_from_date && booking_total && client && payment_method) {
                     self.gui.show_screen('payment');
                 } else {
                     self.gui.show_popup('error',{
 	                    'title': _t('Error: Field'),
-	                    'body': _t('Please fill Customer, Time Started and Total Hours'),
+	                    'body': _t('Please fill Customer,Payment Method, Time Started and Total Hours'),
 	                });
 	                return;
                 }
@@ -1579,7 +1580,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
             //this.lounge.get_order().remove_all_paymentlines();
-	        this.lounge.get_order().add_paymentline(cashregister);
+            //this.lounge.get_order().remove_all_paymentlines();
+	        //this.lounge.get_order().add_paymentline(cashregister);
 
 	        this.$('.paymentmethod-list .lowlight').removeClass('lowlight');
 
@@ -1882,6 +1884,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    payment_input: function(input) {
 	        var newbuf = this.gui.numpad_input(this.inputbuffer, input, {'firstinput': this.firstinput});
 
+
 	        this.firstinput = (newbuf.length === 0);
 
 	        // popup block inputs to prevent sneak editing.
@@ -1890,6 +1893,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        if (newbuf !== this.inputbuffer) {
+	            console.log('buff : '+ this.inputbuffer);
 	            this.inputbuffer = newbuf;
 	            var order = this.lounge.get_order();
 	            if (order.selected_paymentline) {
@@ -2003,7 +2007,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
-	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', { widget:this }));
+	        var payment_lines= [];
+	        if(this.lounge.get_order().get_payment_method())
+	            payment_lines = this.lounge.get_order().get_payment_method();
+	        //var payment_lines = this.lounge.get_order().get_payment_method();
+	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', { widget:this,lines:payment_lines }));
 	            methods.on('click','.paymentmethod',function(){
 	                self.click_paymentmethods($(this).data('id'));
 	            });
@@ -2047,6 +2055,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    payment_method_changed: function() {
 	        var payment_method = this.lounge.get_payment_method();
 	        this.$('.js_payment_method_name').text( payment_method ? payment_method.journal_id[1] : _t('No Payment Method') );
+	        this.$('.button.paymentmethod').attr("data-id",payment_method ? payment_method.journal_id[0] : _t('0'));
+	        this.$('.button.paymentmethod').text( payment_method ? payment_method.journal_id[1] : _t('No Payment Method') );
 
 	    },
 	    time_changed: function() {
@@ -2061,9 +2071,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.gui.show_screen('clientlist');
 	    },
 	    click_set_payment_method: function(){
-	        this.lounge.get_order().remove_all_paymentlines();
-	        this.reset_input();
-	        this.render_paymentlines();
+	        //this.reset_input();
+	        //this.render_paymentlines();
 	        this.gui.show_screen('paymentmethodlist');
 	    },
 	    click_back: function(){

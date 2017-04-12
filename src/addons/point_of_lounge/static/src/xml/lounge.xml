@@ -188,7 +188,7 @@
                     <t t-esc="widget.lounge.get_payment_method().journal_id[1]" />
                 </t>
                 <t t-if="!widget.lounge.get_payment_method()">
-                    Cash
+                    No Payment Method
                 </t>
             </button>
             <button class='button pay'>
@@ -682,8 +682,7 @@
                                 <td class='col-name col-md-3'> <t t-esc='line.name' /> </td>
                                 <td class='col-due col-md-3'> <t t-esc='widget.format_currency_no_symbol(order.get_due(line))' /> </td>
                                 <td class='col-tendered edit col-md-3'>
-                                    <t t-esc='widget.inputbuffer' />
-                                    <!-- <t t-esc='line.get_amount()' /> -->
+                                   <t t-esc='widget.inputbuffer' />
                                 </td>
                                 <t t-if='order.get_change(line)'>
                                     <td class='col-change highlight col-md-3'>
@@ -941,11 +940,16 @@
 
     <t t-name="LoungePaymentScreen-Paymentmethods">
         <div class='paymentmethods'>
-            <t t-foreach="widget.lounge.cashregisters" t-as="cashregister">
+
+                <div class="button paymentmethod" t-att-data-id="lines.journal_id[0]">
+                    <t t-esc="lines.journal_id[1]" />
+                </div>
+
+            <!--<t t-foreach="widget.lounge.cashregisters" t-as="cashregister">
                 <div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
                     <t t-esc="cashregister.journal_id[1]" />
                 </div>
-            </t>
+            </t>-->
         </div>
     </t>
 

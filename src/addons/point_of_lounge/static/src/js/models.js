@@ -3737,7 +3737,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    add_paymentline: function(cashregister) {
 	        this.assert_editable();
 	        var newPaymentline = new exports.Paymentline({},{order: this, cashregister:cashregister, lounge: this.lounge});
-	        newPaymentline.set_amount( Math.max(this.get_due(),0) );
+	        newPaymentline.set_amount(Math.max(this.get_due(),0) );
 	        /*if(cashregister.journal.type !== 'cash' || this.lounge.config.iface_precompute_cash){
 	            newPaymentline.set_amount( Math.max(this.get_due(),0) );
 	        } else {
@@ -3798,7 +3798,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_total_with_tax: function() {
 	        return this.get_total_without_tax() + this.get_total_tax();
-	        //return 0;
 	    },
 	    get_total_without_tax: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
@@ -3905,6 +3904,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	                }
 	            }
 	        }
+
+	        //var change = this.get_total_paid() - this.get_total_with_tax();
 	        return round_pr(Math.max(0,change), this.lounge.currency.rounding);
 	    },
 	    get_due: function(paymentline) {
@@ -3921,6 +3922,8 @@ odoo.define('point_of_lounge.models', function (require) {
 	                }
 	            }
 	        }
+
+	        //var due = this.get_total_with_tax();
 	        return round_pr(Math.max(0,due), this.lounge.currency.rounding);
 	    },
 	    get_total_items: function() {
