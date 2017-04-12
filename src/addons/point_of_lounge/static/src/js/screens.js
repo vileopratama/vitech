@@ -1513,6 +1513,25 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            self.line_select(event,$(this),parseInt($(this).data('id')));
 	        });
 
+	        //search
+	        var search_timeout = null;
+
+	        if(this.lounge.config.iface_vkeyboard && this.chrome.widget.keyboard){
+	            this.chrome.widget.keyboard.connect(this.$('.searchbox input'));
+	        }
+
+	        this.$('.searchbox input').on('keypress',function(event){
+	            clearTimeout(search_timeout);
+	            var query = this.value;
+	            //search by input
+	            search_timeout = setTimeout(function(){
+	                self.perform_search(query,event.which === 13);
+	            },70);
+	        });
+
+	        this.$('.searchbox .search-clear').click(function(){
+	            self.clear_search();
+	        });
 	    },
 	    save_changes: function(){
 	        if( this.has_payment_method_changed() ){
@@ -1593,6 +1612,35 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        $button.toggleClass('oe_hidden',!this.has_payment_method_changed());
+	    },
+	    perform_search: function(query, associate_result){
+	        var payment_methods;
+	        if(query){
+	            payment_methods = this.lounge.cashregisters;
+	            var results = _.filter(payment_methods, function(item) {
+	                var item_name = item.journal.name;
+	                item_name = item_name.toLowerCase();
+                    return item_name.indexOf(query.toLowerCase()) > - 1;
+                });
+	            this.render_list(results);
+
+	        } else {
+	            payment_methods = this.lounge.cashregisters;
+	            this.render_list(payment_methods);
+	        }
+	    },
+	    clear_search: function(){
+	        var payment_methods = this.lounge.lounge.cashregisters;
+	        this.render_list(payment_methods);
+	        this.$('.searchbox input')[0].value = '';
+	        this.$('.searchbox input').focus();
+	    },
+	    hide: function () {
+	        this._super();
+	        this.new_payment_method = null;
+	    },
+	    close: function(){
+	        this._super();
 	    },
 	});
 	gui.define_screen({name:'paymentmethodlist', widget: PaymentMethodListScreenWidget});

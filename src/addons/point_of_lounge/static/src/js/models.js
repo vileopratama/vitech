@@ -2038,7 +2038,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        this.discountStr = '0';
 	        this.type = 'pack';
 	        this.selected = false;
-	        this.id       = orderline_id++;
+	        this.id = orderline_id++;
 	    },
 	    init_from_JSON: function(json) {
 	        this.product = this.lounge.db.get_product_by_id(json.product_id);
@@ -2259,9 +2259,51 @@ odoo.define('point_of_lounge.models', function (require) {
 	        var rounding = this.lounge.currency.rounding;
 	        return round_pr(this.get_unit_price() * this.get_quantity() * (1 - this.get_discount()/100), rounding);
 	    },
-	    get_base_price_with_charge:    function(){
+	    get_free_pax: function() {
+	        var max_pax = 0;
+	        var payment_method = this.order.get_payment_method();
+	        if(payment_method) {
+	             max_pax = payment_method.journal.max_pax;
+	        }
+	        return max_pax;
+	    },
+	    get_base_price_with_charge:function() {
+	        var max_pax = 0;
+	        var amount_fixed_price = 0;
 	        var rounding = this.lounge.currency.rounding;
-	        return round_pr((this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100), rounding);
+            var quantity;
+            var unit_price = 0;
+            var subtotal = 0;
+
+	        var payment_method = this.order.get_payment_method();
+	        if(payment_method) {
+	            if(payment_method.journal.journal_change_amount == true) {
+                    max_pax = payment_method.journal.max_pax;
+	                amount_fixed_price = payment_method.journal.amount_fixed_price;
+
+                    // 1 , 2
+                    quantity = this.get_quantity() - max_pax;
+                    if(quantity > 0){
+                        unit_price = (amount_fixed_price/this.order.get_total_items()) * 1;
+                        subtotal = unit_price + ((this.get_unit_price() + this.get_charge()) * quantity * (1 - this.get_discount()/100));
+                    }
+                    else{
+                        unit_price = amount_fixed_price/this.order.get_total_items();
+                        quantity = 1;
+                        subtotal = (unit_price + this.get_charge()) * quantity * (1 - this.get_discount()/100);
+                        console.log('unit price :' + unit_price);
+	                    console.log('subtotal  :' + subtotal);
+                    }
+	            } else {
+	                subtotal = (this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100);
+	            }
+	        } else {
+	            subtotal = (this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100);
+	        }
+
+	        return round_pr(subtotal, rounding);
+	        //var rounding = this.lounge.currency.rounding;
+	        //return round_pr((this.get_unit_price() + this.get_charge()) * this.get_quantity() * (1 - this.get_discount()/100), rounding);
 	    },
 	    get_display_price: function(){
 	        if (this.lounge.config.iface_tax_included) {
@@ -2355,8 +2397,41 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    compute_all: function(taxes, price_unit,charge, quantity, currency_rounding) {
 	        var self = this;
-	        var total_excluded = round_pr((price_unit + charge) * quantity, currency_rounding);
-	        var total_included_without_charge = round_pr((price_unit) * quantity, currency_rounding);
+	        var amount_fixed_price = 0;
+	        var max_pax = 0;
+	        var unit_price = 0;
+            var subtotal = 0;
+            var total_excluded = 0;
+            var total_included_without_charge= 0;
+
+            var payment_method = this.order.get_payment_method();
+
+            if(payment_method) {
+                if(payment_method.journal.journal_change_amount == true) {
+                    max_pax = payment_method.journal.max_pax;
+                    amount_fixed_price = payment_method.journal.amount_fixed_price;
+                    quantity = quantity - max_pax;
+                    if(quantity > 0){
+                        unit_price = amount_fixed_price/this.order.get_total_items();
+                        total_excluded = round_pr(unit_price + ((price_unit + charge) * quantity * (1 - this.get_discount()/100)),currency_rounding);
+                        total_included_without_charge = round_pr(unit_price + (price_unit * quantity ), currency_rounding);
+                    }else {
+                        unit_price = amount_fixed_price/this.order.get_total_items();
+                        quantity = 1;
+                        total_excluded = round_pr(unit_price * quantity * (1 - this.get_discount()/100),currency_rounding);
+                        total_included_without_charge = round_pr(unit_price * quantity, currency_rounding);
+                    }
+                } else {
+                    total_excluded = round_pr((price_unit + charge) * quantity, currency_rounding);
+	                total_included_without_charge = round_pr((price_unit) * quantity, currency_rounding);
+                }
+            } else {
+                total_excluded = round_pr((price_unit + charge) * quantity, currency_rounding);
+	            total_included_without_charge = round_pr((price_unit) * quantity, currency_rounding);
+            }
+
+	        //var total_excluded = round_pr((price_unit + charge) * quantity, currency_rounding);
+	        //var total_included_without_charge = round_pr((price_unit) * quantity, currency_rounding);
 	        var total_included = total_excluded;
 	        var base = total_excluded;
 	        var list_taxes = [];
@@ -2463,26 +2538,27 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        this.cashregister = options.cashregister;
 	        this.name = this.cashregister.journal_id[1];
-	        this.journal_change_amount = this.cashregister.journal.journal_change_amount;
-	        this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
-	        this.max_pax = this.cashregister.journal.max_pax;
+	        //this.journal_change_amount = this.cashregister.journal.journal_change_amount;
+	        //this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
+	        //this.max_pax = this.cashregister.journal.max_pax;
 	    },
 	    init_from_JSON: function(json){
 	        this.amount = json.amount;
 	        this.cashregister = this.lounge.cashregisters_by_id[json.statement_id];
 	        this.name = this.cashregister.journal_id[1];
-	        this.journal_change_amount = this.cashregister.journal.journal_change_amount;
-	        this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
+	        //this.journal_change_amount = this.cashregister.journal.journal_change_amount;
+	        //this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
 	    },
 	    //sets the amount of money on this payment line
 	    set_amount: function(value){
 	        console.log('value :'  + this.get_change_amount());
 	        this.order.assert_editable();
-	        if(this.get_change_amount() == true) {this
+	        this.amount = round_di(parseFloat(value) || 0, this.lounge.currency.decimals);
+	        /*if(this.get_change_amount() == true) {this
 	            this.amount = round_di(parseFloat(this.get_amount_fixed_price()) || 0, this.lounge.currency.decimals);
 	        } else {
 	            this.amount = round_di(parseFloat(value) || 0, this.lounge.currency.decimals);
-	        }
+	        }*/
 	        this.trigger('change',this);
 	    },
 	    // returns the amount of money on this paymentline
@@ -3714,6 +3790,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },
 	    get_total_with_tax: function() {
 	        return this.get_total_without_tax() + this.get_total_tax();
+	        //return 0;
 	    },
 	    get_total_without_tax: function() {
 	        return round_pr(this.orderlines.reduce((function(sum, orderLine) {
@@ -3837,6 +3914,11 @@ odoo.define('point_of_lounge.models', function (require) {
 	            }
 	        }
 	        return round_pr(Math.max(0,due), this.lounge.currency.rounding);
+	    },
+	    get_total_items: function() {
+	        return this.orderlines.reduce((function(sum, orderLine) {
+	            return sum + 1;
+	        }), 0);
 	    },
 	    is_paid: function(){
 	        return this.get_due() === 0;

@@ -1992,13 +1992,20 @@
                         /
                         <t t-esc="line.get_unit().name" />
                     </li>
-                    <li class="info">
+                    <!--<li class="info">
                         Charge
                         <em>
                            <t t-esc="widget.format_currency(line.get_charge())" />
                         </em>
 
+                    </li>-->
+                    <li class="info">
+                        Free Pax :
+                         <em>
+                           <t t-esc="line.get_free_pax()" />
+                        </em>
                     </li>
+
                 </t>
 
                 <t t-if="line.get_discount_str() !== '0'">
