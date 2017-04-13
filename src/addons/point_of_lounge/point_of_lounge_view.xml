@@ -476,7 +476,8 @@
 	                         <field name="booking_total"/>
                              <field name="session_id" />
                              <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" domain="[('customer', '=', True)]" context="{'search_default_customer':1}" attrs="{'readonly': [('state','=','invoiced')]}"/>
-                             <field name="fiscal_position_id" options="{'no_create': True}"/>
+                             <field name="payment_method_id" attrs="{'invisible': [('state','in',['draft'])]}"/>
+                             <!--<field name="fiscal_position_id" options="{'no_create': True}"/>-->
                              <field name="flight_type" />
                              <field name="flight_number" />
                          </group>
