@@ -1122,6 +1122,8 @@ class lounge_order(osv.osv):
         'journal_id': fields.many2one('account.journal', 'Payment Method'),
         'total_pax': fields.integer(compute='_compute_amount_all', string='No.Pax', size=3, store=True),
         'company_type': fields.related('partner_id', 'company_type', string='Type', type='char', store=False),
+        'payment_method_id': fields.many2one('account.journal', 'Payment method', change_default=True, select=1,
+                                      states={'draft': [('readonly', False)], 'paid': [('readonly', False)]}),
     }
 
     """

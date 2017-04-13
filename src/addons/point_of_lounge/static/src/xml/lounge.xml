@@ -946,6 +946,7 @@
                 </div>
             </t>
 
+
             <!--<t t-foreach="widget.lounge.cashregisters" t-as="cashregister">
                 <div class="button paymentmethod" t-att-data-id="cashregister.journal_id[0]">
                     <t t-esc="cashregister.journal_id[1]" />

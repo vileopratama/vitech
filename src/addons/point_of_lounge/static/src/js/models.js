@@ -120,7 +120,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        // We fetch the backend data on the server asynchronously. this is done only when the pos user interface is launched,
 	        // Any change on this data made on the server is thus not reflected on the lounge  until it is relaunched.
 	        // when all the data has loaded, we compute some stuff, and declare the Lounge ready to be used.
-	        this.ready = this.load_server_data().then(function(){
+	        this.ready = this.load_server_data().then(function() {
 	            return self.after_load_server_data();
 	        });
 	    },
@@ -216,7 +216,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	    },{
 	        model:  'lounge.order',
-	        fields: ['name','lounge_reference','date_order','booking_from_date','booking_to_date','flight_type','flight_number','partner_id','company_type','total_pax','amount_total','amount_paid','write_date'],
+	        fields: ['name','lounge_reference','date_order','booking_from_date','booking_to_date','flight_type','flight_number','partner_id','payment_method_id','company_type','total_pax','amount_total','amount_paid','write_date'],
 	        domain: [['is_checkout','=',false]],
 	        loaded: function(self,orders){
 	            self.orders = orders;
@@ -2537,16 +2537,13 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        this.cashregister = options.cashregister;
 	        this.name = this.cashregister.journal_id[1];
-	        //this.journal_change_amount = this.cashregister.journal.journal_change_amount;
-	        //this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
-	        //this.max_pax = this.cashregister.journal.max_pax;
+
 	    },
 	    init_from_JSON: function(json){
 	        this.amount = json.amount;
 	        this.cashregister = this.lounge.cashregisters_by_id[json.statement_id];
 	        this.name = this.cashregister.journal_id[1];
-	        //this.journal_change_amount = this.cashregister.journal.journal_change_amount;
-	        //this.amount_fixed_price = this.cashregister.journal.amount_fixed_price;
+
 	    },
 	    //sets the amount of money on this payment line
 	    set_amount: function(value){
@@ -3374,7 +3371,15 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 
 	        if (json.payment_method_id) {
-	            payment_method = this.lounge.cashregisters_by_id[json.payment_method_id];
+	            var id = json.payment_method_id;
+	            var payment_method = null;
+                for ( var i = 0; i < this.lounge.cashregisters.length; i++ ) {
+                    if ( this.lounge.cashregisters[i].journal_id[0] === id ){
+                        payment_method = this.lounge.cashregisters[i];
+                        break;
+                    }
+                }
+
 	            if (!payment_method) {
 	                console.error('ERROR: trying to load a payment method not available in the lounge');
 	            }
@@ -3382,14 +3387,12 @@ odoo.define('point_of_lounge.models', function (require) {
 	            payment_method = null;
 	        }
 
-
-
 	        this.set_client(client);
 	        this.set_payment_method(payment_method);
 
 	        this.temporary = false;     // FIXME
 	        this.to_invoice = false;    // FIXME
-	        //this.flight_number = null;
+
 
 
 	        var orderlines = json.lines;
@@ -3445,7 +3448,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	            statement_ids: paymentLines,
 	            lounge_session_id: this.lounge_session_id,
 	            partner_id: this.get_client() ? this.get_client().id : false,
-	            payment_method_id: this.get_payment_method() ? this.get_payment_method().id : false,
+	            payment_method_id: this.get_payment_method() ? this.get_payment_method().journal_id[0] : false,
 	            user_id: this.lounge.cashier ? this.lounge.cashier.id : this.lounge.user.id,
 	            uid: this.uid,
 	            sequence_number: this.sequence_number,

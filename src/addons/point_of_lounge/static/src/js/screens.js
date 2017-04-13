@@ -1579,23 +1579,17 @@ odoo.define('point_of_lounge.screens', function (require) {
 	            }
 	        }
 
-            //this.lounge.get_order().remove_all_paymentlines();
-            //this.lounge.get_order().remove_all_paymentlines();
-	        //this.lounge.get_order().add_paymentline(cashregister);
-
 	        this.$('.paymentmethod-list .lowlight').removeClass('lowlight');
 
 	        if ($line.hasClass('highlight')) {
 	            $line.removeClass('highlight');
 	            $line.addClass('lowlight');
-	            //this.display_client_details('hide',partner);
 	            this.new_payment_method = null;
 	            this.toggle_save_button();
 	        }else{
 	            this.$('.paymentmethod-list .highlight').removeClass('highlight');
 	            $line.addClass('highlight');
 	            var y = event.pageY - $line.parent().offset().top;
-	            //this.display_client_details('show',partner,y);
 	            this.new_payment_method = cashregister;
 	            this.toggle_save_button();
 	        }
@@ -2013,7 +2007,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
-	        var payment_lines = this.lounge.get_order().get_payment_method();
+	        var payment_lines = self.lounge.get_payment_method();
             console.log('payment lines ' + payment_lines);
 	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', {widget:this,lines:payment_lines }));
 	            methods.on('click','.paymentmethod',function(){
