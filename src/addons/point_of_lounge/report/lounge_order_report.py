@@ -39,7 +39,7 @@ class LoungeOrderReport(osv.osv):
                     MIN(lo.id) AS id,
                     lo.partner_id AS partner_id,
                     lo.lounge_reference AS lounge_reference,
-                    to_char(lo.date_order, 'dd/mm/YYYY') AS date_order,
+                    to_char(lo.date_order, 'YYYY-MM-DD') AS date_order,
                     lo.booking_from_date AS booking_from_date,
                     lo.booking_to_date AS booking_to_date,
                     CASE WHEN rp.company_type='company' THEN 'Company' ELSE 'Individual' END AS company_type,
