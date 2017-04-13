@@ -2013,10 +2013,8 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
-	        var payment_lines = [];
-	        if(this.lounge.get_order().get_payment_method())
-	            payment_lines = this.lounge.get_order().get_payment_method();
-
+	        var payment_lines = this.lounge.get_order().get_payment_method();
+            console.log('payment lines ' + payment_lines);
 	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', {widget:this,lines:payment_lines }));
 	            methods.on('click','.paymentmethod',function(){
 	                self.click_paymentmethods($(this).data('id'));

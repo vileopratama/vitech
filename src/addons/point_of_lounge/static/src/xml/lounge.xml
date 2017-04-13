@@ -940,7 +940,7 @@
 
     <t t-name="LoungePaymentScreen-Paymentmethods">
         <div class='paymentmethods'>
-            <t t-if="lines.journal_id">
+            <t t-if="lines">
                 <div class="button paymentmethod" t-att-data-id="lines.journal_id[0]">
                     <t t-esc="lines.journal_id[1]" />
                 </div>
