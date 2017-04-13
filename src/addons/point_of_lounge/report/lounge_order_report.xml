@@ -35,7 +35,6 @@
                     <field name="service_01"/>
                     <field name="service_02"/>
                     <field name="service_03"/>
-
                     <filter string="Individual" domain="[('company_type', '=', 'Individual')]" />
                     <filter string="Company" domain="[('company_type', '=', 'Company')]" />
                     <filter string="Current Month" name='current_month' domain="[('date_order','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date_order','&lt;',time.strftime('%%Y-%%m-31'))]"/>
