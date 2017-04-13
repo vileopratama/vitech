@@ -1958,7 +1958,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        var lines = order.get_paymentlines();
-	        //var lines = [];
 	        var due   = order.get_due();
 	        var extradue = 0;
 	        if (due && lines.length  && due !== order.get_due(lines[lines.length-1])) {
@@ -1999,21 +1998,30 @@ odoo.define('point_of_lounge.screens', function (require) {
                 this.lounge.get_order().remove_paymentline(lines[i]);
 	        }
 
-            //this.click_delete_paymentline(id);
+
 	        this.lounge.get_order().add_paymentline(cashregister);
-	        console.log('click');
 	        this.reset_input();
 	        this.render_paymentlines();
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
-	        var payment_lines = self.lounge.get_payment_method();
-            console.log('payment lines ' + payment_lines);
+	        var payment_lines = self.lounge.get_order().get_payment_method();
+	        this.$('.paymentmethods-container').empty();
 	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', {widget:this,lines:payment_lines }));
+
+	        methods.on('click','.paymentmethod',function() {
+	             self.click_paymentmethods($(this).data('id'));
+	        });
+            console.log('paymente method');
+	        methods.appendTo(this.$('.paymentmethods-container'));
+
+	        /*var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', {widget:this,lines:payment_lines }));
 	            methods.on('click','.paymentmethod',function(){
 	                self.click_paymentmethods($(this).data('id'));
-	            });
-	        return methods;
+	            });*/
+
+	        //methods.appendTo(this.$('.paymentmethods-container'));
+	        //return methods;
 	    },
 	    click_invoice: function(){
 	        var order = this.lounge.get_order();
@@ -2049,6 +2057,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var client = this.lounge.get_client();
 	        this.$('.js_customer_name').text( client ? client.name : _t('Customer') );
 
+
 	    },
 	    payment_method_changed: function() {
 	        var payment_method = this.lounge.get_payment_method();
@@ -2083,9 +2092,9 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        var numpad = this.render_numpad();
 	        numpad.appendTo(this.$('.payment-numpad'));
 
-	        var methods = this.render_paymentmethods();
-	        methods.appendTo(this.$('.paymentmethods-container'));
-
+	        //var methods = this.render_paymentmethods();
+	        //methods.appendTo(this.$('.paymentmethods-container'));
+            this.render_paymentmethods();
 	        this.render_paymentlines();
 
 	        this.$('.back').click(function(){
@@ -2124,6 +2133,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        this.lounge.get_order().clean_empty_paymentlines();
 	        this.reset_input();
 	        this.render_paymentlines();
+	        this.render_paymentmethods(); //new
 	        this.order_changes();
 	        window.document.body.addEventListener('keypress',this.keyboard_handler);
 	        window.document.body.addEventListener('keydown',this.keyboard_keydown_handler);
