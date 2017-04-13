@@ -1798,7 +1798,6 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    init: function(parent, options) {
 	        var self = this;
 	        this._super(parent, options);
-	        //this.booking_from_date = this.lounge.get_order().get_booking_from_date();
 	        this.lounge.bind('change:selectedOrder',function(){
 	                this.renderElement();
 	                this.watch_order_changes();
@@ -2014,11 +2013,11 @@ odoo.define('point_of_lounge.screens', function (require) {
 	    },
 	    render_paymentmethods: function() {
 	        var self = this;
-	        var payment_lines= [];
+	        var payment_lines = [];
 	        if(this.lounge.get_order().get_payment_method())
 	            payment_lines = this.lounge.get_order().get_payment_method();
-	        //var payment_lines = this.lounge.get_order().get_payment_method();
-	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', { widget:this,lines:payment_lines }));
+
+	        var methods = $(QWeb.render('LoungePaymentScreen-Paymentmethods', {widget:this,lines:payment_lines }));
 	            methods.on('click','.paymentmethod',function(){
 	                self.click_paymentmethods($(this).data('id'));
 	            });
