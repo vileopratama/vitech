@@ -827,6 +827,7 @@ class lounge_order(osv.osv):
             'lines': [process_line(l) for l in ui_order['lines']] if ui_order['lines'] else False,
             'lounge_reference': ui_order['name'],
             'partner_id': ui_order['partner_id'] or False,
+            'payment_method_id': ui_order['payment_method_id'] or False,
             'date_order': ui_order['creation_date'],
             'fiscal_position_id': ui_order['fiscal_position_id'],
         }
@@ -1167,7 +1168,7 @@ class lounge_order(osv.osv):
             order.amount_tax = currency.round(
                 sum(self._amount_line_tax(line, order.fiscal_position_id) for line in order.lines))
             amount_untaxed = currency.round(sum(line.price_subtotal for line in order.lines))
-            order.amount_total = order.amount_tax + amount_untaxed
+            order.amount_total = math.ceil(order.amount_tax + amount_untaxed)
 
             i = 1
             qty = 0
@@ -1261,27 +1262,6 @@ class lounge_order(osv.osv):
             return 0
 
     def write(self, cr, uid, ids, vals, context=None):
-        """
-        booking_from_date = time.strftime('%Y-%m-%d %H:%M:%S')
-        booking_to_date = time.strftime('%Y-%m-%d %H:%M:%S')
-        if(vals.get('booking_from_date')):
-            for record in self.browse(cr, uid, ids, context=context):
-                booking_from_date = vals['booking_from_date']
-                booking_to_date = record.booking_to_date
-
-        if (vals.get('booking_to_date')):
-            for record in self.browse(cr, uid, ids, context=context):
-                booking_from_date = record.booking_from_date
-                booking_to_date = vals['booking_to_date']
-
-        if (vals.get('booking_from_date') and vals.get('booking_to_date')):
-            booking_from_date = vals['booking_from_date']
-            booking_to_date = vals['booking_to_date']
-
-        vals = {
-            'booking_total': self._get_booking_total(booking_from_date, booking_to_date),
-        }
-        """
         res = super(lounge_order, self).write(cr, uid, ids, vals, context=context)
         partner_obj = self.pool.get('res.partner')
         bsl_obj = self.pool.get("account.bank.statement.line")
@@ -1915,6 +1895,7 @@ class lounge_order_line(osv.osv):
                                               type='integer'),
         'qty': fields.float('Pax(s)', digits_compute=dp.get_precision('Product Unit of Measure')),
         'charge': fields.float('Charge', digits=0),
+        'free_pax': fields.integer('Free Pax', digits=0),
         'discount': fields.float('Discount (%)', digits=0),
         'price_unit': fields.float(string='Unit Price', digits=0),
         'tax_ids_after_fiscal_position': fields.function(_get_tax_ids_after_fiscal_position, type='many2many',
@@ -1937,18 +1918,17 @@ class lounge_order_line(osv.osv):
             currency = line.order_id.pricelist_id.currency_id
             taxes = line.tax_ids.filtered(lambda tax: tax.company_id.id == line.order_id.company_id.id)
             fiscal_position_id = line.order_id.fiscal_position_id
+
             if fiscal_position_id:
                 taxes = fiscal_position_id.map_tax(taxes)
-            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            price = price + line.charge
 
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             line.price_charge = line.charge * line.qty
             line.price_subtotal = line.price_subtotal_incl = price * line.qty
 
             if taxes:
                 taxes = taxes.compute_all(price, currency, line.qty, product=line.product_id,
                                           partner=line.order_id.partner_id or False)
-                # line.price_charge = taxes['total_charge']
                 line.price_subtotal = taxes['total_excluded']
                 line.price_subtotal_incl = taxes['total_included']
 

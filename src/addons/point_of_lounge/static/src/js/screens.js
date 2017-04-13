@@ -2239,8 +2239,7 @@ odoo.define('point_of_lounge.screens', function (require) {
 	        }
 
 	        if (order.is_paid_with_cash() && this.lounge.config.iface_cashdrawer) {
-
-	                this.lounge.proxy.open_cashbox();
+	             this.lounge.proxy.open_cashbox();
 	        }
 
 	        order.initialize_validation_date();

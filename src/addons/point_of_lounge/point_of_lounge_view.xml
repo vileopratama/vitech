@@ -489,8 +489,9 @@
                                          <field name="discount"  on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge, qty, price_unit, context)" widget="monetary"/>
 	                                     <field name="charge" widget="monetary" />
 	                                     <field name="qty" on_change="onchange_qty(parent.pricelist_id,product_id, discount,charge,qty, price_unit, context)"/>
-                                         <field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
-                                         <field name="tax_ids" invisible="1"/>
+                                         <!--<field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
+                                         <field name="tax_ids" invisible="1"/>-->
+                                         <field name="free_pax"/>
                                          <field name="price_charge" widget="monetary"/>
                                          <field name="price_subtotal" widget="monetary"/>
                                          <field name="price_subtotal_incl" widget="monetary"/>
@@ -505,8 +506,9 @@
                                             <field name="price_charge" invisible="1" widget="monetary"/>
                                             <field name="price_subtotal" invisible="1" widget="monetary"/>
                                             <field name="price_subtotal_incl" invisible="1" widget="monetary"/>
-                                            <field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
-                                            <field name="tax_ids" invisible="1"/>
+                                            <field name="free_pax"/>
+                                            <!--<field name="tax_ids_after_fiscal_position" widget="many2many_tags"/>
+                                            <field name="tax_ids" invisible="1"/>-->
                                             <field name="notice"/>
                                         </group>
                                     </form>

@@ -2199,12 +2199,14 @@ odoo.define('point_of_lounge.models', function (require) {
 	    export_as_JSON: function() {
 	        return {
 	            qty: this.get_quantity(),
-	            price_unit: this.get_unit_price(),
+	            price_unit: this.get_free_pax() > 0 ?  this.get_unit_price_with_free_pax() : this.get_unit_price(),
 	            discount: this.get_discount(),
+	            free_pax:this.get_free_pax(),
 	            product_id: this.get_product().id,
 	            tax_ids: [[6, false, _.map(this.get_applicable_taxes(), function(tax){ return tax.id; })]],
 	            id: this.id,
 	            charge: this.get_charge(),
+
 	        };
 	    },
 	    //used to create a json of the ticket, to be sent to the printer
@@ -2243,6 +2245,37 @@ odoo.define('point_of_lounge.models', function (require) {
 	        }
 	        price = price - discount;
 	        return round_di(price || 0, this.lounge.dp['Product Price']);
+	    },
+	    get_unit_price_with_free_pax: function() {
+            var payment_method = this.order.get_payment_method();
+            var max_pax = this.get_free_pax();
+            var amount_fixed_price = payment_method.journal.amount_fixed_price;
+            var price = this.price;
+            var unit_price
+
+            var qty = this.get_quantity() - max_pax;
+            if(qty > 0){
+                var unit_price_with_disc = 0 ;
+                var unit_price_wiht_no_disc= 0;
+
+
+                for(var i=0;i<max_pax;i++){
+                    unit_price_with_disc+=amount_fixed_price/this.order.get_total_items();
+                }
+
+                for(var j=0;i<qty;j++){
+                    unit_price_with_no_disc+=price;
+                }
+
+                unit_price = unit_price_with_disc +  unit_price_with_no_disc;
+                unit_price = unit_price/this.get_quantity();
+
+            } else {
+                unit_price = amount_fixed_price/this.order.get_total_items();
+                unit_price = unit_price/this.get_quantity();
+            }
+
+            return round_di(unit_price || 0, this.lounge.dp['Product Price']);
 	    },
 	    get_unit_display_price: function(){
 	        if (this.lounge.config.iface_tax_included) {
@@ -3437,7 +3470,6 @@ odoo.define('point_of_lounge.models', function (require) {
 	            flight_number : flight_number,
 	            booking_from_date : this.get_booking_from_date_local(),
 	            booking_to_date :  this.get_booking_to_date_local(),
-	            //booking_total : this.lounge.get_diff_hours(this.lounge.get_booking_from_date(),this.lounge.get_booking_to_date()),
 	            booking_total : this.get_booking_total(),
 	            amount_surcharge : this.get_total_surcharge(), //add line for write surcharge
 	            amount_paid: this.get_total_paid(),
