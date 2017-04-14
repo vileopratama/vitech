@@ -36,7 +36,7 @@
 
                     <filter string="Individual" domain="[('company_type', '=', 'Individual')]" />
                     <filter string="Company" domain="[('company_type', '=', 'Company')]" />
-                    <filter string="Current Month" name='current_month' domain="[('booking_from_date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('booking_from_date','&lt;',time.strftime('%%Y-%%m-31'))]"/>
+                    <filter string="Current Month" name='current_month' domain="[('date_order','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date_order','&lt;',time.strftime('%%Y-%%m-31'))]"/>
 
                 </search>
             </field>

@@ -12,6 +12,7 @@ class LoungeOrderDomesticReport(osv.osv):
     _columns = {
         'partner_id': fields.many2one('res.partner', 'Customer Name', readonly=True),
         'lounge_reference': fields.char(string='Track No', readonly=True),
+        'date_order': fields.date(string='Order Date', readonly=True),
         'booking_from_date': fields.datetime(string='Booking From', readonly=False),
         'booking_to_date': fields.datetime(string='Booking To', readonly=False),
         'company_type': fields.char(string='Customer Type', readonly=False),
@@ -38,6 +39,7 @@ class LoungeOrderDomesticReport(osv.osv):
                     MIN(lo.id) AS id,
                     lo.partner_id AS partner_id,
                     lo.lounge_reference AS lounge_reference,
+                    to_char(lo.date_order, 'YYYY-MM-DD') AS date_order,
                     lo.booking_from_date AS booking_from_date,
                     lo.booking_to_date AS booking_to_date,
                     CASE WHEN rp.company_type='company' THEN 'Company' ELSE 'Individual' END AS company_type,
