@@ -10,7 +10,7 @@ class LoungeOrderPaymentReport(osv.osv):
 
     _columns = {
         'name': fields.char('Payment', readonly=True),
-        'date_order': fields.date('Date order',readonly=True),
+        'date_order': fields.datetime(string='Order Date', readonly=True),
         'count_payment': fields.integer('Total Payment', readonly=True),
     }
 
@@ -24,7 +24,7 @@ class LoungeOrderPaymentReport(osv.osv):
             CREATE OR REPLACE VIEW report_lounge_order_payment AS (
                 SELECT
                     MIN(aj.id) AS id,
-                    date(lo.booking_from_date) AS date_order,
+                    lo.date_order AS date_order,
                     aj.name AS name,
                     COUNT(aj.id) AS count_payment
                 FROM
@@ -38,6 +38,6 @@ class LoungeOrderPaymentReport(osv.osv):
                 WHERE
                     lo.state IN ('paid','invoice')
                 GROUP BY
-                   aj.id,date(lo.booking_from_date)
+                   aj.id,lo.date_order
             )
         """)
