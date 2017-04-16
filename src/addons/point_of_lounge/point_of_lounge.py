@@ -375,6 +375,7 @@ class product_template(osv.osv):
                                            help="Those categories are used to group similar products for lounge."),
         'lounge_charge': fields.float('In Charge', digits=(16, 0),
                                       help="Base in charge  compute the customer amount charge. Sometimes called the catalog price."),
+        'is_disc_company' : fields.boolean(string='Discount Company'),
         'discount_company': fields.float('Disc (Company)', digits=(16, 0)),
         'lounge_charge_every': fields.integer('In Charge Every',
                                               help="Base in charge every hour compute the customer amount charge. Sometimes called the catalog price."),
@@ -384,6 +385,7 @@ class product_template(osv.osv):
         'lounge_to_weight': False,
         'available_in_lounge': True,
         'discount_company': 0,
+        'is_disc_company': False,
     }
 
     def unlink(self, cr, uid, ids, context=None):

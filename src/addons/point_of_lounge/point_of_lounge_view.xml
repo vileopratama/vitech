@@ -336,7 +336,7 @@
 	                    <div>
                             <field name="lounge_charge_every" placeholder="Hour" widget='integer' class="oe_inline" /> Hour
 	                    </div>
-                        <field name="discount_company"/>
+                        <field name="is_disc_company" />
                         <field name="lounge_to_weight" attrs="{'invisible': [('available_in_lounge', '=', False)]}"/>
                     </group>
                 </group>

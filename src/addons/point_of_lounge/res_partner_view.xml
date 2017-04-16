@@ -9,6 +9,7 @@
                 <xpath expr="//page[@name='sales_purchases']/group">
                     <group string="Lounge" name="point_of_lounge">
                         <field name="lounge_barcode" />
+                        <field name="disc_product" />
                     </group>
                 </xpath>
                  <field name="website" position="after">

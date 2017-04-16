@@ -232,7 +232,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	        },
 	    },{
 	        model:  'res.partner',
-	        fields: ['name','street','city','state_id','country_id','vat','phone','zip','mobile','pic','company_type','email','lounge_barcode','write_date'],
+	        fields: ['name','street','city','state_id','country_id','vat','phone','zip','mobile','pic','company_type','email','lounge_barcode','disc_product','write_date'],
 	        domain: [['customer','=',true]],
 	        loaded: function(self,partners){
 	            self.partners = partners;
@@ -365,7 +365,7 @@ odoo.define('point_of_lounge.models', function (require) {
 	    },{
 	        model:  'product.product',
 	        fields: ['display_name', 'list_price','price','lounge_categ_id', 'taxes_id', 'barcode', 'default_code',
-	                 'to_weight', 'uom_id', 'description_sale', 'description','lounge_charge','discount_company','lounge_charge_every',
+	                 'to_weight', 'uom_id', 'description_sale', 'description','lounge_charge','is_disc_company','lounge_charge_every',
 	                 'product_tmpl_id'],
 	        order:  ['sequence','default_code','name'],
 	        domain: [['sale_ok','=',true],['available_in_lounge','=',true]],
@@ -2238,7 +2238,10 @@ odoo.define('point_of_lounge.models', function (require) {
 	        if(this.order.get_client()) {
 	            var customer_type = this.order.get_client().company_type;
                 if(customer_type == 'company') {
-                    discount = !this.product.discount_company ? 0 : this.product.discount_company;
+                    //discount = !this.product.discount_company ? 0 : this.product.discount_company;
+                    if(this.product.is_disc_company == true) {
+                        discount =  !this.order.get_client().disc_product ? 0 : this.order.get_client().disc_product;
+                    }
                 } else {
                     discount = 0;
                 }
